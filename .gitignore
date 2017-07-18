@@ -26,3 +26,4 @@ gradle/
 .idea/
 build/
 *.iml
+tasks.properties
