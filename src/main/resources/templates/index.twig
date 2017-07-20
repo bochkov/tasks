@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>SchedulerInfo</title>
+</head>
+<body>
+<h1>Context</h1>
+<p>{{ scheduler.context }}</p>
+
+<h1>MetaData</h1>
+<p>{{ scheduler.metaData }}</p>
+
+<h1>Jobs</h1>
+<p>
+    {% for job in scheduler.getJobKeys(null) %}
+        <h4>{{ job }}</h4>
+        <ul>
+        {% for trig in scheduler.getTriggersOfJob(job) %}
+            <li>{{ trig }}</li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+</p>
+
+</body>
+</html>
