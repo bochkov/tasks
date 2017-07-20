@@ -1,4 +1,4 @@
-package sb.tasks;
+package sb.tasks.pages;
 
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

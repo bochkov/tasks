@@ -8,6 +8,7 @@ import org.bson.Document;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import ratpack.server.RatpackServer;
+import sb.tasks.pages.IndexPage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -52,8 +53,11 @@ public final class Application {
                             Logger.warn(this, "No job class for task{id=%s}", document.getObjectId("_id").toString());
                             return;
                         }
+                        JobDataMap data = new JobDataMap();
+                        data.put("document", document);
                         JobDetail job = JobBuilder.newJob(jobClass)
                                 .withIdentity(jobKey)
+                                .setJobData(data)
                                 .storeDurably()
                                 .build();
                         int priority = 1;
