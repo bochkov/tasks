@@ -58,10 +58,6 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
     @Override
     public void send(List<T> objects) throws IOException {
         for (NotifObj obj : objects) {
-            Array<Stamp> stams = new Array<>(
-                    new StSender(from),
-                    new StSubject(subject)
-            );
             Array<Enclosure> encs = new Array<>(
                     new EnHTML(
                             obj.mailText()
@@ -77,8 +73,16 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
                 );
             }
             for (String to : recipients.split(";")) {
-                stams = stams.with(new StRecipient(to));
-                postman.send(new ReMIME(stams, encs));
+                postman.send(
+                        new ReMIME(
+                                new Array<>(
+                                        new StSender(from),
+                                        new StRecipient(to),
+                                        new StSubject(subject)
+                                ),
+                                encs
+                        )
+                );
             }
         }
     }

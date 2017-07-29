@@ -19,7 +19,7 @@ public final class AgentFactory implements AFactory<MagResult> {
     @Override
     public Agent<MagResult> agent() {
         Agent<MagResult> agent;
-        String url = document.getString("url");
+        String url = document.get("params", Document.class).getString("url");
         if (url.matches("^https?://www.sport-express.ru/$"))
             return new AnSportExpress(
                     document,
