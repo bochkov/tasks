@@ -4,10 +4,11 @@ buildscript {
     }
     dependencies {
         classpath group: 'io.ratpack', name: 'ratpack-gradle', version: '1.4.5'
+        classpath group: 'com.github.jengelman.gradle.plugins', name: 'shadow', version: '2.0.1'
     }
 }
 
-
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'io.ratpack.ratpack-java'
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -23,14 +24,17 @@ dependencies {
     compile group: 'org.mongodb', name: 'mongodb-driver', version: '3.4.2'
 
     compile group: 'com.jcabi', name: 'jcabi-log', version: '0.17.1'
-    compile group: 'com.jcabi', name: 'jcabi-email', version: '1.0'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    compile group: 'com.jcabi', name: 'jcabi-email', version: '1.9'
     compile group: 'com.jcabi', name: 'jcabi-http', version: '1.17.1'
+    compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.19'
 
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.10.3'
     compile group: 'org.jtwig', name: 'jtwig-core', version: '5.85.3.RELEASE'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+
 }
 
 mainClassName = 'sb.tasks.Application'

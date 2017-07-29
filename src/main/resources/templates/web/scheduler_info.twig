@@ -1,0 +1,28 @@
+{% extends '_base.twig' %}
+
+{% block title %} - SchedulerInfo{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Context</h1>
+        <p>{{ scheduler.context }}</p>
+    </div>
+    <div>
+        <h1>MetaData</h1>
+        <p>{{ scheduler.metaData }}</p>
+    </div>
+    <div>
+        <div>
+            <h1>Jobs</h1>
+            {% for job in scheduler.getJobKeys(null) %}
+                <h4>{{ job }}</h4>
+                <ul>
+                    {% for trig in scheduler.getTriggersOfJob(job) %}
+                        <li>{{ trig }}</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

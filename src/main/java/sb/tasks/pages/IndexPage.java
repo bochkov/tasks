@@ -1,5 +1,6 @@
 package sb.tasks.pages;
 
+import com.jcabi.log.Logger;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.quartz.Scheduler;
@@ -15,11 +16,12 @@ public final class IndexPage implements HttpPage {
 
     @Override
     public void handle(Context ctx) throws Exception {
+        Logger.info(this, "RENDER INDEX PAGE");
         ctx
                 .header("Content-Type", "text/html")
                 .render(
                         JtwigTemplate
-                                .classpathTemplate("templates/index.twig")
+                                .classpathTemplate("templates/web/scheduler_info.twig")
                                 .render(
                                         JtwigModel.newModel()
                                                 .with("scheduler", scheduler)

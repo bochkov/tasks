@@ -28,3 +28,4 @@ gradle/
 build/
 *.iml
 tasks.properties
+cookies.txt
