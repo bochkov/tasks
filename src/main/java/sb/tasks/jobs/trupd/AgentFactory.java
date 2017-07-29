@@ -22,7 +22,7 @@ public final class AgentFactory {
         if (url == null) {
             String num = document.getString("num");
             agent = num == null ?
-                    new Agent.EMPTY() :
+                    new Agent.EMPTY<>() :
                     new AnRutracker(
                             document,
                             db.getCollection("settings").find(Filters.eq("_id", "rutracker.login")).first().getString("value"),

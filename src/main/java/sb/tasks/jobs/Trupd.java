@@ -25,7 +25,7 @@ public final class Trupd implements Job {
                 Filters.eq("_id", id)
         ).first();
         try {
-            new Cleanup(
+            new Cleanup<>(
                     bson.get("params", Document.class),
                     new AgNotify<>(
                             db,
