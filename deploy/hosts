@@ -1,0 +1,5 @@
+[locals]
+127.0.0.1 ansible_connection=local
+
+[server]
+192.168.55.5 ansible_connection=ssh ansible_ssh_user=root ansible_ssh_private_key_file=/Users/bs/.ssh/jupiter.root

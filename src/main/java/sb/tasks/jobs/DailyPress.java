@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import sb.tasks.jobs.dailypress.AgentFactory;
 
 import java.util.Properties;
 
@@ -23,5 +24,24 @@ public final class DailyPress implements Job {
         Document bson = db.getCollection("tasks").find(
                 Filters.eq("_id", id)
         ).first();
+
+        try {
+            new Cleanup<>(
+                    bson,
+                    new AgNotify<>(
+                            db,
+                            props,
+                            bson,
+                            bson.get("params", Document.class).getString("subject"),
+                            new UpdateFields<>(
+                                    db,
+                                    bson,
+                                    new AgentFactory(db, bson.get("params", Document.class)).agent()
+                            )
+                    )
+            ).perform();
+        } catch (Exception ex) {
+            throw new JobExecutionException(ex);
+        }
     }
 }

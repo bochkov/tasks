@@ -1,31 +1,29 @@
-package sb.tasks.jobs.trupd;
+package sb.tasks.jobs;
 
 import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
-import sb.tasks.jobs.Agent;
-import sb.tasks.jobs.AgentException;
 
 import java.io.IOException;
 import java.util.List;
 
-public final class UpdateFields implements Agent<TorrentResult> {
+public final class UpdateFields<T extends NotifObj> implements Agent<T> {
 
     private final MongoDatabase db;
     private final Document document;
-    private final Agent<TorrentResult> agent;
+    private final Agent<T> agent;
 
-    public UpdateFields(MongoDatabase db, Document document, Agent<TorrentResult> agent) {
+    public UpdateFields(MongoDatabase db, Document document, Agent<T> agent) {
         this.db = db;
         this.document = document;
         this.agent = agent;
     }
 
     @Override
-    public List<TorrentResult> perform() throws AgentException, IOException {
-        List<TorrentResult> results = agent.perform();
-        for (TorrentResult res : results) {
+    public List<T> perform() throws AgentException, IOException {
+        List<T> results = agent.perform();
+        for (NotifObj res : results) {
             UpdateResult update = db.getCollection("tasks")
                     .updateOne(
                             document,

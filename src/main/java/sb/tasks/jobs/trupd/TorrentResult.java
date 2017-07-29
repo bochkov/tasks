@@ -2,6 +2,8 @@ package sb.tasks.jobs.trupd;
 
 import com.mongodb.client.model.Updates;
 import org.bson.conversions.Bson;
+import org.jtwig.JtwigModel;
+import org.jtwig.JtwigTemplate;
 import sb.tasks.jobs.NotifObj;
 import sb.tasks.jobs.trupd.metafile.Mt;
 
@@ -9,6 +11,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class TorrentResult implements NotifObj {
 
@@ -28,6 +32,7 @@ public final class TorrentResult implements NotifObj {
         return date == null || this.metafile.creationDate().after(date);
     }
 
+    @Override
     public Bson updateSets() {
         return Updates.combine(
                 Updates.set("vars.downloadUrl", torrentUrl),
@@ -40,6 +45,17 @@ public final class TorrentResult implements NotifObj {
     @Override
     public File file() {
         return file;
+    }
+
+    @Override
+    public String mailText() {
+        Map<String, Object> model = new HashMap<>();
+        model.put("t", this);
+        return JtwigTemplate
+                .classpathTemplate("templates/mail/torrents.twig")
+                .render(
+                        JtwigModel.newModel(model)
+                );
     }
 
     public void write() throws IOException {

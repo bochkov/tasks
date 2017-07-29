@@ -13,14 +13,14 @@ public final class AgNotify<T extends NotifObj> implements Agent<T> {
     private final Properties properties;
     private final Document document;
     private final Agent<T> agent;
-    private final String template;
+    private final String subject;
 
-    public AgNotify(MongoDatabase db, Properties properties, String template, Document document, Agent<T> agent) {
+    public AgNotify(MongoDatabase db, Properties properties, Document document, String subject, Agent<T> agent) {
+        this.subject = subject;
         this.db = db;
         this.properties = properties;
         this.agent = agent;
         this.document = document;
-        this.template = template;
     }
 
     @Override
@@ -34,10 +34,15 @@ public final class AgNotify<T extends NotifObj> implements Agent<T> {
         if (telegram != null)
             notifyAgent = new AgTelegram<>(db, telegram);
         else if (mailTo != null)
-            notifyAgent = new AgMail<>(properties, mailTo, template, dir == null);
+            notifyAgent = new AgMail<>(properties, mailTo, subject, dir == null);
         else
             notifyAgent = new LogNotify<>();
         notifyAgent.send(objects);
+
+        String adminTelegram = params.getString("admin_telegram");
+        if (adminTelegram != null)
+            new AgTelegram<T>(db, adminTelegram).send(objects);
+
         return objects;
     }
 }

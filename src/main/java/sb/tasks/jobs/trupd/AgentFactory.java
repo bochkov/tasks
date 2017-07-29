@@ -4,9 +4,10 @@ import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import sb.tasks.jobs.AFactory;
 import sb.tasks.jobs.Agent;
 
-public final class AgentFactory {
+public final class AgentFactory implements AFactory<TorrentResult> {
 
     private final MongoDatabase db;
     private final Document document;

@@ -30,13 +30,13 @@ public final class Trupd implements Job {
                     new AgNotify<>(
                             db,
                             props,
-                            "templates/mail/mail.twig",
                             bson,
+                            "torrent updated",
                             new Download(
                                     bson,
                                     new MetafileUpdated(
                                             bson,
-                                            new UpdateFields(
+                                            new UpdateFields<>(
                                                     db,
                                                     bson,
                                                     new AgentFactory(db, bson.get("params", Document.class)).agent()

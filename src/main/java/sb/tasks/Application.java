@@ -76,7 +76,7 @@ public final class Application {
         RatpackServer.start(server -> server
                 .serverConfig(config -> {
                     config.baseDir(BaseDir.find());
-                    config.port(8088);
+                    config.port(Integer.parseInt(properties.getProperty("http.port")));
                 })
                 .handlers(chain -> chain
                         .files(f -> f.files("static"))

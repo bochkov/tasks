@@ -21,7 +21,7 @@ public final class RutrackerCurl {
         return Arrays.asList(
                 "/usr/bin/curl",
                 "--socks5",
-                "socks:S0ck5@nyc.sergeybochkov.com:1080",
+                "socks:S0ck5@nyc.sergeybochkov.com:1080", // TODO в одельный файл
                 "--verbose",
                 "--retry",
                 "5",

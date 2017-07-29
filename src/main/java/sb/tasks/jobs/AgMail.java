@@ -14,20 +14,18 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 public final class AgMail<T extends NotifObj> implements Notification<T> {
 
     private final String from;
     private final Postman postman;
-    private final String to;
+    private final String recipients;
+    private final String subject;
     private final boolean sendFiles;
-    private final String template;
 
-    public AgMail(Properties props, String to, String template, boolean sendFiles) {
+    public AgMail(Properties props, String recipients, String subject, boolean sendFiles) {
         this(
                 new Postman.Default(
                         new SMTPS(
@@ -43,33 +41,30 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
                         )
                 ),
                 props.getProperty("mail.from"),
-                to,
-                template,
+                recipients,
+                subject,
                 sendFiles
         );
     }
 
-    public AgMail(Postman postman, String from, String to, String template, boolean sendFiles) {
+    public AgMail(Postman postman, String from, String recipients, String subject, boolean sendFiles) {
         this.postman = postman;
         this.from = from;
-        this.to = to;
-        this.template = template;
+        this.subject = subject;
+        this.recipients = recipients;
         this.sendFiles = sendFiles;
     }
 
     @Override
     public void send(List<T> objects) throws IOException {
         for (NotifObj obj : objects) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("t", obj);
             Array<Stamp> stams = new Array<>(
                     new StSender(from),
-                    new StRecipient(to),
-                    new StSubject("torrent(s) updated")
+                    new StSubject(subject)
             );
             Array<Enclosure> encs = new Array<>(
                     new EnHTML(
-                            new MailTemplate(template, map).produce()
+                            obj.mailText()
                     )
             );
             if (sendFiles) {
@@ -81,7 +76,10 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
                         )
                 );
             }
-            postman.send(new ReMIME(stams, encs));
+            for (String to : recipients.split(";")) {
+                stams = stams.with(new StRecipient(to));
+                postman.send(new ReMIME(stams, encs));
+            }
         }
     }
 
