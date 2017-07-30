@@ -1,30 +1,100 @@
 {% extends '_base.twig' %}
 
 {% block content %}
-    <table class="ui celled striped table">
-        <tr>
-            <th></th>
-            <th>Job class</th>
-            <th>Schedule</th>
-            <th>Name</th>
-            <th>URL</th>
-            <th>created</th>
-            <th>checked</th>
-            <th>registered</th>
-        </tr>
+    <div class="ui accordion">
         {% for t in tasks %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ t.job }}</td>
-            <td>{{ t.schedule }}</td>
-            <td>{{ t.vars.name }}</td>
-            <td>{{ t.params.url }}</td>
-            <td>{{ t.vars.created }}</td>
-            <td>{{ t.vars.checked }}</td>
-            <td class="center aligned">
-                <i class="{% if t.registered %}green checkmark{% else %}red close{% endif %} icon"></i>
-            </td>
-        </tr>
+            <div class="title">
+                <table class="ui table {% if t.registered %}green{% else %}red{% endif %}">
+                    <tr>
+                        <td class="eight wide">{{ t.vars.name }}</td>
+                        <td class="four wide">
+                            {{ t.vars.checked|date("HH:mm:ss") }}
+                            <br/>
+                            {{ t.vars.checked|date("dd MMMM yyyy")|lower }}
+                        </td>
+                        <td class="four wide"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="content">
+                <div class="ui grid">
+                    <div class="row">
+                        <div class="eight wide column">
+                            <h4 class="ui horizontal divider header">
+                                <i class="icon hand lizard"></i>
+                                VARIABLES
+                            </h4>
+                            <table class="ui definition compact table">
+                                <tbody>
+                                {% for key, val in t.vars %}
+                                    <tr>
+                                        <td class="two wide column">{{ key }}</td>
+                                        <td>{{ val }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="eight wide column">
+                            <h4 class="ui horizontal divider header">
+                                <i class="icon hand spock"></i>
+                                PARAMETERS
+                            </h4>
+                            <table class="ui definition compact table">
+                                <tbody>
+                                {% for key, val in t.params %}
+                                    <tr>
+                                        <td class="two wide column">{{ key }}</td>
+                                        <td>{{ val }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="eight wide column">
+                            <h4 class="ui horizontal divider header">
+                                <i class="icon hand rock"></i>
+                                COMMON
+                            </h4>
+                            <table class="ui definition compact table">
+                                <tbody>
+                                <tr>
+                                    <td class="two wide column">ObjectId</td>
+                                    <td><code>{{ t._id }}</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="two wide column">schedule</td>
+                                    <td><code>{{ join(t.schedule, "<br/>") }}</code></td>
+                                </tr>
+                                <tr>
+                                    <td class="two wide column">job</td>
+                                    <td><code>{{ t.job }}</code></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="eight wide column">
+                            <h4 class="ui horizontal divider header">
+                                <i class="icon hand scissors"></i>
+                                OPERATIONS
+                            </h4>
+                            <div>
+                                <button class="ui primary button">
+                                    <i class="icon play"></i> Run job
+                                </button>
+                                <button class="ui negative button">
+                                    <i class="icon remove"></i> Remove job
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </table>
+    </div>
+    <script>
+        $('.ui.accordion').accordion();
+    </script>
 {% endblock %}
