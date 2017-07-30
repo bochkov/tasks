@@ -8,9 +8,11 @@
                     <tr>
                         <td class="eight wide">{{ t.vars.name }}</td>
                         <td class="four wide">
+                            {% if defined(t.vars.checked) %}
                             {{ t.vars.checked|date("HH:mm:ss") }}
                             <br/>
                             {{ t.vars.checked|date("dd MMMM yyyy")|lower }}
+                            {% endif %}
                         </td>
                         <td class="four wide"></td>
                     </tr>
