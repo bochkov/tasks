@@ -35,7 +35,7 @@ public final class TorrentResult implements NotifObj {
     @Override
     public Bson updateSets() {
         return Updates.combine(
-                Updates.set("vars.downloadUrl", torrentUrl),
+                Updates.set("vars.download_url", torrentUrl),
                 Updates.set("vars.name", title),
                 Updates.set("vars.created", metafile.creationDate()),
                 Updates.set("vars.checked", new Date())

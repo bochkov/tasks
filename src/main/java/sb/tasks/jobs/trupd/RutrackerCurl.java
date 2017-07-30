@@ -44,13 +44,13 @@ public final class RutrackerCurl {
             int res = new ProcessBuilder(cookieCmd(login, password, userAgent))
                     .start()
                     .waitFor();
-            Logger.info(this, String.format("Куки получены с кодом %s", res));
+            Logger.info(this, String.format("Cookies fetch code %s", res));
         } catch (IOException | InterruptedException ex) {
             Logger.warn(this, "%s", ex);
         }
         File loginPhp = new File("login.php");
         if (loginPhp.exists() && !loginPhp.delete())
-            Logger.warn(this, "Не могу удалить файл login.php");
+            Logger.warn(this, "Cannot delete 'login.php'");
         return new File(cookieFile);
     }
 
@@ -78,7 +78,7 @@ public final class RutrackerCurl {
         int tries = 5;
         File file = new File(String.format(NAME, num));
         for (int i = 0; !file.exists() && file.length() == 0 && i < tries; ++i) {
-            Logger.info(this, String.format("Скачиваем %s, попытка %s", num, i));
+            Logger.info(this, String.format("Downloading %s, try %s", num, i));
             try {
                 Thread.sleep(i * 1000);
                 new ProcessBuilder(downloadCmd(num))

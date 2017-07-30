@@ -31,7 +31,7 @@ public final class AnRutracker implements Agent<TorrentResult> {
 
     @Override
     public List<TorrentResult> perform() throws AgentException, IOException {
-        Logger.info(this, "Получаем cookies");
+        Logger.info(this, "Fetch cookies");
         File cookie = new RutrackerCurl(COOKIE_FILE).cookies(login, password, userAgent);
         if (cookie.exists()) {
             File file = new RutrackerCurl(COOKIE_FILE).save(document.getString("num"));
