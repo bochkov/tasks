@@ -6,6 +6,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
 import ratpack.server.BaseDir;
@@ -16,9 +17,7 @@ import sb.tasks.telegram.TelegramBot;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public final class Application {
 
@@ -52,8 +51,7 @@ public final class Application {
                 properties.getProperty("mongo.host"),
                 Integer.parseInt(properties.getProperty("mongo.port"))
         ).getDatabase(properties.getProperty("mongo.db"));
-        List<ObjectId> registered = new ArrayList<>();
-        List<ObjectId> notregistered = new ArrayList<>();
+        Map<JobKey, ObjectId> registered = new HashMap<>();
         db.getCollection("tasks")
                 .find()
                 .forEach(new Block<Document>() {
@@ -61,11 +59,10 @@ public final class Application {
                     public void apply(Document document) {
                         Logger.info(this, "Readed task: %s", document.toJson());
                         try {
-                            new RegisteredJob(properties, db, scheduler).register(document);
-                            registered.add(document.getObjectId("_id"));
+                            JobKey key = new RegisteredJob(properties, db, scheduler).register(document);
+                            registered.put(key, document.getObjectId("_id"));
                             Logger.info(this, "Successfully registered task %s", document.toJson());
                         } catch (Exception ex) {
-                            notregistered.add(document.getObjectId("_id"));
                             Logger.warn(this, "Cannot register task %s", document.toJson());
                             Logger.warn(this, "%s", ex);
                         }
@@ -81,9 +78,9 @@ public final class Application {
                 .handlers(chain -> chain
                         .files(f -> f.files("static"))
                         .post("bot/:token",
-                                new TelegramBot(properties, db, scheduler, registered, notregistered))
+                                new TelegramBot(properties, db, scheduler, registered))
                         .get("",
-                                new IndexPage(scheduler))
+                                new IndexPage(db, registered))
                 )
         );
 

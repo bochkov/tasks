@@ -1,0 +1,30 @@
+{% extends '_base.twig' %}
+
+{% block content %}
+    <table class="ui celled striped table">
+        <tr>
+            <th></th>
+            <th>Job class</th>
+            <th>Schedule</th>
+            <th>Name</th>
+            <th>URL</th>
+            <th>created</th>
+            <th>checked</th>
+            <th>registered</th>
+        </tr>
+        {% for t in tasks %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ t.job }}</td>
+            <td>{{ t.schedule }}</td>
+            <td>{{ t.vars.name }}</td>
+            <td>{{ t.params.url }}</td>
+            <td>{{ t.vars.created }}</td>
+            <td>{{ t.vars.checked }}</td>
+            <td class="center aligned">
+                <i class="{% if t.registered %}green checkmark{% else %}red close{% endif %} icon"></i>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

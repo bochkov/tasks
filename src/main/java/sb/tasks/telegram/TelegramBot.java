@@ -1,9 +1,7 @@
 package sb.tasks.telegram;
 
 import com.jcabi.log.Logger;
-import com.mongodb.Block;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.quartz.JobKey;
@@ -17,25 +15,21 @@ import sb.tasks.jobs.TrupdNewDoc;
 import sb.tasks.telegram.pojos.MessageEntity;
 import sb.tasks.telegram.pojos.Update;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.StringJoiner;
 
 public final class TelegramBot implements Handler {
 
     private final Properties properties;
     private final MongoDatabase db;
     private final Scheduler scheduler;
-    private final List<ObjectId> registered;
-    private final List<ObjectId> notregistered;
+    private final Map<JobKey, ObjectId> registered;
 
-    public TelegramBot(Properties properties, MongoDatabase db, Scheduler scheduler, List<ObjectId> registered, List<ObjectId> notregistered) {
+    public TelegramBot(Properties properties, MongoDatabase db, Scheduler scheduler, Map<JobKey, ObjectId> registered) {
         this.db = db;
         this.properties = properties;
         this.scheduler = scheduler;
         this.registered = registered;
-        this.notregistered = notregistered;
     }
 
     @Override
@@ -61,55 +55,32 @@ public final class TelegramBot implements Handler {
                                             .add(
                                                     cmd[1],
                                                     cmd.length > 2 ? cmd[2] : ".",
-                                                    ac.getMessage().getChat().getId()
+                                                    chatId
                                             );
                                     try {
                                         JobKey jobKey = new RegisteredJob(properties, db, scheduler).register(document);
-                                        registered.add(document.getObjectId("_id"));
+                                        registered.put(jobKey, document.getObjectId("_id"));
                                         Logger.info(this, "Successfully registered task %s", document.toJson());
                                         answer.send(chatId, "Task successfully registered");
                                         scheduler.triggerJob(jobKey);
                                     } catch (Exception ex) {
-                                        notregistered.add(document.getObjectId("_id"));
                                         Logger.warn(this, "Cannot register task %s", document.toJson());
                                         Logger.warn(this, "%s", ex);
                                         answer.send(chatId, "Task not registered");
                                     }
                                 }
-                            } else if (text.startsWith("/list")) {
-                                StringJoiner join1 = new StringJoiner("\n").add("Registered tasks:");
-                                if (registered.isEmpty())
-                                    join1.add("Empty(");
-                                else
-                                    db.getCollection("tasks").find(
-                                            Filters.in("_id", registered)
-                                    ).forEach((Block<Document>) document ->
-                                            join1.add(String.format("task=%s, name=%s, schedule=%s",
-                                                    document.getString("job"),
-                                                    document.get("vars", Document.class).getString("name"),
-                                                    document.get("schedule", ArrayList.class)
-                                            )));
-                                answer.send(
-                                        ac.getMessage().getChat().getId(),
-                                        join1.toString()
-                                );
+                            } else if (text.startsWith("/ls")) {
+                                answer.send(chatId, "Not yet implemented");
+                            } else if (text.startsWith("/rm")) {
+                                answer.send(chatId, "Not yet implemented");
+                                /*
+                                String[] cmd = ac.getMessage().getText().split(" ");
+                                if (cmd.length == 1)
+                                    answer.send(chatId, "Please send me an ObjectId");
+                                else {
 
-                                StringJoiner join2 = new StringJoiner("\n").add("Not registered tasks:");
-                                if (notregistered.isEmpty())
-                                    join2.add("Empty)");
-                                else
-                                    db.getCollection("tasks").find(
-                                            Filters.in("_id", notregistered)
-                                    ).forEach((Block<Document>) document ->
-                                            join2.add(String.format("task=%s, name=%s, schedule=%s",
-                                                    document.getString("job"),
-                                                    document.get("vars", Document.class).getString("name"),
-                                                    document.get("schedule", ArrayList.class)
-                                            )));
-                                answer.send(
-                                        ac.getMessage().getChat().getId(),
-                                        join2.toString()
-                                );
+                                }
+                                */
                             }
                         }
                     }

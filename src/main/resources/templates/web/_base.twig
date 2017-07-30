@@ -3,14 +3,24 @@
 <head>
     <meta charset="UTF-8" />
     <title>Tasks{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/semantic.min.css" />
 </head>
+<style type="text/css">
+    h2 {
+        margin: 2em 0em;
+    }
+    .ui.container {
+        padding-top: 5em;
+        padding-bottom: 5em;
+    }
+</style>
 <body>
 
-<div>
+<div class="ui container">
+    <h2 class="ui header">All Tasks</h2>
     {% block content %}
     {% endblock %}
 </div>
-
 
 </body>
 </html>
