@@ -43,7 +43,7 @@ public final class AnSportExpress implements Agent<MagResult> {
                 .getElementById("pdf_load")
                 .attr("href");
         Logger.info(this, String.format("Checking link: %s", url));
-        if (!url.equals(document.get("vars", Document.class).getString("downloadUrl"))) {
+        if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {
             Response response = new JdkRequest(url)
                     .through(RetryWire.class)
                     .through(CookieOptimizingWire.class)

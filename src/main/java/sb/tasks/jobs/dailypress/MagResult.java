@@ -47,8 +47,8 @@ public final class MagResult implements NotifObj {
     @Override
     public Bson updateSets() {
         return Updates.combine(
-                Updates.set("vars.downloadUrl", url),
-                Updates.set("vars.checked", new Date())
+                Updates.set("vars.download_url", url),
+                Updates.set("vars.download_date", new Date())
         );
     }
 }
