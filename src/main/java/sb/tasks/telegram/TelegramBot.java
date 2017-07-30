@@ -2,6 +2,7 @@ package sb.tasks.telegram;
 
 import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.quartz.JobKey;
@@ -15,8 +16,11 @@ import sb.tasks.jobs.TrupdNewDoc;
 import sb.tasks.telegram.pojos.MessageEntity;
 import sb.tasks.telegram.pojos.Update;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 public final class TelegramBot implements Handler {
 
@@ -70,17 +74,49 @@ public final class TelegramBot implements Handler {
                                     }
                                 }
                             } else if (text.startsWith("/ls")) {
-                                answer.send(chatId, "Not yet implemented");
+                                List<Document> notregistered = new ArrayList<>();
+                                db.getCollection("tasks").find().forEach((Consumer<Document>) document -> {
+                                    if (!registered.containsValue(document.getObjectId("_id")))
+                                        notregistered.add(document);
+                                });
+                                StringBuilder str1 = new StringBuilder("Registered tasks:");
+                                if (registered.isEmpty())
+                                    str1.append("\n").append("Empty(");
+                                else {
+                                    for (Map.Entry<JobKey, ObjectId> entry : registered.entrySet()) {
+                                        Document doc = db.getCollection("tasks").find(Filters.eq("_id", entry.getValue())).first();
+                                        str1.append("\n").append(doc);
+                                    }
+                                }
+                                StringBuilder str2 = new StringBuilder("Not registered tasks:");
+                                if (notregistered.isEmpty())
+                                    str2.append("\n").append("Empty)");
+                                else {
+                                    for (Document doc : notregistered) {
+                                        str2.append("\n").append(doc);
+                                    }
+                                }
+                                answer.send(chatId, str1.toString());
+                                answer.send(chatId, str2.toString());
                             } else if (text.startsWith("/rm")) {
-                                answer.send(chatId, "Not yet implemented");
-                                /*
                                 String[] cmd = ac.getMessage().getText().split(" ");
                                 if (cmd.length == 1)
                                     answer.send(chatId, "Please send me an ObjectId");
-                                else {
-
+                                else if (cmd.length > 1) {
+                                    Document doc = db.getCollection("tasks").find(Filters.eq("_id", cmd[1])).first();
+                                    if (doc != null) {
+                                        for (JobKey key : registered.keySet()) {
+                                            if (registered.get(key).equals(doc.getObjectId("_id"))) {
+                                                if (scheduler.checkExists(key))
+                                                    scheduler.deleteJob(key);
+                                            }
+                                        }
+                                        db.getCollection("tasks").deleteOne(doc);
+                                        answer.send(chatId, String.format("Task %s successfully removed", doc));
+                                    } else {
+                                        answer.send(chatId, String.format("No task with id=%s", cmd[1]));
+                                    }
                                 }
-                                */
                             }
                         }
                     }

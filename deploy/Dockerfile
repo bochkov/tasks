@@ -1,5 +1,8 @@
 FROM openjdk:jre-alpine
-ENV TZ="Asia/Yekaterinburg"
+ENV TZ Asia/Yekaterinburg
+ENV LANG ru_RU.UTF-8
+ENV LANGUAGE ru_RU:en
+ENV LC_ALL ru_RU.UTF-8
 RUN apk update && apk upgrade && \
   apk add --update tzdata && \
   apk add ca-certificates wget curl && \
