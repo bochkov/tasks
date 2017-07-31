@@ -74,9 +74,11 @@ public final class RutrackerCurl {
                 String.format("http://rutracker.org/forum/dl.php?t=%s", num));
     }
 
-    public File save(String num) {
+    public File save(String num) throws IOException {
         int tries = 5;
         File file = new File(String.format(NAME, num));
+        if (!file.delete())
+            throw new IOException("Previous file not deleted");
         for (int i = 0; !file.exists() && file.length() == 0 && i < tries; ++i) {
             Logger.info(this, String.format("Downloading %s, try %s", num, i));
             try {
@@ -84,10 +86,11 @@ public final class RutrackerCurl {
                 new ProcessBuilder(downloadCmd(num))
                         .start()
                         .waitFor();
+                return file;
             } catch (IOException | InterruptedException ex) {
                 Logger.warn(this, "%s", ex);
             }
         }
-        return file;
+        throw new IOException("File doesnt downloaded");
     }
 }
