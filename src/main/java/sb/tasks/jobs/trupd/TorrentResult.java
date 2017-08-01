@@ -75,6 +75,6 @@ public final class TorrentResult implements NotifObj {
 
     @Override
     public String telegramText() {
-        return String.format("Обновился торрент %s", title);
+        return String.format("Обновлен торрент %s\n%s", title, torrentUrl);
     }
 }

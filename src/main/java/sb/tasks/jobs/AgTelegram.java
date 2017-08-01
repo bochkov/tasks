@@ -29,6 +29,7 @@ public final class AgTelegram<T extends NotifObj> implements Notification<T> {
                     .uri()
                     .path(String.format("bot%s/sendMessage", botToken))
                     .queryParam("chat_id", chatId)
+                    .queryParam("disable_web_page_preview", "true")
                     .queryParam("text", obj.telegramText())
                     .back()
                     .method(Request.GET)
