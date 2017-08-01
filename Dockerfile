@@ -15,7 +15,7 @@ WORKDIR /opt
 RUN mkdir media && \
     mkdir torrents && \
     mkdir logs
-ADD tasks.jar /opt/tasks.jar
+ADD build/libs/tasks-all.jar /opt/tasks.jar
 EXPOSE 8088
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["java", "-Dfile.encoding=UTF-8", "-jar", "tasks.jar"]
