@@ -1,0 +1,23 @@
+sudo: required
+
+language: java
+
+services:
+  - docker
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches
+    - $HOME/.gradle/wrapper
+
+after_success:
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+  - eval $(aws ecr get-login --region us-east-1)
+  - ./gradlew clean build
+  - docker build -t tasks .
+  - docker tag tasks:latest 902382300595.dkr.ecr.us-east-1.amazonaws.com/tasks:latest
+  - docker push 902382300595.dkr.ecr.us-east-1.amazonaws.com/tasks:latest
