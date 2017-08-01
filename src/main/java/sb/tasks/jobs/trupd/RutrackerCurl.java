@@ -77,7 +77,7 @@ public final class RutrackerCurl {
     public File save(String num) throws IOException {
         int tries = 5;
         File file = new File(String.format(NAME, num));
-        if (!file.delete())
+        if (file.exists() && !file.delete())
             throw new IOException("Previous file not deleted");
         for (int i = 0; !file.exists() && file.length() == 0 && i < tries; ++i) {
             Logger.info(this, String.format("Downloading %s, try %s", num, i));
