@@ -82,7 +82,7 @@ public final class Application {
                         .post("bot/:token",
                                 new TelegramBot(properties, db, scheduler, registered))
                         .post("api/run",
-                            new JobPerform())
+                            new JobPerform(scheduler))
                         .post("api/delete",
                                 new JobDelete(db, scheduler, registered))
                         .get("",

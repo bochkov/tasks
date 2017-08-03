@@ -96,7 +96,26 @@
             </div>
         {% endfor %}
     </div>
-    <div class="ui basic modal">
+    <div class="ui basic modal modalrun">
+        <div class="ui icon header">
+            <i class="send icon"></i>
+            Run this job?
+        </div>
+        <div class="content">
+            <p>Confirm run this job</p>
+        </div>
+        <div class="actions">
+            <div class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>
+                No
+            </div>
+            <div class="ui green ok inverted button">
+                <i class="checkmark icon"></i>
+                Yes
+            </div>
+        </div>
+    </div>
+    <div class="ui basic modal modalremove">
         <div class="ui icon header">
             <i class="delete icon"></i>
             Remove this job?
@@ -118,11 +137,18 @@
     <script>
         $('.ui.accordion').accordion();
         $('.runjob').click(function () {
-            $.post("api/run/", {"id": $(this).attr("value")});
+            const id = $(this).attr("value");
+            $('.ui.basic.modal.modalrun')
+                .modal({
+                    onApprove: function () {
+                        $.post("api/run/", {"id": id});
+                    }
+                })
+                .modal('show');
         });
         $('.removejob').click(function () {
             const id = $(this).attr("value");
-            $('.ui.basic.modal')
+            $('.ui.basic.modal.modalremove')
                 .modal({
                     onApprove: function () {
                         $.post("api/delete/", {"id": id}, function () {
