@@ -13,6 +13,8 @@ import ratpack.server.BaseDir;
 import ratpack.server.RatpackServer;
 import sb.tasks.jobs.RegisteredJob;
 import sb.tasks.pages.IndexPage;
+import sb.tasks.pages.JobDelete;
+import sb.tasks.pages.JobPerform;
 import sb.tasks.telegram.TelegramBot;
 
 import java.io.FileInputStream;
@@ -79,6 +81,10 @@ public final class Application {
                         .files(f -> f.files("static"))
                         .post("bot/:token",
                                 new TelegramBot(properties, db, scheduler, registered))
+                        .post("api/run",
+                            new JobPerform())
+                        .post("api/delete",
+                                new JobDelete(db, scheduler, registered))
                         .get("",
                                 new IndexPage(db, registered))
                 )

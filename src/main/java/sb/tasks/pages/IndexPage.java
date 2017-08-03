@@ -8,10 +8,8 @@ import org.jtwig.JtwigTemplate;
 import org.quartz.JobKey;
 import ratpack.handling.Context;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class IndexPage implements HttpPage {
 
@@ -27,8 +25,11 @@ public final class IndexPage implements HttpPage {
     public void handle(Context ctx) throws Exception {
         List<Document> docs = new ArrayList<>();
         db.getCollection("tasks").find().into(docs);
-        for (Document doc : docs)
-            doc.put("registered", registered.containsValue(doc.getObjectId("_id")));
+        for (Document doc : docs) {
+            if (registered.containsValue(doc.getObjectId("_id"))) {
+                doc.put("registered", registered.containsValue(doc.getObjectId("_id")));
+            }
+        }
 
         Map<String, Object> model = new HashMap<>();
         model.put("tasks", docs);

@@ -103,7 +103,7 @@ public final class TelegramBot implements Handler {
                                 if (cmd.length == 1)
                                     answer.send(chatId, "Please send me an ObjectId");
                                 else if (cmd.length > 1) {
-                                    Document doc = db.getCollection("tasks").find(Filters.eq("_id", cmd[1])).first();
+                                    Document doc = db.getCollection("tasks").find(Filters.eq("_id", new ObjectId(cmd[1]))).first();
                                     if (doc != null) {
                                         for (JobKey key : registered.keySet()) {
                                             if (registered.get(key).equals(doc.getObjectId("_id"))) {
