@@ -68,7 +68,7 @@ public final class AnSportExpress implements Agent<MagResult> {
                     Files.write(response.binary(), file);
                     Logger.info(this, String.format("Downloaded file %s", file.getName()));
                     return Collections.singletonList(
-                            new MagResult(file, url, document.getString("text"))
+                            new MagResult(file, url, document.get("params", Document.class).getString("text"))
                     );
                 } else
                     Logger.info(this, "No magazine for this date");
