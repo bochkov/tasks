@@ -42,7 +42,8 @@ public final class AnRutracker implements Agent<TorrentResult> {
                                 mt,
                                 mt.name(),
                                 String.format("http://dl.rutracker.org/forum/dl.php?t=%s", document.getString("num")),
-                                file
+                                file,
+                                document.getString("url")
                         )
                 );
             }

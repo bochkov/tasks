@@ -18,14 +18,16 @@ public final class TorrentResult implements NotifObj {
 
     private final Mt metafile;
     private final String title;
-    private final String torrentUrl;
+    private final String downloadUrl;
     private final File file;
+    private final String url;
 
-    public TorrentResult(Mt metafile, String title, String torrentUrl, File file) {
+    public TorrentResult(Mt metafile, String title, String downloadUrl, File file, String url) {
         this.metafile = metafile;
         this.title = title;
-        this.torrentUrl = torrentUrl;
+        this.downloadUrl = downloadUrl;
         this.file = file;
+        this.url = url;
     }
 
     public boolean afterThan(Date date) {
@@ -35,7 +37,7 @@ public final class TorrentResult implements NotifObj {
     @Override
     public Bson updateSets() {
         return Updates.combine(
-                Updates.set("vars.download_url", torrentUrl),
+                Updates.set("vars.download_url", downloadUrl),
                 Updates.set("vars.name", title),
                 Updates.set("vars.created", metafile.creationDate()),
                 Updates.set("vars.checked", new Date())
@@ -70,11 +72,11 @@ public final class TorrentResult implements NotifObj {
 
     @Override
     public String toString() {
-        return String.format("TorrentResult {title='%s', torrentUrl='%s'}", title, torrentUrl);
+        return String.format("TorrentResult {title='%s', downloadUrl='%s'}", title, downloadUrl);
     }
 
     @Override
     public String telegramText() {
-        return String.format("Обновлен торрент %s\n%s", title, torrentUrl);
+        return String.format("Обновлен торрент %s\n%s", title, url);
     }
 }

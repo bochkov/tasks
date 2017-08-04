@@ -89,7 +89,8 @@ public final class AnRutor implements Agent<TorrentResult> {
                         new Filename(
                                 document.getString("download_dir"),
                                 torrentUrl
-                        ).toFile()
+                        ).toFile(),
+                        document.getString("url")
                 )
         );
     }

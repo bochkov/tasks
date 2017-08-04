@@ -114,7 +114,8 @@ public final class AnLostFilm implements Agent<TorrentResult> {
                                             new Filename(
                                                     document.getString("download_dir"),
                                                     torrentUrl
-                                            ).toFile())
+                                            ).toFile(),
+                                            document.getString("url"))
                             );
                         }
                         throw new IOException("Document not found");
