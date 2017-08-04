@@ -50,7 +50,7 @@ public final class TelegramBot implements Handler {
                             String chatId = ac.getMessage().getChat().getId();
                             if (text.equals("/start")) {
                                 answer.send(chatId, String.format("Your chat_id is %s", chatId));
-                            } else if (text.startsWith("/add")) {
+                            } else if (text.startsWith("/addtr")) {
                                 String[] cmd = ac.getMessage().getText().split(" ");
                                 if (cmd.length == 1) {
                                     answer.send(chatId, "Please send me an URL");
