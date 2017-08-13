@@ -77,11 +77,6 @@ public final class TorrentResult implements NotifObj {
 
     @Override
     public String telegramText() {
-        if (url != null)
-            return String.format("Обновлен торрент %s\n%s", title, url);
-        else if (downloadUrl != null)
-            return String.format("Обновлен торрент %s\n%s", title, downloadUrl);
-        else
-            return String.format("Обновлен торрент %s", title);
+        return String.format("Обновлен торрент %s\n%s", title, url);
     }
 }
