@@ -8,6 +8,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import sb.tasks.jobs.dailypress.AgentFactory;
+import sb.tasks.jobs.dailypress.PressUpdated;
 
 import java.util.Properties;
 
@@ -33,10 +34,12 @@ public final class DailyPress implements Job {
                             props,
                             bson,
                             bson.get("params", Document.class).getString("subject"),
-                            new UpdateFields<>(
-                                    db,
-                                    bson,
-                                    new AgentFactory(db, bson).agent()
+                            new PressUpdated(
+                                    new UpdateFields<>(
+                                            db,
+                                            bson,
+                                            new AgentFactory(db, bson).agent()
+                                    )
                             )
                     )
             ).perform();

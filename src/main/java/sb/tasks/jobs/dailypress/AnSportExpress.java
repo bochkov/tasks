@@ -43,6 +43,10 @@ public final class AnSportExpress implements Agent<MagResult> {
                 .getElementById("pdf_load")
                 .attr("href");
         Logger.info(this, String.format("Checking link: %s", url));
+        File out = new File(
+                System.getProperty("java.io.tmpdir"),
+                String.format("%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
+        );
         if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {
             Response response = new JdkRequest(url)
                     .through(RetryWire.class)
@@ -63,19 +67,16 @@ public final class AnSportExpress implements Agent<MagResult> {
                                         "Content-Type",
                                         Collections.singletonList("")
                                 ).get(0))) {
-                    File file = new File(System.getProperty("java.io.tmpdir"),
-                            String.format("%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date())));
-                    Files.write(response.binary(), file);
-                    Logger.info(this, String.format("Downloaded file %s", file.getName()));
-                    return Collections.singletonList(
-                            new MagResult(file, url, document.get("params", Document.class).getString("text"))
-                    );
+                    Files.write(response.binary(), out);
+                    Logger.info(this, String.format("Downloaded file %s", out.getName()));
                 } else
                     Logger.info(this, "No magazine for this date");
             } else
                 Logger.info(this, "No content for this page");
         } else
             Logger.info(this, String.format("%s already downloaded. Exiting", url));
-        return Collections.emptyList();
+        return Collections.singletonList(
+                new MagResult(out, url, document.get("params", Document.class).getString("text"))
+        );
     }
 }

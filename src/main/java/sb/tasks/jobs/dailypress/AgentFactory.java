@@ -29,9 +29,7 @@ public final class AgentFactory implements AFactory<MagResult> {
                     db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first().getString("value")
             );
         else if (url.matches("^https?://www.oblgazeta.ru/$"))
-            return new AnOblGazeta(
-                    document
-            );
+            return new AnOblGazeta(document);
         else
             agent = new Agent.EMPTY<>();
         return agent;
