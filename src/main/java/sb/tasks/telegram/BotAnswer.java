@@ -20,6 +20,7 @@ public final class BotAnswer {
                     .path(String.format("bot%s/sendMessage", token))
                     .queryParam("chat_id", chatId)
                     .queryParam("text", text)
+                    .queryParam("disable_web_page_preview", "true")
                     .back()
                     .fetch();
         } catch (IOException ex) {

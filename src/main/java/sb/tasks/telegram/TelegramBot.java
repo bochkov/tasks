@@ -85,7 +85,10 @@ public final class TelegramBot implements Handler {
                                 else {
                                     for (Map.Entry<JobKey, ObjectId> entry : registered.entrySet()) {
                                         Document doc = db.getCollection("tasks").find(Filters.eq("_id", entry.getValue())).first();
-                                        str1.append("\n").append(doc);
+                                        str1.append("\n")
+                                                .append(String.format("ID=%s", doc.getObjectId("_id")))
+                                                .append(String.format("Job=%s", doc.getString("job")))
+                                                .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")));
                                     }
                                 }
                                 StringBuilder str2 = new StringBuilder("Not registered tasks:");
@@ -93,11 +96,26 @@ public final class TelegramBot implements Handler {
                                     str2.append("\n").append("Empty)");
                                 else {
                                     for (Document doc : notregistered) {
-                                        str2.append("\n").append(doc);
+                                        str2.append("\n")
+                                                .append(String.format("ID=%s", doc.getObjectId("_id")))
+                                                .append(String.format("Job=%s", doc.getString("job")))
+                                                .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")));
                                     }
                                 }
                                 answer.send(chatId, str1.toString());
                                 answer.send(chatId, str2.toString());
+                            } else if (text.startsWith("/info")) {
+                                String[] cmd = ac.getMessage().getText().split(" ");
+                                if (cmd.length == 1) {
+                                    answer.send(chatId, "Please send me an JobId");
+                                } else if (cmd.length > 1) {
+                                    Document doc = db.getCollection("tasks").find(Filters.eq("_id", new ObjectId(cmd[1]))).first();
+                                    if (doc != null) {
+                                        answer.send(chatId, doc.toJson());
+                                    } else {
+                                        answer.send(chatId, String.format("No task with id=%s", cmd[1]));
+                                    }
+                                }
                             } else if (text.startsWith("/rm")) {
                                 String[] cmd = ac.getMessage().getText().split(" ");
                                 if (cmd.length == 1)

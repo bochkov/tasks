@@ -1,9 +1,8 @@
 package sb.tasks.jobs;
 
-import com.jcabi.http.Request;
-import com.jcabi.http.request.JdkRequest;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import sb.tasks.telegram.BotAnswer;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,15 +24,8 @@ public final class AgTelegram<T extends NotifObj> implements Notification<T> {
                 .first()
                 .getString("value");
         for (NotifObj obj : objects) {
-            new JdkRequest("https://api.telegram.org")
-                    .uri()
-                    .path(String.format("bot%s/sendMessage", botToken))
-                    .queryParam("chat_id", chatId)
-                    .queryParam("disable_web_page_preview", "true")
-                    .queryParam("text", obj.telegramText())
-                    .back()
-                    .method(Request.GET)
-                    .fetch();
+            new BotAnswer(botToken)
+                    .send(chatId, obj.telegramText());
         }
     }
 }
