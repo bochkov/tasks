@@ -1,6 +1,7 @@
 package sb.tasks.jobs.trupd;
 
 import com.mongodb.client.model.Updates;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bson.conversions.Bson;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -57,6 +58,18 @@ public final class TorrentResult implements NotifObj {
                 .classpathTemplate("templates/mail/torrents.twig")
                 .render(
                         JtwigModel.newModel(model)
+                );
+    }
+
+    @Override
+    public String mailFailText(Throwable th) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("t", this);
+        model.put("tech", model.put("tech", ExceptionUtils.getStackTrace(th)));
+        return JtwigTemplate
+                .classpathTemplate("templates/mail/torrents_fail.twig")
+                .render(
+                        JtwigModel.newModel()
                 );
     }
 

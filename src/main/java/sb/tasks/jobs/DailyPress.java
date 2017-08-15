@@ -28,7 +28,7 @@ public final class DailyPress implements Job {
 
         try {
             new Cleanup<>(
-                    bson,
+                    bson.get("params", Document.class),
                     new AgNotify<>(
                             db,
                             props,

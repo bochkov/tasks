@@ -12,6 +12,8 @@ public interface NotifObj {
 
     String mailText();
 
+    String mailFailText(Throwable th);
+
     Bson updateSets();
 
 }

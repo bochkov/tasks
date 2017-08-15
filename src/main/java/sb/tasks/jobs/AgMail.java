@@ -73,16 +73,33 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
                 );
             }
             for (String to : recipients.split(";")) {
-                postman.send(
-                        new ReMIME(
-                                new Array<>(
-                                        new StSender(from),
-                                        new StRecipient(to),
-                                        new StSubject(subject)
-                                ),
-                                encs
-                        )
-                );
+                try {
+                    postman.send(
+                            new ReMIME(
+                                    new Array<>(
+                                            new StSender(from),
+                                            new StRecipient(to),
+                                            new StSubject(subject)
+                                    ),
+                                    encs
+                            )
+                    );
+                } catch (Exception ex) {
+                    postman.send(
+                            new Envelope.MIME(
+                                    new Array<>(
+                                            new StSender(from),
+                                            new StRecipient(to),
+                                            new StSubject(subject)
+                                    ),
+                                    new Array<>(
+                                            new EnHTML(
+                                                    obj.mailFailText(ex)
+                                            )
+                                    )
+                            )
+                    );
+                }
             }
         }
     }

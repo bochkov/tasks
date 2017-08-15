@@ -1,6 +1,7 @@
 package sb.tasks.jobs.dailypress;
 
 import com.mongodb.client.model.Updates;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bson.conversions.Bson;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -45,6 +46,18 @@ public final class MagResult implements NotifObj {
     }
 
     @Override
+    public String mailFailText(Throwable th) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("url", url);
+        model.put("tech", ExceptionUtils.getStackTrace(th));
+        return JtwigTemplate
+                .classpathTemplate("templates/mail/magazine.twig")
+                .render(
+                        JtwigModel.newModel(model)
+                );
+    }
+
+    @Override
     public Bson updateSets() {
         Bson updates = Updates.combine(
                 Updates.set("vars.download_url", url),
@@ -56,5 +69,10 @@ public final class MagResult implements NotifObj {
                         updates,
                         Updates.set("vars.download_date", new Date(file.lastModified()))
                 );
+    }
+
+    @Override
+    public String toString() {
+        return String.format("MagResult {file=%s, url='%s', text='%s'}", file, url, text);
     }
 }
