@@ -87,8 +87,11 @@ public final class TelegramBot implements Handler {
                                         Document doc = db.getCollection("tasks").find(Filters.eq("_id", entry.getValue())).first();
                                         str1.append("\n")
                                                 .append(String.format("ID=%s", doc.getObjectId("_id")))
+                                                .append("\n")
                                                 .append(String.format("Job=%s", doc.getString("job")))
-                                                .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")));
+                                                .append("\n")
+                                                .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")))
+                                                .append("\n");
                                     }
                                 }
                                 StringBuilder str2 = new StringBuilder("Not registered tasks:");
@@ -98,8 +101,11 @@ public final class TelegramBot implements Handler {
                                     for (Document doc : notregistered) {
                                         str2.append("\n")
                                                 .append(String.format("ID=%s", doc.getObjectId("_id")))
+                                                .append("\n")
                                                 .append(String.format("Job=%s", doc.getString("job")))
-                                                .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")));
+                                                .append("\n")
+                                                .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")))
+                                                .append("\n");
                                     }
                                 }
                                 answer.send(chatId, str1.toString());
