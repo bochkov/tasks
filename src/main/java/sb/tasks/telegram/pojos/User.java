@@ -6,6 +6,9 @@ public final class User {
 
     private Integer id;
 
+    @JsonProperty("is_bot")
+    private Boolean isBot;
+
     @JsonProperty("first_name")
     private String firstName;
 
@@ -23,6 +26,10 @@ public final class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public void setBot(Boolean bot) {
+        isBot = bot;
     }
 
     public void setLastName(String lastName) {
