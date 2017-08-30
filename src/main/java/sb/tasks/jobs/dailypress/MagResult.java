@@ -51,7 +51,7 @@ public final class MagResult implements NotifObj {
         model.put("url", url);
         model.put("tech", ExceptionUtils.getStackTrace(th));
         return JtwigTemplate
-                .classpathTemplate("templates/mail/magazine.twig")
+                .classpathTemplate("templates/mail/magazine_fail.twig")
                 .render(
                         JtwigModel.newModel(model)
                 );
