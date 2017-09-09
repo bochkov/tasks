@@ -58,7 +58,7 @@ public final class TelegramBot implements Handler {
                                     Document document = new TrupdNewDoc(db)
                                             .add(
                                                     cmd[1],
-                                                    cmd.length > 2 ? cmd[2] : ".",
+                                                    cmd.length > 2 ? cmd[2] : properties.getProperty("trupd.default-dir", "."),
                                                     chatId
                                             );
                                     try {

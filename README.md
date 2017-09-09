@@ -49,6 +49,9 @@ mail.pass =
 mail.host = 
 mail.port = 
 mail.from = 
+
+# trupd properties
+trupd.default-dir = /opt/torrents
 ```
 
 #### Sample record to daily-press

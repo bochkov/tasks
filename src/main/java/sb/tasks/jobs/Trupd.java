@@ -11,7 +11,6 @@ import sb.tasks.jobs.trupd.*;
 
 import java.util.Properties;
 
-@SuppressWarnings("unused")
 public final class Trupd implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
