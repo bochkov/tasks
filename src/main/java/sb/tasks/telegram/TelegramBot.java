@@ -50,7 +50,7 @@ public final class TelegramBot implements Handler {
                         if ("bot_command".equals(entity.getType())) {
                             String text = ac.getMessage().getText();
                             String chatId = ac.getMessage().getChat().getId();
-                            String[] tgAdmins = db.getCollection("settings").find(Filters.eq("common.admin_telegram")).first().getString("value").split(",");
+                            String[] tgAdmins = db.getCollection("settings").find(Filters.eq("_id", "common.admin_telegram")).first().getString("value").split(",");
                             boolean isAdmin = false;
                             for (String tgAdmin : tgAdmins) {
                                 if (chatId.equals(tgAdmin))
@@ -63,9 +63,9 @@ public final class TelegramBot implements Handler {
                                 if (cmd.length == 1) {
                                     answer.send(chatId, "Please send me a chatId for new admin");
                                 } else {
-                                    db.getCollection("settings").updateOne(
-                                            Filters.eq("common.admin_telegram"),
-                                            Updates.set("common.admin_telegram", Joiner.on(",").join(tgAdmins, cmd[2]))
+                                    db.getCollection("settings").findOneAndUpdate(
+                                            Filters.eq("_id", "common.admin_telegram"),
+                                            Updates.set("value", Joiner.on(",").join(tgAdmins, cmd[2]))
                                     );
                                     answer.send(chatId, "Admin list updated");
                                 }
