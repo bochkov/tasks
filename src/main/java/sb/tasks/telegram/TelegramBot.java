@@ -18,10 +18,7 @@ import sb.tasks.jobs.TrupdNewDoc;
 import sb.tasks.telegram.pojos.MessageEntity;
 import sb.tasks.telegram.pojos.Update;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class TelegramBot implements Handler {
@@ -63,11 +60,20 @@ public final class TelegramBot implements Handler {
                                 if (cmd.length == 1) {
                                     answer.send(chatId, "Please send me a chatId for new admin");
                                 } else {
-                                    db.getCollection("settings").findOneAndUpdate(
-                                            Filters.eq("_id", "common.admin_telegram"),
-                                            Updates.set("value", Joiner.on(",").join(tgAdmins, cmd[1]))
-                                    );
-                                    answer.send(chatId, "Admin list updated");
+                                    boolean exists = false;
+                                    for (String tgAdmin : tgAdmins)
+                                        if (tgAdmin.equals(cmd[1]))
+                                            exists = true;
+                                    if (exists)
+                                        answer.send(chatId, String.format("Admin %s already registered", cmd[1]));
+                                    else {
+                                        String existing = Joiner.on(",").join(tgAdmins);
+                                        db.getCollection("settings").findOneAndUpdate(
+                                                Filters.eq("_id", "common.admin_telegram"),
+                                                Updates.set("value", Joiner.on(",").join(existing, cmd[1]))
+                                        );
+                                        answer.send(chatId, "Admin list updated");
+                                    }
                                 }
                             } else if (text.startsWith("/task") && isAdmin) {
                                 String[] cmd = ac.getMessage().getText().split(" ");
