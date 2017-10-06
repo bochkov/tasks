@@ -1,8 +1,10 @@
 package sb.tasks.telegram;
 
+import com.google.common.base.Joiner;
 import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.quartz.JobKey;
@@ -48,9 +50,26 @@ public final class TelegramBot implements Handler {
                         if ("bot_command".equals(entity.getType())) {
                             String text = ac.getMessage().getText();
                             String chatId = ac.getMessage().getChat().getId();
+                            String[] tgAdmins = db.getCollection("settings").find(Filters.eq("common.admin_telegram")).first().getString("value").split(",");
+                            boolean isAdmin = false;
+                            for (String tgAdmin : tgAdmins) {
+                                if (chatId.equals(tgAdmin))
+                                    isAdmin = true;
+                            }
                             if (text.equals("/start")) {
                                 answer.send(chatId, String.format("Your chat_id is %s", chatId));
-                            } else if (text.startsWith("/addtr")) {
+                            } else if (text.startsWith("/admin") && isAdmin) {
+                                String[] cmd = ac.getMessage().getText().split(" ");
+                                if (cmd.length == 1) {
+                                    answer.send(chatId, "Please send me a chatId for new admin");
+                                } else {
+                                    db.getCollection("settings").updateOne(
+                                            Filters.eq("common.admin_telegram"),
+                                            Updates.set("common.admin_telegram", Joiner.on(",").join(tgAdmins, cmd[2]))
+                                    );
+                                    answer.send(chatId, "Admin list updated");
+                                }
+                            } else if (text.startsWith("/task") && isAdmin) {
                                 String[] cmd = ac.getMessage().getText().split(" ");
                                 if (cmd.length == 1) {
                                     answer.send(chatId, "Please send me an URL");
@@ -58,7 +77,9 @@ public final class TelegramBot implements Handler {
                                     Document document = new TrupdNewDoc(db)
                                             .add(
                                                     cmd[1],
-                                                    cmd.length > 2 ? cmd[2] : properties.getProperty("trupd.default-dir", "."),
+                                                    cmd.length > 2 ?
+                                                            cmd[2] :
+                                                            db.getCollection("settings").find(Filters.eq("_id", "common.download_dir")).first().getString("value"),
                                                     chatId
                                             );
                                     try {
@@ -73,7 +94,7 @@ public final class TelegramBot implements Handler {
                                         answer.send(chatId, "Task not registered");
                                     }
                                 }
-                            } else if (text.startsWith("/ls")) {
+                            } else if (text.startsWith("/ls") && isAdmin) {
                                 List<Document> notregistered = new ArrayList<>();
                                 db.getCollection("tasks").find().forEach((Consumer<Document>) document -> {
                                     if (!registered.containsValue(document.getObjectId("_id")))
@@ -110,7 +131,7 @@ public final class TelegramBot implements Handler {
                                 }
                                 answer.send(chatId, str1.toString());
                                 answer.send(chatId, str2.toString());
-                            } else if (text.startsWith("/info")) {
+                            } else if (text.startsWith("/info") && isAdmin) {
                                 String[] cmd = ac.getMessage().getText().split(" ");
                                 if (cmd.length == 1) {
                                     answer.send(chatId, "Please send me an JobId");
@@ -122,7 +143,7 @@ public final class TelegramBot implements Handler {
                                         answer.send(chatId, String.format("No task with id=%s", cmd[1]));
                                     }
                                 }
-                            } else if (text.startsWith("/rm")) {
+                            } else if (text.startsWith("/rm") && isAdmin) {
                                 String[] cmd = ac.getMessage().getText().split(" ");
                                 if (cmd.length == 1)
                                     answer.send(chatId, "Please send me an ObjectId");
@@ -141,6 +162,8 @@ public final class TelegramBot implements Handler {
                                         answer.send(chatId, String.format("No task with id=%s", cmd[1]));
                                     }
                                 }
+                            } else {
+                                answer.send(chatId, "Your request cannot be executed");
                             }
                         }
                     }
