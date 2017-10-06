@@ -65,7 +65,7 @@ public final class TelegramBot implements Handler {
                                 } else {
                                     db.getCollection("settings").findOneAndUpdate(
                                             Filters.eq("_id", "common.admin_telegram"),
-                                            Updates.set("value", Joiner.on(",").join(tgAdmins, cmd[2]))
+                                            Updates.set("value", Joiner.on(",").join(tgAdmins, cmd[1]))
                                     );
                                     answer.send(chatId, "Admin list updated");
                                 }
