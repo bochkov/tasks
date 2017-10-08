@@ -18,7 +18,10 @@ import sb.tasks.jobs.TrupdNewDoc;
 import sb.tasks.telegram.pojos.MessageEntity;
 import sb.tasks.telegram.pojos.Update;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 public final class TelegramBot implements Handler {
@@ -130,8 +133,6 @@ public final class TelegramBot implements Handler {
                                                 .append(String.format("ID=%s", doc.getObjectId("_id")))
                                                 .append("\n")
                                                 .append(String.format("Job=%s", doc.getString("job")))
-                                                .append("\n")
-                                                .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")))
                                                 .append("\n");
                                     }
                                 }

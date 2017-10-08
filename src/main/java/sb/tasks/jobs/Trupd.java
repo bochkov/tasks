@@ -7,7 +7,9 @@ import org.bson.types.ObjectId;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import sb.tasks.jobs.trupd.*;
+import sb.tasks.jobs.trupd.AgentFactory;
+import sb.tasks.jobs.trupd.Download;
+import sb.tasks.jobs.trupd.MetafileUpdated;
 
 import java.util.Properties;
 
@@ -34,7 +36,7 @@ public final class Trupd implements Job {
                             new Download(
                                     bson,
                                     new MetafileUpdated(
-                                            bson,
+                                            bson, // TODO if here e.g. "vars" is missing then will be NullPointerException
                                             new UpdateFields<>(
                                                     db,
                                                     bson,
