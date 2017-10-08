@@ -10,12 +10,13 @@ import java.util.Properties;
 public final class RegisteredJob {
 
     private final Scheduler scheduler;
-    private final JobDataMap data = new JobDataMap();
+    private final JobDataMap data;
 
     public RegisteredJob(Properties properties, MongoDatabase db, Scheduler scheduler) {
+        this.scheduler = scheduler;
+        this.data = new JobDataMap();
         data.put("properties", properties);
         data.put("mongo", db);
-        this.scheduler = scheduler;
     }
 
     public JobKey register(Document document) throws Exception {

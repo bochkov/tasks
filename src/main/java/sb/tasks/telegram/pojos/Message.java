@@ -1,8 +1,10 @@
 package sb.tasks.telegram.pojos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,5 +17,7 @@ public final class Message {
     private Date date;
     private Chat chat;
     private String text;
-    private List<MessageEntity> entities;
+
+    @Builder.Default
+    private List<MessageEntity> entities = new ArrayList<>();
 }
