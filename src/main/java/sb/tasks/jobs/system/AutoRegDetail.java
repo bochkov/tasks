@@ -4,10 +4,7 @@ import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.quartz.Job;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import sb.tasks.jobs.RegisteredJob;
 
 import java.util.Map;
@@ -25,11 +22,12 @@ public final class AutoRegDetail implements Job {
             ObjectId id = document.getObjectId("_id");
             if (!registry.containsValue(id)) {
                 try {
-                    new RegisteredJob(properties, db, context.getScheduler())
+                    JobKey key = new RegisteredJob(properties, db, context.getScheduler())
                             .register(document);
+                    registry.put(key, id);
                     Logger.info(this, "Successfully register job for doc = %s", document);
                 } catch (Exception ex) {
-                    Logger.warn(this, "Cannot register job\n%s", ex);
+                    Logger.warn(this, "Cannot register job :: %s", ex);
                 }
             }
         }
