@@ -87,7 +87,6 @@ public final class AnRutor implements Agent<TorrentResult> {
         return Collections.singletonList(
                 new TorrentResult(mt, name(root), torrentUrl,
                         new Filename(
-                                document.getString("download_dir"),
                                 torrentUrl
                         ).toFile(),
                         document.getString("url")

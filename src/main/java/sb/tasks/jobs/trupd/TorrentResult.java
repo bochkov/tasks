@@ -73,8 +73,8 @@ public final class TorrentResult implements NotifObj {
                 );
     }
 
-    public void write() throws IOException {
-        try (FileOutputStream out = new FileOutputStream(file)) {
+    public void writeTo(String directory) throws IOException {
+        try (FileOutputStream out = new FileOutputStream(new File(directory, file.getName()))) {
             out.write(metafile.body());
         }
     }

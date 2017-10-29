@@ -23,7 +23,7 @@ public final class Download implements Agent<TorrentResult> {
         String directory = document.get("params", Document.class).getString("download_dir");
         if (directory != null) {
             for (TorrentResult result : torrents) {
-                result.write();
+                result.writeTo(directory);
             }
         }
         return torrents;

@@ -12,15 +12,9 @@ import java.util.regex.Pattern;
 
 public final class Filename {
 
-    private final File directory;
     private final String torrentUrl;
 
-    public Filename(String dir, String torrentUrl) {
-        this(new File(dir), torrentUrl);
-    }
-
-    public Filename(File directory, String torrentUrl) {
-        this.directory = directory;
+    public Filename(String torrentUrl) {
         this.torrentUrl = torrentUrl;
     }
 
@@ -41,6 +35,6 @@ public final class Filename {
                     filename = matcher.group(1);
             }
         }
-        return new File(directory, filename);
+        return new File(filename);
     }
 }
