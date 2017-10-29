@@ -112,7 +112,6 @@ public final class AnLostFilm implements Agent<TorrentResult> {
                             return Collections.singletonList(
                                     new TorrentResult(mt, name(doc2), torrentUrl,
                                             new Filename(
-                                                    document.getString("download_dir"),
                                                     torrentUrl
                                             ).toFile(),
                                             document.getString("url"))
