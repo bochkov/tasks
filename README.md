@@ -118,7 +118,12 @@ Supported telegram commands:
 </tr>
 <tr>
     <td>2.</td>
-    <td>/addtr</td>
+    <td>/admin</td>
+    <td>Register new user with admin privileges</td>
+</tr>
+<tr>
+    <td>2.</td>
+    <td>/task</td>
     <td>Add torrent update tasks</td>
 </tr>
 <tr>
