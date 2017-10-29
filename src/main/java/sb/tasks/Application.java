@@ -12,6 +12,8 @@ import org.quartz.impl.StdSchedulerFactory;
 import ratpack.server.BaseDir;
 import ratpack.server.RatpackServer;
 import sb.tasks.jobs.RegisteredJob;
+import sb.tasks.jobs.system.AutoChangesJob;
+import sb.tasks.jobs.system.AutoRegJob;
 import sb.tasks.pages.IndexPage;
 import sb.tasks.pages.JobDelete;
 import sb.tasks.pages.JobPerform;
@@ -19,7 +21,9 @@ import sb.tasks.telegram.TelegramBot;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 public final class Application {
 
@@ -70,6 +74,9 @@ public final class Application {
                         }
                     }
                 });
+
+        new AutoRegJob(db, scheduler, registered, properties).start();
+        new AutoChangesJob().start();
 
         Logger.info(this, "Starting HTTP Server");
         RatpackServer.start(server -> server

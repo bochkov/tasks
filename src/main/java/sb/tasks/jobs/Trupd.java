@@ -25,6 +25,7 @@ public final class Trupd implements Job {
         Document bson = db.getCollection("tasks").find(
                 Filters.eq("_id", id)
         ).first();
+
         try {
             new Cleanup<>(
                     bson.get("params", Document.class),
@@ -46,7 +47,6 @@ public final class Trupd implements Job {
                             )
                     )
             ).perform();
-
         } catch (Exception ex) {
             throw new JobExecutionException(ex);
         }
