@@ -2,11 +2,11 @@ package sb.tasks.jobs;
 
 import com.jcabi.email.*;
 import com.jcabi.email.enclosure.EnBinary;
-import com.jcabi.email.enclosure.EnHTML;
+import com.jcabi.email.enclosure.EnHtml;
 import com.jcabi.email.stamp.StRecipient;
 import com.jcabi.email.stamp.StSender;
 import com.jcabi.email.stamp.StSubject;
-import com.jcabi.email.wire.SMTPS;
+import com.jcabi.email.wire.Smtps;
 import com.jcabi.immutable.Array;
 
 import javax.mail.Message;
@@ -28,12 +28,12 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
     public AgMail(Properties props, String recipients, String subject, boolean sendFiles) {
         this(
                 new Postman.Default(
-                        new SMTPS(
+                        new Smtps(
                                 new Token(
                                         props.getProperty("mail.user"),
                                         props.getProperty("mail.pass")
                                 ).access(
-                                        new Protocol.SMTPS(
+                                        new Protocol.Smtps(
                                                 props.getProperty("mail.host"),
                                                 Integer.parseInt(props.getProperty("mail.port"))
                                         )
@@ -59,7 +59,7 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
     public void send(List<T> objects) throws IOException {
         for (NotifObj obj : objects) {
             Array<Enclosure> encs = new Array<>(
-                    new EnHTML(
+                    new EnHtml(
                             obj.mailText()
                     )
             );
@@ -86,14 +86,14 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
                     );
                 } catch (Exception ex) {
                     postman.send(
-                            new Envelope.MIME(
+                            new Envelope.Mime(
                                     new Array<>(
                                             new StSender(from),
                                             new StRecipient(to),
                                             new StSubject(subject)
                                     ),
                                     new Array<>(
-                                            new EnHTML(
+                                            new EnHtml(
                                                     obj.mailFailText(ex)
                                             )
                                     )
