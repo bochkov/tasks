@@ -4,7 +4,10 @@ import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.quartz.*;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobKey;
 import sb.tasks.jobs.RegisteredJob;
 
 import java.util.Map;
@@ -13,7 +16,7 @@ import java.util.Properties;
 public final class AutoRegDetail implements Job {
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    public void execute(JobExecutionContext context) {
         JobDataMap data = context.getMergedJobDataMap();
         MongoDatabase db = MongoDatabase.class.cast(data.get("db"));
         Map registry = Map.class.cast(data.get("registry"));

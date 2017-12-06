@@ -10,7 +10,6 @@ import com.jcabi.log.Logger;
 import org.bson.Document;
 import org.jsoup.Jsoup;
 import sb.tasks.jobs.Agent;
-import sb.tasks.jobs.AgentException;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.File;
@@ -37,7 +36,7 @@ public final class AnSportExpress implements Agent<MagResult> {
     }
 
     @Override
-    public List<MagResult> perform() throws AgentException, IOException {
+    public List<MagResult> perform() throws IOException {
         String url = Jsoup.connect("http://www.sport-express.ru/newspaper/")
                 .get()
                 .getElementById("pdf_load")
