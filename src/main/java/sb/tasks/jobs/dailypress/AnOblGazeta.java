@@ -9,7 +9,6 @@ import com.jcabi.log.Logger;
 import org.bson.Document;
 import org.jsoup.Jsoup;
 import sb.tasks.jobs.Agent;
-import sb.tasks.jobs.AgentException;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.File;
@@ -28,10 +27,10 @@ public final class AnOblGazeta implements Agent<MagResult> {
     }
 
     @Override
-    public List<MagResult> perform() throws AgentException, IOException {
+    public List<MagResult> perform() throws IOException {
         String newPaper = Jsoup.connect("https://www.oblgazeta.ru").get()
-                .getElementsByClass("new_arhive").get(0)
-                .getElementsByClass("new_zag").get(0)
+                .getElementsByClass("miko_zag").get(0)
+                //.getElementsByClass("new_zag").get(0)
                 .getElementsByTag("a").get(0)
                 .attr("href");
         String pdfUrl = Jsoup.connect(String.format("https://www.oblgazeta.ru%s", newPaper)).get()
