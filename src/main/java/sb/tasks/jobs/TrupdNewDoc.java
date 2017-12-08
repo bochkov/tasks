@@ -17,6 +17,7 @@ public final class TrupdNewDoc {
     }
 
     public Document add(String url, String dir, String chatId) {
+        boolean isNum = url.matches("//d+");
         ObjectId id = new ObjectId();
         db.getCollection("tasks")
                 .insertOne(
@@ -24,7 +25,7 @@ public final class TrupdNewDoc {
                                 .append("_id", id)
                                 .append("job", "sb.tasks.jobs.Trupd")
                                 .append("params", new Document()
-                                        .append("url", url)
+                                        .append(isNum ? "num" : "url", url)
                                         .append("download_dir", dir)
                                         .append("telegram", chatId))
                                 .append("vars", new Document()
