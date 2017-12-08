@@ -17,7 +17,7 @@ public final class TrupdNewDoc {
     }
 
     public Document add(String url, String dir, String chatId) {
-        boolean isNum = url.matches("//d+");
+        boolean isNum = url.matches("\\d+");
         ObjectId id = new ObjectId();
         db.getCollection("tasks")
                 .insertOne(
@@ -30,7 +30,9 @@ public final class TrupdNewDoc {
                                         .append("telegram", chatId))
                                 .append("vars", new Document()
                                         .append("name", "NOT EVALUATED"))
-                                .append("schedule", Collections.singletonList("0 0 * * * ?"))
+                                .append("schedule", isNum ?
+                                        Collections.singletonList("0 0 0/4 * * ?") :
+                                        Collections.singletonList("0 0 * * * ?"))
                 );
         Logger.info(this, "Added task %s, %s, dir=%s, telegram=%s",
                 "sb.tasks.jobs.Trupd", url, dir, chatId);
