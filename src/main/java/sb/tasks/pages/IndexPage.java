@@ -8,8 +8,10 @@ import org.jtwig.JtwigTemplate;
 import org.quartz.JobKey;
 import ratpack.handling.Context;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class IndexPage implements HttpPage {
 
@@ -22,7 +24,7 @@ public final class IndexPage implements HttpPage {
     }
 
     @Override
-    public void handle(Context ctx) throws Exception {
+    public void handle(Context ctx) {
         List<Document> docs = new ArrayList<>();
         db.getCollection("tasks").find().into(docs);
         for (Document doc : docs) {

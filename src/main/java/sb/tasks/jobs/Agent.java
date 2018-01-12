@@ -10,7 +10,7 @@ public interface Agent<T> {
 
     final class EMPTY<T> implements Agent<T> {
         @Override
-        public List<T> perform() throws AgentException, IOException {
+        public List<T> perform() {
             return Collections.emptyList();
         }
     }

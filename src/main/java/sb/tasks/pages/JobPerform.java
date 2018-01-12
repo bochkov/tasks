@@ -18,7 +18,7 @@ public final class JobPerform implements HttpPage {
     }
 
     @Override
-    public void handle(Context ctx) throws Exception {
+    public void handle(Context ctx) {
         Promise<Form> promise = ctx.parse(Form.class);
         promise.then(f -> {
             List<String> jobkeys = f.getAll("id");
