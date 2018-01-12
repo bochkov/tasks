@@ -18,4 +18,4 @@ RUN mkdir media && \
 ADD build/libs/tasks-all.jar /opt/tasks.jar
 EXPOSE 8088
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD ["java", "$JAVA_OPTS", "-Dfile.encoding=UTF-8", "-jar", "tasks.jar"]
+CMD ["sh", "-c", "java $JAVA_OPTS -Dfile.encoding=UTF-8 -jar tasks.jar"]
