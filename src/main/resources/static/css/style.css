@@ -1,0 +1,13 @@
+h2 {
+    margin: 2em 0;
+}
+
+.ui.container {
+    padding-top: 5em;
+    padding-bottom: 5em;
+}
+
+.code {
+    font-family: 'Inconsolata', monospace;
+    font-size: 16px;
+}

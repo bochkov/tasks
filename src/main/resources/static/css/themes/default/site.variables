@@ -1,3 +1,0 @@
-@headerFont : 'Helvetica', sans-serif;
-@pageFont: 'Helvetica', sans-serif;
-@primaryColor: @pink
