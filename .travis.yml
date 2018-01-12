@@ -20,7 +20,7 @@ cache:
 after_success:
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
-  - eval $(aws ecr get-login --region us-east-1)
+  - eval $(aws ecr get-login --region us-east-1 --no-include-email)
   - ./gradlew clean build
   - docker build -t tasks .
   - docker tag tasks:latest 902382300595.dkr.ecr.us-east-1.amazonaws.com/tasks:latest
