@@ -1,6 +1,5 @@
 package sb.tasks.jobs.dailypress;
 
-import com.google.common.io.Files;
 import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.wire.AutoRedirectingWire;
@@ -44,7 +43,7 @@ public final class AnSportExpress implements Agent<MagResult> {
         Logger.info(this, String.format("Checking link: %s", url));
         File out = new File(
                 System.getProperty("java.io.tmpdir"),
-                String.format("%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
+                String.format("sp%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
         if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {
             Response response = new JdkRequest(url)
@@ -58,20 +57,7 @@ public final class AnSportExpress implements Agent<MagResult> {
                     .header(HttpHeaders.COOKIE, String.format("RealUserName=%s", username))
                     .header(HttpHeaders.COOKIE, String.format("SELIFE=%s", selife))
                     .fetch();
-            if (response.status() == 200) {
-                if ("application/pdf"
-                        .equals(response
-                                .headers()
-                                .getOrDefault(
-                                        "Content-Type",
-                                        Collections.singletonList("")
-                                ).get(0))) {
-                    Files.write(response.binary(), out);
-                    Logger.info(this, String.format("Downloaded file %s", out.getName()));
-                } else
-                    Logger.info(this, "No magazine for this date");
-            } else
-                Logger.info(this, "No content for this page");
+            new PdfFromResponse(response).saveTo(out);
         } else
             Logger.info(this, String.format("%s already downloaded. Exiting", url));
         return Collections.singletonList(
