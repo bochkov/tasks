@@ -32,7 +32,7 @@ public final class TelegramBot implements Handler {
     }
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
         String token = context.getPathTokens().get("token");
         try {
             context
