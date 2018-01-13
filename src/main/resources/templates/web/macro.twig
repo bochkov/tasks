@@ -1,0 +1,15 @@
+{% macro val_link(val) %}
+{% set sval = val.toString() %}
+
+{% if sval|length > 50 %}
+{% set vval = sval|slice(0, 50)|concat("...") %}
+{% else %}
+{% set vval = sval %}
+{% endif %}
+
+{% if sval|slice(0, 4) == "http" %}
+<a href="{{ sval }}" target="_blank">{{ vval }}</a>
+{% else %}
+{{ val }}
+{% endif %}
+{% endmacro %}

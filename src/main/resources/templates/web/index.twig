@@ -1,5 +1,7 @@
 {% extends '_base.twig' %}
 
+{% import 'macro.twig' as mcs %}
+
 {% block content %}
     <div class="ui accordion">
         {% for t in tasks %}
@@ -28,10 +30,10 @@
                             </h4>
                             <table class="ui definition compact table">
                                 <tbody>
-                                {% for key, val in t.vars %}
+                                {% for key in t.vars.keySet()|sort %}
                                     <tr>
                                         <td class="two wide column">{{ key }}</td>
-                                        <td>{{ val }}</td>
+                                        <td>{{ mcs.val_link(t.vars.get(key)) }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -44,10 +46,10 @@
                             </h4>
                             <table class="ui definition compact table">
                                 <tbody>
-                                {% for key, val in t.params %}
+                                {% for key in t.params.keySet()|sort %}
                                     <tr>
                                         <td class="two wide column">{{ key }}</td>
-                                        <td>{{ val }}</td>
+                                        <td>{{ mcs.val_link(t.params.get(key)) }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -67,12 +69,12 @@
                                     <td class="code">{{ t._id }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="two wide column">schedule</td>
-                                    <td class="code">{{ join(t.schedule, "<br/>") }}</td>
-                                </tr>
-                                <tr>
                                     <td class="two wide column">job</td>
                                     <td class="code">{{ t.job }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="two wide column">schedule</td>
+                                    <td class="code">{{ join(t.schedule, "<br/>") }}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -151,9 +153,10 @@
             $('.ui.basic.modal.modalremove')
                 .modal({
                     onApprove: function () {
-                        $.post("api/delete/", {"id": id}, function () {
-                            location.reload();
-                        })
+                        $.post("api/delete/", {"id": id})
+                            .done(function () {
+                                location.reload();
+                            })
                     }
                 })
                 .modal('show');
