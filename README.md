@@ -52,6 +52,9 @@ mail.from =
 
 # trupd properties
 trupd.default-dir = /opt/torrents
+
+# curl extra params, e.g. socks proxy
+curl.extra-opts = --socks5 user:pass@server:port
 ```
 
 #### Sample record to daily-press

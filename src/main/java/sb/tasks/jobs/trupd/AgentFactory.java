@@ -7,14 +7,18 @@ import org.bson.Document;
 import sb.tasks.jobs.AFactory;
 import sb.tasks.jobs.Agent;
 
+import java.util.Properties;
+
 public final class AgentFactory implements AFactory<TorrentResult> {
 
     private final MongoDatabase db;
     private final Document document;
+    private final Properties props;
 
-    public AgentFactory(MongoDatabase db, Document document) {
+    public AgentFactory(MongoDatabase db, Document document, Properties props) {
         this.db = db;
         this.document = document;
+        this.props = props;
     }
 
     public Agent<TorrentResult> agent() {
@@ -26,6 +30,7 @@ public final class AgentFactory implements AFactory<TorrentResult> {
                     new Agent.EMPTY<>() :
                     new AnRutracker(
                             document,
+                            props,
                             db.getCollection("settings").find(Filters.eq("_id", "rutracker.login")).first().getString("value"),
                             db.getCollection("settings").find(Filters.eq("_id", "rutracker.password")).first().getString("value"),
                             db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first().getString("value")

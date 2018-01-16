@@ -6,37 +6,40 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 public final class RutrackerCurl {
 
     private static final String NAME = "[rutracker.org].t%s.torrent";
 
     private final String cookieFile;
+    private final Properties props;
 
-    public RutrackerCurl(String cookieFile) {
+    public RutrackerCurl(String cookieFile, Properties properties) {
         this.cookieFile = cookieFile;
+        this.props = properties;
     }
 
     private List<String> cookieCmd(String login, String password, String userAgent) {
-        return Arrays.asList(
+        List<String> args = Arrays.asList(
                 "/usr/bin/curl",
-                "--socks5",
-                "socks:S0ck5@nyc.sergeybochkov.com:1080", // TODO в одельный файл
-                "--verbose",
-                "--retry",
-                "5",
+                "--retry", "5",
                 "--data",
                 String.format("login_username=%s&login_password=%s&login=%%C2%%F5%%EE%%E4", login, password),
-                "--output",
-                "login.php",
+                "--output", "login.php",
                 "--insecure",
                 "--silent",
                 "--ipv4",
-                "--user-agent",
-                userAgent,
-                "--cookie-jar",
-                cookieFile,
-                "http://rutracker.org/forum/login.php");
+                "--user-agent", userAgent,
+                "--cookie-jar", cookieFile,
+                "http://rutracker.org/forum/login.php"
+        );
+        if (props.containsKey("curl.extra-opts")
+                && !props.getProperty("curl.extra-opts", "").isEmpty())
+            args.addAll(
+                    Arrays.asList(
+                            props.getProperty("curl.extra-opts").split("\'s+")));
+        return args;
     }
 
     public File cookies(String login, String password, String userAgent) {
@@ -55,23 +58,22 @@ public final class RutrackerCurl {
     }
 
     private List<String> downloadCmd(String num) {
-        return Arrays.asList(
+        List<String> args = Arrays.asList(
                 "/usr/bin/curl",
-                "--socks5",
-                "socks:S0ck5@nyc.sergeybochkov.com:1080",
-                "--cookie",
-                cookieFile,
-                "--referer",
-                String.format("http://rutracker.org/forum/viewtopic.php?t=%s", num),
-                "--header",
-                "Content-Type:application/x-www-form-urlencoded",
-                "--header",
-                String.format("t:%s", num),
-                "--data",
-                String.format("t=%s", num),
-                "--output",
-                String.format(NAME, num),
-                String.format("http://rutracker.org/forum/dl.php?t=%s", num));
+                "--cookie", cookieFile,
+                "--referer", String.format("http://rutracker.org/forum/viewtopic.php?t=%s", num),
+                "--header", "Content-Type:application/x-www-form-urlencoded",
+                "--header", String.format("t:%s", num),
+                "--data", String.format("t=%s", num),
+                "--output", String.format(NAME, num),
+                String.format("http://rutracker.org/forum/dl.php?t=%s", num)
+        );
+        if (props.containsKey("curl.extra-opts")
+                && !props.getProperty("curl.extra-opts", "").isEmpty())
+            args.addAll(
+                    Arrays.asList(
+                            props.getProperty("curl.extra-opts").split("\'s+")));
+        return args;
     }
 
     public File save(String num) throws IOException {

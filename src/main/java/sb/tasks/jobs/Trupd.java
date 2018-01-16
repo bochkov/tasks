@@ -41,7 +41,11 @@ public final class Trupd implements Job {
                                             new UpdateFields<>(
                                                     db,
                                                     bson,
-                                                    new AgentFactory(db, bson.get("params", Document.class)).agent()
+                                                    new AgentFactory(
+                                                            db,
+                                                            bson.get("params", Document.class),
+                                                            props
+                                                    ).agent()
                                             )
                                     )
                             )

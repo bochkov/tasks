@@ -12,18 +12,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 public final class AnRutracker implements Agent<TorrentResult> {
 
     private static final String COOKIE_FILE = "cookies.txt";
 
     private final Document document;
+    private final Properties properties;
     private final String login;
     private final String password;
     private final String userAgent;
 
-    public AnRutracker(Document document, String login, String password, String userAgent) {
+    public AnRutracker(Document document, Properties props, String login, String password, String userAgent) {
         this.login = login;
+        this.properties = props;
         this.password = password;
         this.userAgent = userAgent;
         this.document = document;
@@ -32,9 +35,9 @@ public final class AnRutracker implements Agent<TorrentResult> {
     @Override
     public List<TorrentResult> perform() throws AgentException, IOException {
         Logger.info(this, "Fetch cookies");
-        File cookie = new RutrackerCurl(COOKIE_FILE).cookies(login, password, userAgent);
+        File cookie = new RutrackerCurl(COOKIE_FILE, properties).cookies(login, password, userAgent);
         if (cookie.exists()) {
-            File file = new RutrackerCurl(COOKIE_FILE).save(document.getString("num"));
+            File file = new RutrackerCurl(COOKIE_FILE, properties).save(document.getString("num"));
             if (file.exists()) {
                 Mt mt = new Metafile(Files.readAllBytes(file.toPath()));
                 return Collections.singletonList(
