@@ -1,18 +1,14 @@
 package sb.tasks.jobs.trupd;
 
 import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.wire.AutoRedirectingWire;
+import com.jcabi.http.response.JsoupResponse;
+import com.jcabi.http.response.XmlResponse;
 import com.jcabi.http.wire.CookieOptimizingWire;
-import com.jcabi.http.wire.RetryWire;
-import com.jcabi.http.wire.TrustedWire;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import sb.tasks.jobs.Agent;
-import sb.tasks.jobs.AgentException;
 import sb.tasks.jobs.trupd.metafile.Metafile;
-import sb.tasks.jobs.trupd.metafile.Mt;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -59,66 +55,59 @@ public final class AnLostFilm implements Agent<TorrentResult> {
     }
 
     @Override
-    public List<TorrentResult> perform() throws AgentException, IOException {
-        Document root = Jsoup.parse(
-                new JdkRequest(String.format("%s/seasons/", document.getString("url")))
-                        .through(TrustedWire.class)
-                        .through(AutoRedirectingWire.class)
-                        .through(RetryWire.class)
-                        .fetch()
-                        .body(),
-                document.getString("url")
-        );
-        Elements tables = root.getElementsByTag("table");
-        for (Element table : tables) {
-            for (Element row : table.getElementsByTag("tr")) {
-                if (!row.hasClass("not-available")) {
-                    String onclick = row.getElementsByClass("external-btn").attr("onclick");
-                    Matcher m = Pattern
-                            .compile("PlayEpisode\\('(\\d+)','(\\d+)','(\\d+)'\\)")
-                            .matcher(onclick);
-                    if (m.find()) {
-                        Document doc = Jsoup.parse(
-                                new JdkRequest(
-                                        String.format("https://www.lostfilm.tv/v_search.php?c=%s&s=%s&e=%s",
-                                                m.group(1), m.group(2), m.group(3)))
-                                        .through(TrustedWire.class)
-                                        .through(AutoRedirectingWire.class)
-                                        .through(RetryWire.class)
-                                        .through(CookieOptimizingWire.class)
-                                        .header("Cookie", String.format("lf_session=%s", session))
-                                        .header("Cookie", String.format("lnk_uid=%s", uid))
-                                        .fetch()
-                                        .body()
+    public List<TorrentResult> perform() throws IOException {
+        List<String> items = new LfRequest(new JdkRequest("http://lostfilm.tv/rss.xml"))
+                .fetch()
+                .as(XmlResponse.class)
+                .xml()
+                .xpath("//item/link/text()");
+        for (String str : items) {
+            if (str.startsWith(document.getString("url"))) {
+                Document root = Jsoup.parse(
+                        new LfRequest(new JdkRequest(str)).fetch().as(JsoupResponse.class).body(),
+                        document.getString("url")
+                );
+                Matcher m = Pattern.compile("PlayEpisode\\('(\\d+)','(\\d+)','(\\d+)'\\)")
+                        .matcher(
+                                root.getElementsByClass("external-btn").attr("onclick")
                         );
-                        if (!doc.getElementsByTag("a").isEmpty()) {
-                            org.jsoup.nodes.Document doc2 = Jsoup.parse(
-                                    new JdkRequest(doc.getElementsByTag("a").get(0).attr("href"))
-                                            .through(TrustedWire.class)
-                                            .through(AutoRedirectingWire.class)
-                                            .through(RetryWire.class)
-                                            .fetch()
-                                            .body()
-                            );
-                            String torrentUrl = torrentUrl(doc2);
-                            Mt mt = new Metafile(
-                                    new JdkRequest(torrentUrl)
-                                            .through(TrustedWire.class)
-                                            .through(AutoRedirectingWire.class)
-                                            .through(RetryWire.class)
-                                            .fetch()
-                                            .binary()
-                            );
-                            return Collections.singletonList(
-                                    new TorrentResult(mt, name(doc2), torrentUrl,
-                                            new Filename(
-                                                    torrentUrl
-                                            ).toFile(),
-                                            document.getString("url"))
-                            );
-                        }
-                        throw new IOException("Document not found");
+                if (m.find()) {
+                    Document doc = Jsoup.parse(
+                            new LfRequest(
+                                    new JdkRequest(
+                                            String.format("https://lostfilm.tv/v_search.php?c=%s&s=%s&e=%s",
+                                                    m.group(1), m.group(2), m.group(3))))
+                                    .through(CookieOptimizingWire.class)
+                                    .header("Cookie", String.format("lf_session=%s", session))
+                                    .header("Cookie", String.format("lnk_uid=%s", uid))
+                                    .fetch()
+                                    .as(JsoupResponse.class)
+                                    .body()
+                    );
+                    if (!doc.getElementsByTag("a").isEmpty()) {
+                        org.jsoup.nodes.Document doc2 = Jsoup.parse(
+                                new LfRequest(
+                                        new JdkRequest(
+                                                doc.getElementsByTag("a").get(0).attr("href")
+                                        )
+                                ).fetch().body()
+                        );
+                        String torrentUrl = torrentUrl(doc2);
+                        return Collections.singletonList(
+                                new TorrentResult(
+                                        new Metafile(
+                                                new LfRequest(new JdkRequest(torrentUrl))
+                                                        .fetch()
+                                                        .binary()
+                                        ),
+                                        name(doc2),
+                                        torrentUrl,
+                                        new Filename(torrentUrl).toFile(),
+                                        document.getString("url")
+                                )
+                        );
                     }
+                    throw new IOException("Document not found");
                 }
             }
         }

@@ -1,17 +1,12 @@
 package sb.tasks.jobs.trupd;
 
-import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.wire.AutoRedirectingWire;
-import com.jcabi.http.wire.RetryWire;
-import com.jcabi.http.wire.TrustedWire;
+import com.jcabi.http.response.JsoupResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import sb.tasks.jobs.Agent;
-import sb.tasks.jobs.AgentException;
 import sb.tasks.jobs.trupd.metafile.Metafile;
-import sb.tasks.jobs.trupd.metafile.Mt;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -67,28 +62,25 @@ public final class AnRutor implements Agent<TorrentResult> {
     }
 
     @Override
-    public List<TorrentResult> perform() throws AgentException, IOException {
+    public List<TorrentResult> perform() throws IOException {
         Document root = Jsoup.parse(
-                new JdkRequest(document.getString("url"))
-                        .through(TrustedWire.class)
-                        .through(AutoRedirectingWire.class)
-                        .through(RetryWire.class)
+                new LfRequest(new JdkRequest(document.getString("url")))
                         .fetch()
+                        .as(JsoupResponse.class)
                         .body(),
                 document.getString("url")
         );
         String torrentUrl = torrentUrl(root);
-        Response resp = new JdkRequest(torrentUrl)
-                .through(TrustedWire.class)
-                .through(AutoRedirectingWire.class)
-                .through(RetryWire.class)
-                .fetch();
-        Mt mt = new Metafile(resp.binary());
         return Collections.singletonList(
-                new TorrentResult(mt, name(root), torrentUrl,
-                        new Filename(
-                                torrentUrl
-                        ).toFile(),
+                new TorrentResult(
+                        new Metafile(
+                                new LfRequest(new JdkRequest(torrentUrl))
+                                        .fetch()
+                                        .binary()
+                        ),
+                        name(root),
+                        torrentUrl,
+                        new Filename(torrentUrl).toFile(),
                         document.getString("url")
                 )
         );
