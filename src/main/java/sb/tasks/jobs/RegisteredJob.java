@@ -2,6 +2,8 @@ package sb.tasks.jobs;
 
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.quartz.*;
 
 import java.util.List;
@@ -12,11 +14,21 @@ public final class RegisteredJob {
     private final Scheduler scheduler;
     private final JobDataMap data;
 
-    public RegisteredJob(Properties properties, MongoDatabase db, Scheduler scheduler) {
+    public RegisteredJob(Scheduler scheduler, JobDataMap data) {
         this.scheduler = scheduler;
-        this.data = new JobDataMap();
-        data.put("properties", properties);
-        data.put("mongo", db);
+        this.data = data;
+    }
+
+    public RegisteredJob(Properties properties, MongoDatabase db, Scheduler scheduler) {
+        this(
+                scheduler,
+                new JobDataMap(
+                        new MapOf<>(
+                                new MapEntry<>("properties", properties),
+                                new MapEntry<>("mongo", db)
+                        )
+                )
+        );
     }
 
     public JobKey register(Document document) throws Exception {
