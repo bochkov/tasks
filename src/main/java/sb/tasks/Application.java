@@ -4,23 +4,19 @@ import com.jcabi.log.Logger;
 import com.mongodb.Block;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.bson.types.ObjectId;
-import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import sb.tasks.jobs.RegisteredJob;
 import sb.tasks.jobs.system.AutoChangesJob;
 import sb.tasks.jobs.system.AutoRegJob;
+import sb.tasks.jobs.system.SchedulerInfo;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 public final class Application {
 
     private final Properties properties;
-    private final Map<JobKey, ObjectId> tasks = new HashMap<>();
 
     public Application(Properties properties) {
         this.properties = properties;
@@ -48,8 +44,7 @@ public final class Application {
                     public void apply(Document document) {
                         Logger.info(this, "Readed task: %s", document.toJson());
                         try {
-                            JobKey key = new RegisteredJob(properties, db, scheduler).register(document);
-                            tasks.put(key, document.getObjectId("_id"));
+                            new RegisteredJob(properties, db, scheduler).register(document);
                             Logger.info(this, "Successfully registered task %s", document.toJson());
                         } catch (Exception ex) {
                             Logger.warn(this, "Cannot register task %s", document.toJson());
@@ -57,9 +52,9 @@ public final class Application {
                         }
                     }
                 });
-        new AutoRegJob(db, scheduler, tasks, properties).start();
+        new AutoRegJob(db, scheduler, properties).start();
         new AutoChangesJob().start();
-        new WebApp(properties, db, scheduler, tasks);
+        new WebApp(properties, db, scheduler);
         scheduler.start();
         Logger.info(this, "Application started");
     }

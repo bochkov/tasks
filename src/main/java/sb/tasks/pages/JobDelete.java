@@ -11,18 +11,15 @@ import ratpack.form.Form;
 import ratpack.handling.Context;
 
 import java.util.List;
-import java.util.Map;
 
 public final class JobDelete implements HttpPage {
 
     private final MongoDatabase db;
     private final Scheduler scheduler;
-    private final Map<JobKey, ObjectId> registered;
 
-    public JobDelete(MongoDatabase db, Scheduler scheduler, Map<JobKey, ObjectId> registered) {
+    public JobDelete(MongoDatabase db, Scheduler scheduler) {
         this.db = db;
         this.scheduler = scheduler;
-        this.registered = registered;
     }
 
     @Override
@@ -31,13 +28,11 @@ public final class JobDelete implements HttpPage {
         promise.then(f -> {
             List<String> jobkeys = f.getAll("id");
             for (String jobkey : jobkeys) {
-                JobKey key = JobKey.jobKey(jobkey);
-                ObjectId id = registered.get(key);
-                if (id != null) {
-                    registered.remove(key);
+                JobKey key = new JobKey(jobkey);
+                if (scheduler.checkExists(key)) {
                     scheduler.deleteJob(key);
-                    db.getCollection("tasks").findOneAndDelete(Filters.eq("_id", id));
-                    Logger.info(this, "Successfully delete job with id = %s", id);
+                    db.getCollection("tasks").findOneAndDelete(Filters.eq("_id", new ObjectId(jobkey)));
+                    Logger.info(this, "Successfully delete job with id = %s", new ObjectId(jobkey));
                     ctx.getResponse()
                             .contentType("application/json")
                             .send(new Success().json());

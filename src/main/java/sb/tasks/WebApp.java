@@ -2,8 +2,6 @@ package sb.tasks;
 
 import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
-import org.bson.types.ObjectId;
-import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import ratpack.server.BaseDir;
 import ratpack.server.RatpackServer;
@@ -12,7 +10,6 @@ import sb.tasks.pages.JobDelete;
 import sb.tasks.pages.JobPerform;
 import sb.tasks.telegram.TelegramBot;
 
-import java.util.Map;
 import java.util.Properties;
 
 public final class WebApp implements App<RatpackServer> {
@@ -20,14 +17,11 @@ public final class WebApp implements App<RatpackServer> {
     private final Properties props;
     private final MongoDatabase db;
     private final Scheduler scheduler;
-    private final Map<JobKey, ObjectId> tasks;
 
-    public WebApp(Properties properties, MongoDatabase db,
-                  Scheduler scheduler, Map<JobKey, ObjectId> tasks) {
+    public WebApp(Properties properties, MongoDatabase db, Scheduler scheduler) {
         this.props = properties;
         this.db = db;
         this.scheduler = scheduler;
-        this.tasks = tasks;
     }
 
     @Override
@@ -41,13 +35,13 @@ public final class WebApp implements App<RatpackServer> {
                 .handlers(chain -> chain
                         .files(f -> f.files("static"))
                         .post("bot/:token",
-                                new TelegramBot(props, db, scheduler, tasks))
+                                new TelegramBot(props, db, scheduler))
                         .post("api/run",
                                 new JobPerform(scheduler))
                         .post("api/delete",
-                                new JobDelete(db, scheduler, tasks))
+                                new JobDelete(db, scheduler))
                         .get("",
-                                new IndexPage(db, tasks))
+                                new IndexPage(db, scheduler))
                 )
         );
     }

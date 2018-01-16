@@ -32,7 +32,7 @@ public final class RegisteredJob {
     }
 
     public JobKey register(Document document) throws Exception {
-        JobKey jobKey = new JobKey(document.getObjectId("_id").toString());
+        JobKey jobKey = new JobKey(document.getObjectId("_id").toString(), "TASK");
         Class<? extends Job> jobClass = Class.forName(document.getString("job")).asSubclass(Job.class);
         data.put("objectId", document.getObjectId("_id"));
         JobDetail job = JobBuilder.newJob(jobClass)
@@ -45,8 +45,7 @@ public final class RegisteredJob {
             Trigger trigger = TriggerBuilder.newTrigger()
                     .startNow()
                     .withIdentity(
-                            String.format("trigger%d", priority),
-                            document.getObjectId("_id").toString())
+                            String.format("trigger%d", priority), document.getObjectId("_id").toString())
                     .withPriority(priority++)
                     .withSchedule(
                             CronScheduleBuilder.cronSchedule(schedule.toString()))

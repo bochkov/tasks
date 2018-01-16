@@ -2,8 +2,6 @@ package sb.tasks.telegram;
 
 import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
-import org.bson.types.ObjectId;
-import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
@@ -13,7 +11,6 @@ import sb.tasks.telegram.pojos.MessageEntity;
 import sb.tasks.telegram.pojos.Update;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Properties;
 
 public final class TelegramBot implements Handler {
@@ -21,14 +18,11 @@ public final class TelegramBot implements Handler {
     private final Properties props;
     private final MongoDatabase db;
     private final Scheduler schedule;
-    private final Map<JobKey, ObjectId> registry;
 
-    public TelegramBot(Properties props, MongoDatabase db,
-                       Scheduler schedule, Map<JobKey, ObjectId> registry) {
+    public TelegramBot(Properties props, MongoDatabase db, Scheduler schedule) {
         this.db = db;
         this.props = props;
         this.schedule = schedule;
-        this.registry = registry;
     }
 
     @Override
@@ -60,13 +54,13 @@ public final class TelegramBot implements Handler {
                                         new AnsRequireAdmin(
                                                 new NoEmptyArgs(
                                                         "Please send me an URL and (optional) directory",
-                                                        new AnsTask(db, token, props, registry, schedule)
+                                                        new AnsTask(db, token, props, schedule)
                                                 )
                                         ).handle(chatId, args);
                                         break;
                                     case "/ls":
                                         new AnsRequireAdmin(
-                                                new AnsList(db, token, registry)
+                                                new AnsList(db, schedule, token)
                                         ).handle(chatId, args);
                                         break;
                                     case "/info":
@@ -81,7 +75,7 @@ public final class TelegramBot implements Handler {
                                         new AnsRequireAdmin(
                                                 new NoEmptyArgs(
                                                         "Please send me ObjectId",
-                                                        new AnsRemove(db, token, registry, schedule)
+                                                        new AnsRemove(db, token, schedule)
                                                 )
                                         ).handle(chatId, args);
                                         break;
