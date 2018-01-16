@@ -8,7 +8,7 @@ import com.jcabi.http.wire.TrustedWire;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class LfRequest implements Request {
+public final class LfRequest implements Request {
 
     private final Request origin;
 

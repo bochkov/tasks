@@ -5,7 +5,7 @@ import org.bson.Document;
 import java.io.IOException;
 import java.util.List;
 
-public class ValidDoc<T extends NotifObj> implements Agent<T> {
+public final class ValidDoc<T extends NotifObj> implements Agent<T> {
 
     private final Document document;
     private final Agent<T> origin;
