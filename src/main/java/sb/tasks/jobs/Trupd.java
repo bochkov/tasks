@@ -27,25 +27,28 @@ public final class Trupd implements Job {
         ).first();
 
         try {
-            new Cleanup<>(
-                    bson.get("params", Document.class),
-                    new AgNotify<>(
-                            db,
-                            props,
-                            bson,
-                            "torrent updated",
-                            new Download(
+            new ValidDoc<>(
+                    bson,
+                    new Cleanup<>(
+                            bson.get("params", Document.class),
+                            new AgNotify<>(
+                                    db,
+                                    props,
                                     bson,
-                                    new MetafileUpdated(
-                                            bson, // TODO if here e.g. "vars" is missing then will be NullPointerException
-                                            new UpdateFields<>(
-                                                    db,
+                                    "torrent updated",
+                                    new Download(
+                                            bson,
+                                            new MetafileUpdated(
                                                     bson,
-                                                    new AgentFactory(
+                                                    new UpdateFields<>(
                                                             db,
-                                                            bson.get("params", Document.class),
-                                                            props
-                                                    ).agent()
+                                                            bson,
+                                                            new AgentFactory(
+                                                                    db,
+                                                                    bson.get("params", Document.class),
+                                                                    props
+                                                            ).agent()
+                                                    )
                                             )
                                     )
                             )
