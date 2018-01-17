@@ -111,6 +111,6 @@ public final class AnLostFilm implements Agent<TorrentResult> {
                 }
             }
         }
-        throw new IOException("Document not found");
+        return Collections.emptyList();
     }
 }
