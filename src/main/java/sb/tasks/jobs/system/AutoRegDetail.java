@@ -3,14 +3,11 @@ package sb.tasks.jobs.system;
 import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobKey;
 import sb.tasks.jobs.RegisteredJob;
 
-import java.util.Map;
 import java.util.Properties;
 
 public final class AutoRegDetail implements Job {
@@ -19,15 +16,12 @@ public final class AutoRegDetail implements Job {
     public void execute(JobExecutionContext context) {
         JobDataMap data = context.getMergedJobDataMap();
         MongoDatabase db = MongoDatabase.class.cast(data.get("db"));
-        Map registry = Map.class.cast(data.get("registry"));
         Properties properties = Properties.class.cast(data.get("properties"));
+        SchedulerInfo schInfo = new SchedulerInfo(context.getScheduler());
         for (Document document : db.getCollection("tasks").find()) {
-            ObjectId id = document.getObjectId("_id");
-            if (!registry.containsValue(id)) {
+            if (!schInfo.contains(document.getObjectId("_id").toString())) {
                 try {
-                    JobKey key = new RegisteredJob(properties, db, context.getScheduler())
-                            .register(document);
-                    registry.put(key, id);
+                    new RegisteredJob(properties, db, context.getScheduler()).register(document);
                     Logger.info(this, "Successfully register job for doc = %s", document);
                 } catch (Exception ex) {
                     Logger.warn(this, "Cannot register job :: %s", ex);
