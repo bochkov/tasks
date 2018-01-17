@@ -54,7 +54,7 @@ public final class Application {
                 });
         new AutoRegJob(db, scheduler, properties).start();
         new AutoChangesJob().start();
-        new WebApp(properties, db, scheduler);
+        new WebApp(properties, db, scheduler).init();
         scheduler.start();
         Logger.info(this, "Application started");
     }
