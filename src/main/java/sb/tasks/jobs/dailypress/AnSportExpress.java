@@ -43,7 +43,7 @@ public final class AnSportExpress implements Agent<MagResult> {
         Logger.info(this, String.format("Checking link: %s", url));
         File out = new File(
                 System.getProperty("java.io.tmpdir"),
-                String.format("sp%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
+                String.format("se%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
         if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {
             Response response = new JdkRequest(url)
