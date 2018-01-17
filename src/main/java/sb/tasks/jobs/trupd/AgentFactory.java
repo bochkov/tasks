@@ -38,7 +38,7 @@ public final class AgentFactory implements AFactory<TorrentResult> {
         }
         else if (url.matches("https?://.*?tor.org/.*"))
             agent = new AnRutor(document);
-        else if (url.matches("https?://www.lostfilm.tv/.*")) {
+        else if (url.matches("https?://.*?lostfilm.tv/.*")) {
             agent = new AnLostFilm(
                     document,
                     db.getCollection("settings").find(Filters.eq("_id", "lostfilm.session")).first().getString("value"),
