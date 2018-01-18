@@ -9,6 +9,7 @@ import org.quartz.Scheduler;
 import ratpack.exec.Promise;
 import ratpack.form.Form;
 import ratpack.handling.Context;
+import sb.tasks.jobs.system.SchedulerInfo;
 
 import java.util.List;
 
@@ -26,9 +27,10 @@ public final class JobDelete implements HttpPage {
     public void handle(Context ctx) {
         Promise<Form> promise = ctx.parse(Form.class);
         promise.then(f -> {
+            SchedulerInfo schInfo = new SchedulerInfo(scheduler);
             List<String> jobkeys = f.getAll("id");
             for (String jobkey : jobkeys) {
-                JobKey key = new JobKey(jobkey);
+                JobKey key = schInfo.get(jobkey);
                 if (scheduler.checkExists(key)) {
                     scheduler.deleteJob(key);
                     db.getCollection("tasks").findOneAndDelete(Filters.eq("_id", new ObjectId(jobkey)));

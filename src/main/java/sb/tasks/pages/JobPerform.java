@@ -6,6 +6,7 @@ import org.quartz.Scheduler;
 import ratpack.exec.Promise;
 import ratpack.form.Form;
 import ratpack.handling.Context;
+import sb.tasks.jobs.system.SchedulerInfo;
 
 import java.util.List;
 
@@ -22,14 +23,15 @@ public final class JobPerform implements HttpPage {
         Promise<Form> promise = ctx.parse(Form.class);
         promise.then(f -> {
             List<String> jobkeys = f.getAll("id");
+            SchedulerInfo schInfo = new SchedulerInfo(scheduler);
             for (String jobkey : jobkeys) {
-                JobKey key = JobKey.jobKey(jobkey);
+                JobKey key = schInfo.get(jobkey);
                 scheduler.triggerJob(key);
                 Logger.info(this, "Job with key = %s triggered", key);
             }
+            ctx.getResponse()
+                    .contentType("application/json")
+                    .send(new Success().json());
         });
-        ctx.getResponse()
-                .contentType("application/json")
-                .send(new Success().json());
     }
 }
