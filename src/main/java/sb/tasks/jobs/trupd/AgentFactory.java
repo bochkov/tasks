@@ -9,7 +9,7 @@ import sb.tasks.jobs.Agent;
 
 import java.util.Properties;
 
-public final class AgentFactory implements AFactory<TorrentResult> {
+public final class AgentFactory implements AFactory<TrNotif> {
 
     private final MongoDatabase db;
     private final Document document;
@@ -21,8 +21,8 @@ public final class AgentFactory implements AFactory<TorrentResult> {
         this.props = props;
     }
 
-    public Agent<TorrentResult> agent() {
-        Agent<TorrentResult> agent;
+    public Agent<TrNotif> agent() {
+        Agent<TrNotif> agent;
         String url = document.getString("url");
         if (url == null) {
             String num = document.getString("num");

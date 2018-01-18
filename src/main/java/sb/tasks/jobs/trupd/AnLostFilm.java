@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class AnLostFilm implements Agent<TorrentResult> {
+public final class AnLostFilm implements Agent<TrNotif> {
 
     private final org.bson.Document document;
     private final String session;
@@ -55,7 +55,7 @@ public final class AnLostFilm implements Agent<TorrentResult> {
     }
 
     @Override
-    public List<TorrentResult> perform() throws IOException {
+    public List<TrNotif> perform() throws IOException {
         List<String> items = new LfRequest(new JdkRequest("http://lostfilm.tv/rss.xml"))
                 .fetch()
                 .as(XmlResponse.class)
@@ -111,6 +111,6 @@ public final class AnLostFilm implements Agent<TorrentResult> {
                 }
             }
         }
-        return Collections.emptyList();
+        return Collections.singletonList(new TrNotif.CheckedNotif());
     }
 }

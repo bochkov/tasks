@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-public final class AnRutracker implements Agent<TorrentResult> {
+public final class AnRutracker implements Agent<TrNotif> {
 
     private static final String COOKIE_FILE = "cookies.txt";
 
@@ -33,7 +33,7 @@ public final class AnRutracker implements Agent<TorrentResult> {
     }
 
     @Override
-    public List<TorrentResult> perform() throws AgentException, IOException {
+    public List<TrNotif> perform() throws AgentException, IOException {
         Logger.info(this, "Fetch cookies");
         File cookie = new RutrackerCurl(COOKIE_FILE, properties).cookies(login, password, userAgent);
         if (cookie.exists()) {

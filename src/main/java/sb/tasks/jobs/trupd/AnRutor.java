@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class AnRutor implements Agent<TorrentResult> {
+public final class AnRutor implements Agent<TrNotif> {
 
     private static final Pattern[] LINK_PATTERNS = new Pattern[]{
             Pattern.compile("http://d.rutor.org/download/\\d+"),
@@ -62,7 +62,7 @@ public final class AnRutor implements Agent<TorrentResult> {
     }
 
     @Override
-    public List<TorrentResult> perform() throws IOException {
+    public List<TrNotif> perform() throws IOException {
         Document root = Jsoup.parse(
                 new LfRequest(new JdkRequest(document.getString("url")))
                         .fetch()
