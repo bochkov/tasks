@@ -3,6 +3,8 @@ package sb.tasks.jobs.trupd;
 import com.mongodb.client.model.Updates;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bson.conversions.Bson;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import sb.tasks.jobs.NotifObj;
@@ -12,8 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class TorrentResult implements NotifObj {
 
@@ -52,24 +52,28 @@ public final class TorrentResult implements NotifObj {
 
     @Override
     public String mailText() {
-        Map<String, Object> model = new HashMap<>();
-        model.put("t", this);
         return JtwigTemplate
-                .classpathTemplate("templates/mail/torrents.twig")
+                .classpathTemplate("templates/notif/tr_mail.twig")
                 .render(
-                        JtwigModel.newModel(model)
+                        JtwigModel.newModel(
+                                new MapOf<>(
+                                        new MapEntry<>("t", this)
+                                )
+                        )
                 );
     }
 
     @Override
     public String mailFailText(Throwable th) {
-        Map<String, Object> model = new HashMap<>();
-        model.put("t", this);
-        model.put("tech", model.put("tech", ExceptionUtils.getStackTrace(th)));
         return JtwigTemplate
-                .classpathTemplate("templates/mail/torrents_fail.twig")
+                .classpathTemplate("templates/notif/tr_mail_fail.twig")
                 .render(
-                        JtwigModel.newModel()
+                        JtwigModel.newModel(
+                                new MapOf<>(
+                                        new MapEntry<>("t", this),
+                                        new MapEntry<>("tech", ExceptionUtils.getStackTrace(th))
+                                )
+                        )
                 );
     }
 
@@ -85,16 +89,19 @@ public final class TorrentResult implements NotifObj {
 
     @Override
     public String toString() {
-        return String.format("TorrentResult {title='%s', downloadUrl='%s'}", title, downloadUrl);
+        return String.format("TorrentResult {title='%s', url='%s', downloadUrl='%s'}", title, url, downloadUrl);
     }
 
     @Override
     public String telegramText() {
-        if (url != null)
-            return String.format("Обновлен торрент %s\n%s", title, url);
-        else if (downloadUrl != null)
-            return String.format("Обновлен торрент %s\n%s", title, downloadUrl);
-        else
-            return String.format("Обновлен торрент %s", title);
+        return JtwigTemplate
+                .classpathTemplate("templates/notif/tr_tgram.twig")
+                .render(
+                        JtwigModel.newModel(
+                                new MapOf<>(
+                                        new MapEntry<>("t", this)
+                                )
+                        )
+                );
     }
 }

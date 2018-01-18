@@ -3,14 +3,14 @@ package sb.tasks.jobs.dailypress;
 import com.mongodb.client.model.Updates;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bson.conversions.Bson;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import sb.tasks.jobs.NotifObj;
 
 import java.io.File;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public final class MagResult implements NotifObj {
 
@@ -26,7 +26,7 @@ public final class MagResult implements NotifObj {
 
     @Override
     public String telegramText() {
-        return "";
+        throw new UnsupportedOperationException("Telegram notifications not supported");
     }
 
     @Override
@@ -36,24 +36,28 @@ public final class MagResult implements NotifObj {
 
     @Override
     public String mailText() {
-        Map<String, Object> model = new HashMap<>();
-        model.put("text", text);
         return JtwigTemplate
-                .classpathTemplate("templates/mail/magazine.twig")
+                .classpathTemplate("templates/notif/mg_mail.twig")
                 .render(
-                        JtwigModel.newModel(model)
+                        JtwigModel.newModel(
+                                new MapOf<>(
+                                        new MapEntry<>("t", this)
+                                )
+                        )
                 );
     }
 
     @Override
     public String mailFailText(Throwable th) {
-        Map<String, Object> model = new HashMap<>();
-        model.put("url", url);
-        model.put("tech", ExceptionUtils.getStackTrace(th));
         return JtwigTemplate
-                .classpathTemplate("templates/mail/magazine_fail.twig")
+                .classpathTemplate("templates/notif/mg_mail_fail.twig")
                 .render(
-                        JtwigModel.newModel(model)
+                        JtwigModel.newModel(
+                                new MapOf<>(
+                                        new MapEntry<>("t", this),
+                                        new MapEntry<>("tech", ExceptionUtils.getStackTrace(th))
+                                )
+                        )
                 );
     }
 
