@@ -23,30 +23,31 @@ public final class AgentFactory implements AFactory<TrNotif> {
 
     public Agent<TrNotif> agent() {
         Agent<TrNotif> agent;
-        String url = document.getString("url");
-        if (url == null) {
-            String num = document.getString("num");
-            agent = num == null ?
-                    new Agent.EMPTY<>() :
-                    new AnRutracker(
-                            document,
-                            props,
-                            db.getCollection("settings").find(Filters.eq("_id", "rutracker.login")).first().getString("value"),
-                            db.getCollection("settings").find(Filters.eq("_id", "rutracker.password")).first().getString("value"),
-                            db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first().getString("value")
-                    );
-        }
-        else if (url.matches("https?://.*?tor.org/.*"))
-            agent = new AnRutor(document);
-        else if (url.matches("https?://.*?lostfilm.tv/.*")) {
-            agent = new AnLostFilm(
-                    document,
-                    db.getCollection("settings").find(Filters.eq("_id", "lostfilm.session")).first().getString("value"),
-                    db.getCollection("settings").find(Filters.eq("_id", "lostfilm.uid")).first().getString("value"),
-                    db.getCollection("settings").find(Filters.eq("_id", "lostfilm.quality")).first().getString("value")
-            );
-        } else
+        String url = document.get("url", "");
+        String num = document.get("num", "");
+        if (url.isEmpty() && num.isEmpty())
             agent = new Agent.EMPTY<>();
+        else {
+            if (url.matches("https?://.*?tor.org/.*"))
+                agent = new AnRutor(document);
+            else if (url.matches("https?://.*?lostfilm.tv/.*"))
+                agent = new AnLostFilm(
+                        document,
+                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.session")).first().getString("value"),
+                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.uid")).first().getString("value"),
+                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.quality")).first().getString("value")
+                );
+            else if (!num.isEmpty() || url.matches("https?://rutracker.org/.*"))
+                agent = new AnRutracker(
+                        document,
+                        props,
+                        db.getCollection("settings").find(Filters.eq("_id", "rutracker.login")).first().getString("value"),
+                        db.getCollection("settings").find(Filters.eq("_id", "rutracker.password")).first().getString("value"),
+                        db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first().getString("value")
+                );
+            else
+                agent = new Agent.EMPTY<>();
+        }
         Logger.info(this, "Selected agent '%s' for url=%s", agent, document.getString("url"));
         return agent;
     }

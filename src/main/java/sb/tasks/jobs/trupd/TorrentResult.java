@@ -41,7 +41,8 @@ public final class TorrentResult implements TrNotif {
                 Updates.set("vars.download_url", downloadUrl),
                 Updates.set("vars.name", title),
                 Updates.set("vars.created", metafile.creationDate()),
-                Updates.set("vars.checked", new Date())
+                Updates.set("vars.checked", new Date()),
+                Updates.set("params.url", url)
         );
     }
 

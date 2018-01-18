@@ -1,22 +1,19 @@
 package sb.tasks.jobs.trupd;
 
-import com.jcabi.log.Logger;
 import org.bson.Document;
+import org.cactoos.scalar.RetryScalar;
 import sb.tasks.jobs.Agent;
 import sb.tasks.jobs.AgentException;
 import sb.tasks.jobs.trupd.metafile.Metafile;
 import sb.tasks.jobs.trupd.metafile.Mt;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
 public final class AnRutracker implements Agent<TrNotif> {
-
-    private static final String COOKIE_FILE = "cookies.txt";
 
     private final Document document;
     private final Properties properties;
@@ -33,24 +30,24 @@ public final class AnRutracker implements Agent<TrNotif> {
     }
 
     @Override
-    public List<TrNotif> perform() throws AgentException, IOException {
-        Logger.info(this, "Fetch cookies");
-        File cookie = new RutrackerCurl(COOKIE_FILE, properties).cookies(login, password, userAgent);
-        if (cookie.exists()) {
-            File file = new RutrackerCurl(COOKIE_FILE, properties).save(document.getString("num"));
-            if (file.exists()) {
-                Mt mt = new Metafile(Files.readAllBytes(file.toPath()));
-                return Collections.singletonList(
-                        new TorrentResult(
-                                mt,
-                                mt.name(),
-                                String.format("http://dl.rutracker.org/forum/dl.php?t=%s", document.getString("num")),
-                                file,
-                                document.getString("url")
-                        )
-                );
-            }
+    public List<TrNotif> perform() throws AgentException {
+        RutrackerCurl curl = new RutrackerCurl(login, password, properties, userAgent);
+        try {
+            File file = new RetryScalar<>(
+                    () -> curl.save(document.getString("num"))
+            ).value();
+            Mt mt = new Metafile(Files.readAllBytes(file.toPath()));
+            return Collections.singletonList(
+                    new TorrentResult(
+                            mt,
+                            mt.name(),
+                            String.format("http://dl.rutracker.org/forum/dl.php?t=%s", document.getString("num")),
+                            file,
+                            String.format("https://rutracker.org/forum/viewtopic.php?t=%s", document.getString("num"))
+                    )
+            );
+        } catch (Exception ex) {
+            throw new AgentException(ex);
         }
-        throw new AgentException("Something went wrong");
     }
 }
