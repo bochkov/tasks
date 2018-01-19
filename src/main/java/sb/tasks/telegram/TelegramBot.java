@@ -85,10 +85,10 @@ public final class TelegramBot implements Handler {
                                 }
                             }
                         }
+                        context.getResponse().send();
                     });
         } catch (Exception ex) {
             Logger.info(this, "%s", ex);
         }
-        context.getResponse().send();
     }
 }
