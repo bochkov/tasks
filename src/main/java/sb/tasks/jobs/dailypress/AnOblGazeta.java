@@ -42,7 +42,7 @@ public final class AnOblGazeta implements Agent<MagResult> {
                 .as(JsoupResponse.class)
                 .body();
         String pdfUrl = Jsoup.parse(paperSource)
-                .getElementsByClass("file pdf").get(0)
+                .getElementsByClass("download_label").get(0)
                 .getElementsByTag("a").get(0)
                 .attr("href");
         String url = String.format("https://www.oblgazeta.ru%s", pdfUrl);
