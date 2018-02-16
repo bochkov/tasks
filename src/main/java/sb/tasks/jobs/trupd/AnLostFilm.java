@@ -67,7 +67,7 @@ public final class AnLostFilm implements Agent<TrNotif> {
                         new LfRequest(new JdkRequest(str)).fetch().as(JsoupResponse.class).body(),
                         document.getString("url")
                 );
-                Matcher m = Pattern.compile("PlayEpisode\\('(\\d+)','(\\d+)','(\\d+)'\\)")
+                Matcher m = Pattern.compile("PlayEpisode\\('(\\d{3})(\\d{3})(\\d{3})'\\)")
                         .matcher(
                                 root.getElementsByClass("external-btn").attr("onclick")
                         );
