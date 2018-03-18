@@ -80,7 +80,7 @@ public final class AnRutor implements Agent<TrNotif> {
                         ),
                         name(root),
                         torrentUrl,
-                        new Filename(torrentUrl).toFile(),
+                        new Filename(document, torrentUrl).toFile(),
                         document.getString("url")
                 )
         );

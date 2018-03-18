@@ -2,6 +2,7 @@ package sb.tasks.jobs.trupd;
 
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
+import org.bson.Document;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,9 +13,11 @@ import java.util.regex.Pattern;
 
 public final class Filename {
 
+    private final Document document;
     private final String torrentUrl;
 
-    public Filename(String torrentUrl) {
+    public Filename(Document document, String torrentUrl) {
+        this.document = document;
         this.torrentUrl = torrentUrl;
     }
 
@@ -35,6 +38,9 @@ public final class Filename {
                     filename = matcher.group(1);
             }
         }
-        return new File(filename);
+        return new File(
+                this.document.get("download_dir", System.getProperty("user.dir")),
+                filename
+        );
     }
 }

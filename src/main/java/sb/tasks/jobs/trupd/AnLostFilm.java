@@ -102,7 +102,7 @@ public final class AnLostFilm implements Agent<TrNotif> {
                                         ),
                                         name(doc2),
                                         torrentUrl,
-                                        new Filename(torrentUrl).toFile(),
+                                        new Filename(document, torrentUrl).toFile(),
                                         document.getString("url")
                                 )
                         );
