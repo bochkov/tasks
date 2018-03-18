@@ -54,7 +54,9 @@ public final class TelegramBot implements Handler {
                                         new AnsRequireAdmin(
                                                 new NoEmptyArgs(
                                                         "Please send me an URL and (optional) directory",
-                                                        new AnsTask(db, token, props, schedule)
+                                                        new AnsNormArgs(
+                                                                new AnsTask(db, token, props, schedule)
+                                                        )
                                                 )
                                         ).handle(chatId, args);
                                         break;
