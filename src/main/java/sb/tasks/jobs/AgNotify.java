@@ -27,14 +27,19 @@ public final class AgNotify<T extends NotifObj> implements Agent<T> {
     public List<T> perform() throws AgentException, IOException {
         List<T> objects = this.agent.perform();
         Document params = document.get("params", Document.class);
-        String dir = params.getString("download_dir");
+        //String dir = params.getString("download_dir");
         String mailTo = params.getString("mail_to");
         String telegram = params.getString("telegram");
         Notification<T> notifyAgent;
         if (telegram != null)
             notifyAgent = new AgTelegram<>(db, telegram);
         else if (mailTo != null)
-            notifyAgent = new AgMail<>(properties, mailTo, subject, dir == null);
+            notifyAgent = new AgMail<>(
+                    properties,
+                    mailTo,
+                    subject,
+                    true
+            );
         else
             notifyAgent = new LogNotify<>();
         notifyAgent.send(objects);
