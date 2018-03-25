@@ -50,8 +50,7 @@ mail.host =
 mail.port = 
 mail.from = 
 
-# trupd properties
-trupd.default-dir = /opt/torrents
+system.tmpdir = /opt/tmp
 
 # curl extra params, e.g. socks proxy
 curl.extra-opts = --socks5 user:pass@server:port
@@ -60,7 +59,7 @@ curl.extra-opts = --socks5 user:pass@server:port
 #### Sample record to daily-press
 ```json
 {
-    "job" : "sb.tasks.jobs.DailyPress", 
+    "job" : "sb.tasks.jobs.dailypress.DailyPress", 
     "params" : {
         "mail_to" : "< ; separated recipients addresses >", 
         "subject" : "< Mail subject >", 
@@ -78,7 +77,7 @@ curl.extra-opts = --socks5 user:pass@server:port
 for rutracker.org params section must contains num field
 ```json
 {
-    "job" : "sb.tasks.jobs.Trupd", 
+    "job" : "sb.tasks.jobs.trupd.Trupd", 
     "params" : {
         "num" : "< torrent num on rutracker.org >", 
         "mail_to" : "< ; recipients addresses >", 
@@ -93,7 +92,7 @@ for rutracker.org params section must contains num field
 for others - url field
 ```json
 {
-    "job" : "sb.tasks.jobs.Trupd", 
+    "job" : "sb.tasks.jobs.trupd.Trupd", 
     "params" : {
         "url" : "https://www.lostfilm.tv/series/Riverdale/", 
         "download_dir" : "/opt/torrents", 

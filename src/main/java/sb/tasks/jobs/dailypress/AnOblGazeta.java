@@ -8,7 +8,7 @@ import com.jcabi.http.wire.RetryWire;
 import com.jcabi.log.Logger;
 import org.bson.Document;
 import org.jsoup.Jsoup;
-import sb.tasks.jobs.Agent;
+import sb.tasks.agent.Agent;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.File;

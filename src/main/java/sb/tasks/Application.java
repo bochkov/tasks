@@ -5,10 +5,9 @@ import com.mongodb.Block;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.quartz.Scheduler;
-import sb.tasks.jobs.RegisteredJob;
-import sb.tasks.jobs.system.AutoChangesJob;
-import sb.tasks.jobs.system.AutoRegJob;
-import sb.tasks.jobs.system.SchedulerInfo;
+import sb.tasks.system.AutoChangesJob;
+import sb.tasks.system.AutoRegJob;
+import sb.tasks.system.RegisteredJob;
 
 import java.io.FileInputStream;
 import java.io.IOException;

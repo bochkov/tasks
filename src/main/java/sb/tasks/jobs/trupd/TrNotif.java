@@ -2,7 +2,7 @@ package sb.tasks.jobs.trupd;
 
 import com.mongodb.client.model.Updates;
 import org.bson.conversions.Bson;
-import sb.tasks.jobs.NotifObj;
+import sb.tasks.notif.NotifObj;
 
 import java.io.File;
 import java.io.IOException;

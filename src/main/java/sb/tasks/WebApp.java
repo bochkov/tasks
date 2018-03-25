@@ -5,10 +5,10 @@ import com.mongodb.client.MongoDatabase;
 import org.quartz.Scheduler;
 import ratpack.server.BaseDir;
 import ratpack.server.RatpackServer;
+import sb.tasks.notif.telegram.TelegramBot;
 import sb.tasks.pages.IndexPage;
 import sb.tasks.pages.JobDelete;
 import sb.tasks.pages.JobPerform;
-import sb.tasks.telegram.TelegramBot;
 
 import java.util.Properties;
 

@@ -8,7 +8,7 @@ import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.quartz.Scheduler;
 import ratpack.handling.Context;
-import sb.tasks.jobs.system.SchedulerInfo;
+import sb.tasks.system.SchedulerInfo;
 
 import java.util.ArrayList;
 import java.util.List;

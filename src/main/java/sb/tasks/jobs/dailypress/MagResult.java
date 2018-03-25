@@ -7,7 +7,7 @@ import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
-import sb.tasks.jobs.NotifObj;
+import sb.tasks.notif.NotifObj;
 
 import java.io.File;
 import java.util.Date;

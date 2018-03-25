@@ -91,12 +91,20 @@ public final class RutrackerCurl {
     }
 
     public File save(String num) throws Exception {
+        File workDir = new File(
+                props.getProperty(
+                        "system.tmpdir",
+                        System.getProperty("java.io.tmpdir")
+                )
+        );
         return new RetryScalar<>(
                 new FetchFile(
+                        workDir,
                         num,
                         new SyncScalar<>(
                                 new RetryScalar<>(
                                         new FetchCookies(
+                                                workDir,
                                                 File::exists // TODO cookies validation and maybe check expiration time
                                         )
                                 )
@@ -107,10 +115,12 @@ public final class RutrackerCurl {
 
     private final class FetchFile implements Scalar<File> {
 
+        private final File workDir;
         private final String num;
         private final Scalar<Integer> cookies;
 
-        public FetchFile(String num, Scalar<Integer> cookies) {
+        public FetchFile(File workDir, String num, Scalar<Integer> cookies) {
+            this.workDir = workDir;
             this.num = num;
             this.cookies = cookies;
         }
@@ -118,8 +128,9 @@ public final class RutrackerCurl {
         @Override
         public File value() throws Exception {
             this.cookies.value();
-            File file = new File(String.format(NAME, num));
+            File file = new File(workDir, String.format(NAME, num));
             new ProcessBuilder(downloadCmd(num, file))
+                    .directory(workDir)
                     .start()
                     .waitFor();
             if (file.exists() && file.length() > 0)
@@ -130,23 +141,26 @@ public final class RutrackerCurl {
 
     private final class FetchCookies implements Scalar<Integer> {
 
+        private final File workDir;
         private final Func<File, Boolean> valid;
 
-        public FetchCookies(Func<File, Boolean> valid) {
+        public FetchCookies(File workDir, Func<File, Boolean> valid) {
+            this.workDir = workDir;
             this.valid = valid;
         }
 
         @Override
         public Integer value() throws Exception {
-            File cook = new File(COOKIES);
+            File cook = new File(workDir, COOKIES);
             if (valid.apply(cook)) {
                 return 0;
             } else {
                 int res = new ProcessBuilder(cookieCmd())
+                        .directory(workDir)
                         .start()
                         .waitFor();
                 Logger.info(this, String.format("Cookies fetch code %s", res));
-                File lp = new File("login.php");
+                File lp = new File(workDir, "login.php");
                 if (lp.exists() && !lp.delete())
                     Logger.warn(this, "Cannot delete 'login.php'");
                 if (cook.exists() && cook.length() > 0)

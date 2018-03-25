@@ -6,7 +6,7 @@ import org.quartz.Scheduler;
 import ratpack.exec.Promise;
 import ratpack.form.Form;
 import ratpack.handling.Context;
-import sb.tasks.jobs.system.SchedulerInfo;
+import sb.tasks.system.SchedulerInfo;
 
 import java.util.List;
 
