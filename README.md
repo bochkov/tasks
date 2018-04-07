@@ -61,7 +61,7 @@ curl.extra-opts = --socks5 user:pass@server:port
 {
     "job" : "sb.tasks.jobs.dailypress.DailyPress", 
     "params" : {
-        "mail_to" : "< ; separated recipients addresses >", 
+        "mail_to" : ["recipient1", "recipient2"], 
         "subject" : "< Mail subject >", 
         "text" : "< Mail text >", 
         "url" : "http://www.sport-express.ru/"
@@ -80,7 +80,7 @@ for rutracker.org params section must contains num field
     "job" : "sb.tasks.jobs.trupd.Trupd", 
     "params" : {
         "num" : "< torrent num on rutracker.org >", 
-        "mail_to" : "< ; recipients addresses >", 
+        "mail_to" : ["recipient1", "recipient2"], 
         "admin_telegram" : "< chatId for notification >"
     },
     "schedule" : [
