@@ -10,10 +10,11 @@ import org.quartz.JobExecutionException;
 import sb.tasks.agent.AgNotify;
 import sb.tasks.agent.Cleanup;
 import sb.tasks.agent.UpdateFields;
+import sb.tasks.jobs.dailypress.agent.AgentFactory;
+import sb.tasks.jobs.dailypress.agent.PressUpdated;
 
 import java.util.Properties;
 
-@SuppressWarnings("unused")
 public final class DailyPress implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {

@@ -1,10 +1,11 @@
-package sb.tasks.jobs.dailypress;
+package sb.tasks.jobs.dailypress.agent;
 
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import sb.tasks.agent.Agent;
 import sb.tasks.agent.Agents;
+import sb.tasks.jobs.dailypress.MagResult;
 
 public final class AgentFactory implements Agents<MagResult> {
 

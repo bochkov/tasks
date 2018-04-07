@@ -1,14 +1,16 @@
-package sb.tasks.jobs.dailypress;
+package sb.tasks.jobs.dailypress.agent;
 
 import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.response.JsoupResponse;
 import com.jcabi.http.wire.AutoRedirectingWire;
+import com.jcabi.http.wire.CookieOptimizingWire;
 import com.jcabi.http.wire.RetryWire;
 import com.jcabi.log.Logger;
 import org.bson.Document;
 import org.jsoup.Jsoup;
 import sb.tasks.agent.Agent;
+import sb.tasks.jobs.dailypress.MagResult;
+import sb.tasks.jobs.dailypress.PdfFromResponse;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.File;
@@ -18,44 +20,44 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public final class AnOblGazeta implements Agent<MagResult> {
+public final class AnSportExpress implements Agent<MagResult> {
 
     private final Document document;
+    private final String phpSessId;
+    private final String username;
+    private final String selife;
+    private final String userAgent;
 
-    public AnOblGazeta(Document document) {
+    public AnSportExpress(Document document, String phpSessId, String username, String selife, String userAgent) {
         this.document = document;
+        this.phpSessId = phpSessId;
+        this.username = username;
+        this.userAgent = userAgent;
+        this.selife = selife;
     }
 
     @Override
     public List<MagResult> perform() throws IOException {
-        String source = new JdkRequest("https://oblgazeta.ru/")
-                .through(AutoRedirectingWire.class)
-                .fetch()
-                .as(JsoupResponse.class)
-                .body();
-        String newPaper = Jsoup.parse(source)
-                .getElementsByClass("foot-newspaper block100")
-                .get(0).attr("href");
-        String paperSource = new JdkRequest(String.format("https://oblgazeta.ru%s", newPaper))
-                .through(AutoRedirectingWire.class)
-                .fetch()
-                .as(JsoupResponse.class)
-                .body();
-        String pdfUrl = Jsoup.parse(paperSource)
-                .getElementsByClass("download_label").get(0)
-                .getElementsByTag("a").get(0)
+        String url = Jsoup.connect("http://www.sport-express.ru/newspaper/")
+                .get()
+                .getElementById("pdf_load")
                 .attr("href");
-        String url = String.format("https://www.oblgazeta.ru%s", pdfUrl);
         Logger.info(this, String.format("Checking link: %s", url));
         File out = new File(
                 System.getProperty("java.io.tmpdir"),
-                String.format("og%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
+                String.format("se%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
         if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {
             Response response = new JdkRequest(url)
                     .through(RetryWire.class)
+                    .through(CookieOptimizingWire.class)
                     .through(AutoRedirectingWire.class)
+                    .header("Upgrade-Insecure-Requests", "0")
                     .header(HttpHeaders.ACCEPT, "application/pdf")
+                    .header(HttpHeaders.USER_AGENT, userAgent)
+                    .header(HttpHeaders.COOKIE, String.format("PHPSESSID=%s", phpSessId))
+                    .header(HttpHeaders.COOKIE, String.format("RealUserName=%s", username))
+                    .header(HttpHeaders.COOKIE, String.format("SELIFE=%s", selife))
                     .fetch();
             new PdfFromResponse(response).saveTo(out);
         } else

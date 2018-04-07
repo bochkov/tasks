@@ -7,7 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import sb.tasks.agent.Agent;
 import sb.tasks.jobs.trupd.Filename;
-import sb.tasks.jobs.trupd.LfRequest;
+import sb.tasks.jobs.trupd.ComboRequest;
 import sb.tasks.jobs.trupd.TorrentResult;
 import sb.tasks.jobs.trupd.TrNotif;
 import sb.tasks.jobs.trupd.metafile.Metafile;
@@ -68,7 +68,7 @@ public final class AnRutor implements Agent<TrNotif> {
     @Override
     public List<TrNotif> perform() throws IOException {
         Document root = Jsoup.parse(
-                new LfRequest(new JdkRequest(document.getString("url")))
+                new ComboRequest(new JdkRequest(document.getString("url")))
                         .fetch()
                         .as(JsoupResponse.class)
                         .body(),
@@ -78,7 +78,7 @@ public final class AnRutor implements Agent<TrNotif> {
         return Collections.singletonList(
                 new TorrentResult(
                         new Metafile(
-                                new LfRequest(new JdkRequest(torrentUrl))
+                                new ComboRequest(new JdkRequest(torrentUrl))
                                         .fetch()
                                         .binary()
                         ),

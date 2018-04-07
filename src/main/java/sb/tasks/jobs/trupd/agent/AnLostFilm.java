@@ -9,7 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import sb.tasks.agent.Agent;
 import sb.tasks.jobs.trupd.Filename;
-import sb.tasks.jobs.trupd.LfRequest;
+import sb.tasks.jobs.trupd.ComboRequest;
 import sb.tasks.jobs.trupd.TorrentResult;
 import sb.tasks.jobs.trupd.TrNotif;
 import sb.tasks.jobs.trupd.metafile.Metafile;
@@ -60,7 +60,7 @@ public final class AnLostFilm implements Agent<TrNotif> {
 
     @Override
     public List<TrNotif> perform() throws IOException {
-        List<String> items = new LfRequest(new JdkRequest("http://lostfilm.tv/rss.xml"))
+        List<String> items = new ComboRequest(new JdkRequest("http://lostfilm.tv/rss.xml"))
                 .fetch()
                 .as(XmlResponse.class)
                 .xml()
@@ -68,7 +68,7 @@ public final class AnLostFilm implements Agent<TrNotif> {
         for (String str : items) {
             if (str.startsWith(document.getString("url"))) {
                 Document root = Jsoup.parse(
-                        new LfRequest(new JdkRequest(str)).fetch().as(JsoupResponse.class).body(),
+                        new ComboRequest(new JdkRequest(str)).fetch().as(JsoupResponse.class).body(),
                         document.getString("url")
                 );
                 Matcher m = Pattern.compile("PlayEpisode\\('(\\d{3})(\\d{3})(\\d{3})'\\)")
@@ -77,7 +77,7 @@ public final class AnLostFilm implements Agent<TrNotif> {
                         );
                 if (m.find()) {
                     Document doc = Jsoup.parse(
-                            new LfRequest(
+                            new ComboRequest(
                                     new JdkRequest(
                                             String.format("https://lostfilm.tv/v_search.php?c=%s&s=%s&e=%s",
                                                     m.group(1), m.group(2), m.group(3))))
@@ -90,7 +90,7 @@ public final class AnLostFilm implements Agent<TrNotif> {
                     );
                     if (!doc.getElementsByTag("a").isEmpty()) {
                         org.jsoup.nodes.Document doc2 = Jsoup.parse(
-                                new LfRequest(
+                                new ComboRequest(
                                         new JdkRequest(
                                                 doc.getElementsByTag("a").get(0).attr("href")
                                         )
@@ -100,7 +100,7 @@ public final class AnLostFilm implements Agent<TrNotif> {
                         return Collections.singletonList(
                                 new TorrentResult(
                                         new Metafile(
-                                                new LfRequest(new JdkRequest(torrentUrl))
+                                                new ComboRequest(new JdkRequest(torrentUrl))
                                                         .fetch()
                                                         .binary()
                                         ),

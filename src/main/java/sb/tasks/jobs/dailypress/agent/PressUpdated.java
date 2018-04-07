@@ -1,8 +1,9 @@
-package sb.tasks.jobs.dailypress;
+package sb.tasks.jobs.dailypress.agent;
 
 import com.jcabi.log.Logger;
 import sb.tasks.agent.Agent;
 import sb.tasks.agent.AgentException;
+import sb.tasks.jobs.dailypress.MagResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
