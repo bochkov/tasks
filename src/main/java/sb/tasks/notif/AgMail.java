@@ -15,6 +15,7 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -22,11 +23,10 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
 
     private final String from;
     private final Postman postman;
-    private final String recipients;
+    private final List<String> recipients;
     private final String subject;
-    private final boolean sendFiles;
 
-    public AgMail(Properties props, Document params, String subject, boolean sendFiles) {
+    public AgMail(Properties props, Document params, String subject) {
         this(
                 new Postman.Default(
                         new Smtps(
@@ -42,18 +42,16 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
                         )
                 ),
                 props.getProperty("mail.from"),
-                params.get("mail_to", ""),
-                subject,
-                sendFiles
+                params.get("mail_to", new ArrayList<>()),
+                subject
         );
     }
 
-    public AgMail(Postman postman, String from, String recipients, String subject, boolean sendFiles) {
+    public AgMail(Postman postman, String from, List<String> recipients, String subject) {
         this.postman = postman;
         this.from = from;
         this.subject = subject;
         this.recipients = recipients;
-        this.sendFiles = sendFiles;
     }
 
     @Override
@@ -62,18 +60,14 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
             Array<Enclosure> encs = new Array<>(
                     new EnHtml(
                             obj.mailText()
+                    ),
+                    new EnBinary(
+                            obj.file(),
+                            obj.file().getName(),
+                            "application/octet-stream"
                     )
             );
-            if (sendFiles) {
-                encs = encs.with(
-                        new EnBinary(
-                                obj.file(),
-                                obj.file().getName(),
-                                "application/octet-stream"
-                        )
-                );
-            }
-            for (String to : recipients.split(";")) {
+            for (String to : recipients) {
                 try {
                     postman.send(
                             new ReMIME(
@@ -105,6 +99,7 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
         }
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final class ReMIME implements Envelope {
 
         private final transient Array<Stamp> stamps;

@@ -29,7 +29,7 @@ public final class AgNotify<T extends NotifObj> implements Agent<T> {
         List<T> objects = this.agent.perform();
         Document params = document.get("params", Document.class);
         new AgDirectory<T>(params).send(objects);
-        new AgMail<T>(properties, params, subject, true).send(objects);
+        new AgMail<T>(properties, params, subject).send(objects);
         new AgTelegram<T>(db, params).send(objects);
         return objects;
     }
