@@ -49,7 +49,7 @@ public final class AgentFactory implements Agents<TrNotif> {
             else
                 agent = new Agent.EMPTY<>();
         }
-        Logger.info(this, "Selected choose '%s' for url=%s", agent, document.getString("url"));
+        Logger.info(this, "Choosed agent '%s' for url=%s", agent, document.getString("url"));
         return agent;
     }
 }

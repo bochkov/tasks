@@ -1,6 +1,7 @@
 package sb.tasks.jobs.trupd;
 
 import com.mongodb.client.model.Updates;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import sb.tasks.notif.NotifObj;
 
@@ -15,6 +16,12 @@ public interface TrNotif extends NotifObj {
     void writeTo(String directory) throws IOException;
 
     final class CheckedNotif implements TrNotif {
+
+        private final Document document;
+
+        public CheckedNotif(Document document) {
+            this.document = document;
+        }
 
         @Override
         public boolean afterThan(Date date) {
@@ -48,6 +55,11 @@ public interface TrNotif extends NotifObj {
         @Override
         public Bson updateSets() {
             return Updates.set("vars.checked", new Date());
+        }
+
+        @Override
+        public String toString() {
+            return String.format("CheckedNotif {document=%s}", document);
         }
     }
 

@@ -31,7 +31,7 @@ public final class UpdateFields<T extends NotifObj> implements Agent<T> {
                             res.updateSets()
                     );
             Logger.info(this, "Update '%s' in db: matched=%s, modified=%s, acknowledged=%s",
-                    toString(), update.getMatchedCount(),
+                    document, update.getMatchedCount(),
                     update.getModifiedCount(), update.wasAcknowledged());
         }
         return results;

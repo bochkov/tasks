@@ -115,6 +115,8 @@ public final class AnLostFilm implements Agent<TrNotif> {
                 }
             }
         }
-        return Collections.singletonList(new TrNotif.CheckedNotif());
+        return Collections.singletonList(
+                new TrNotif.CheckedNotif(document)
+        );
     }
 }

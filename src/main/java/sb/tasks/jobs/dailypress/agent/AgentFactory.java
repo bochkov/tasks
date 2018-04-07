@@ -27,7 +27,7 @@ public final class AgentFactory implements Agents<MagResult> {
                     db.getCollection("settings").find(Filters.eq("_id", "se.phpsessid")).first().getString("value"),
                     db.getCollection("settings").find(Filters.eq("_id", "se.username")).first().getString("value"),
                     db.getCollection("settings").find(Filters.eq("_id", "se.selife")).first().getString("value"),
-                    db.getCollection("settings").find(Filters.eq("_id", "common.user-choose")).first().getString("value")
+                    db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first().getString("value")
             );
         else if (url.matches("^https?://www.oblgazeta.ru/$"))
             return new AnOblGazeta(document);
