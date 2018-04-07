@@ -44,7 +44,7 @@ public final class AgentFactory implements Agents<TrNotif> {
                         props,
                         db.getCollection("settings").find(Filters.eq("_id", "rutracker.login")).first().getString("value"),
                         db.getCollection("settings").find(Filters.eq("_id", "rutracker.password")).first().getString("value"),
-                        db.getCollection("settings").find(Filters.eq("_id", "common.user-choose")).first().getString("value")
+                        db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first().getString("value")
                 );
             else
                 agent = new Agent.EMPTY<>();
