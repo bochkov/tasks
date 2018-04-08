@@ -40,7 +40,7 @@ public final class DailyPress implements Job {
                                     new UpdateFields<>(
                                             db,
                                             bson,
-                                            new AgentFactory(db, bson).choose()
+                                            new AgentFactory(db, bson, props).choose()
                                     )
                             )
                     )

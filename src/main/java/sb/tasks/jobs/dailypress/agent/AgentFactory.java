@@ -7,14 +7,18 @@ import sb.tasks.agent.Agent;
 import sb.tasks.agent.Agents;
 import sb.tasks.jobs.dailypress.MagResult;
 
+import java.util.Properties;
+
 public final class AgentFactory implements Agents<MagResult> {
 
     private final MongoDatabase db;
     private final Document document;
+    private final Properties props;
 
-    public AgentFactory(MongoDatabase db, Document document) {
+    public AgentFactory(MongoDatabase db, Document document, Properties props) {
         this.db = db;
         this.document = document;
+        this.props = props;
     }
 
     @Override
@@ -24,13 +28,17 @@ public final class AgentFactory implements Agents<MagResult> {
         if (url.matches("^https?://www.sport-express.ru/$"))
             return new AnSportExpress(
                     document,
+                    props,
                     db.getCollection("settings").find(Filters.eq("_id", "se.phpsessid")).first().getString("value"),
                     db.getCollection("settings").find(Filters.eq("_id", "se.username")).first().getString("value"),
                     db.getCollection("settings").find(Filters.eq("_id", "se.selife")).first().getString("value"),
                     db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first().getString("value")
             );
         else if (url.matches("^https?://www.oblgazeta.ru/$"))
-            return new AnOblGazeta(document);
+            return new AnOblGazeta(
+                    document,
+                    props
+            );
         else
             agent = new Agent.EMPTY<>();
         return agent;

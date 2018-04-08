@@ -19,17 +19,22 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 public final class AnSportExpress implements Agent<MagResult> {
 
     private final Document document;
+    private final Properties props;
     private final String phpSessId;
     private final String username;
     private final String selife;
     private final String userAgent;
 
-    public AnSportExpress(Document document, String phpSessId, String username, String selife, String userAgent) {
+    public AnSportExpress(Document document, Properties props,
+                          String phpSessId, String username,
+                          String selife, String userAgent) {
         this.document = document;
+        this.props = props;
         this.phpSessId = phpSessId;
         this.username = username;
         this.userAgent = userAgent;
@@ -44,7 +49,10 @@ public final class AnSportExpress implements Agent<MagResult> {
                 .attr("href");
         Logger.info(this, String.format("Checking link: %s", url));
         File out = new File(
-                System.getProperty("java.io.tmpdir"),
+                props.getProperty(
+                        "system.tmpdir",
+                        System.getProperty("java.io.tmpdir")
+                ),
                 String.format("se%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
         if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {

@@ -19,13 +19,16 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 public final class AnOblGazeta implements Agent<MagResult> {
 
     private final Document document;
+    private final Properties props;
 
-    public AnOblGazeta(Document document) {
+    public AnOblGazeta(Document document, Properties props) {
         this.document = document;
+        this.props = props;
     }
 
     @Override
@@ -50,7 +53,10 @@ public final class AnOblGazeta implements Agent<MagResult> {
         String url = String.format("https://www.oblgazeta.ru%s", pdfUrl);
         Logger.info(this, String.format("Checking link: %s", url));
         File out = new File(
-                System.getProperty("java.io.tmpdir"),
+                props.getProperty(
+                        "system.tmpdir",
+                        System.getProperty("java.io.tmpdir")
+                ),
                 String.format("og%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
         if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {
