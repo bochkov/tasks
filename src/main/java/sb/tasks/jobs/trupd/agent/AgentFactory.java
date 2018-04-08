@@ -30,10 +30,14 @@ public final class AgentFactory implements Agents<TrNotif> {
             agent = new Agent.EMPTY<>();
         else {
             if (url.matches("https?://.*?tor.org/.*"))
-                agent = new AnRutor(document);
+                agent = new AnRutor(
+                        document,
+                        props
+                );
             else if (url.matches("https?://.*?lostfilm.tv/.*"))
                 agent = new AnLostFilm(
                         document,
+                        props,
                         db.getCollection("settings").find(Filters.eq("_id", "lostfilm.session")).first().getString("value"),
                         db.getCollection("settings").find(Filters.eq("_id", "lostfilm.uid")).first().getString("value"),
                         db.getCollection("settings").find(Filters.eq("_id", "lostfilm.quality")).first().getString("value")

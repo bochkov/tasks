@@ -21,14 +21,13 @@ public final class Download implements Agent<TrNotif> {
     @Override
     public List<TrNotif> perform() throws AgentException, IOException {
         List<TrNotif> torrents = this.agent.perform();
-        String directory = props.getProperty(
-                "system.tmpdir",
-                System.getProperty("java.io.tmpdir")
-        );
-        if (!directory.isEmpty()) {
-            for (TrNotif result : torrents) {
-                result.writeTo(directory);
-            }
+        for (TrNotif result : torrents) {
+            result.writeTo(
+                    props.getProperty(
+                            "system.tmpdir",
+                            System.getProperty("java.io.tmpdir")
+                    )
+            );
         }
         return torrents;
     }

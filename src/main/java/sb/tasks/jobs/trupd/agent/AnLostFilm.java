@@ -8,8 +8,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import sb.tasks.agent.Agent;
-import sb.tasks.jobs.trupd.Filename;
 import sb.tasks.jobs.trupd.ComboRequest;
+import sb.tasks.jobs.trupd.Filename;
 import sb.tasks.jobs.trupd.TorrentResult;
 import sb.tasks.jobs.trupd.TrNotif;
 import sb.tasks.jobs.trupd.metafile.Metafile;
@@ -17,18 +17,22 @@ import sb.tasks.jobs.trupd.metafile.Metafile;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class AnLostFilm implements Agent<TrNotif> {
 
     private final org.bson.Document document;
+    private final Properties props;
     private final String session;
     private final String uid;
     private final String quality;
 
-    public AnLostFilm(org.bson.Document document, String session, String uid, String quality) {
+    public AnLostFilm(org.bson.Document document, Properties props,
+                      String session, String uid, String quality) {
         this.document = document;
+        this.props = props;
         this.session = session;
         this.uid = uid;
         this.quality = quality;
@@ -106,7 +110,7 @@ public final class AnLostFilm implements Agent<TrNotif> {
                                         ),
                                         name(doc2),
                                         torrentUrl,
-                                        new Filename(document, torrentUrl).toFile(),
+                                        new Filename(props, torrentUrl).toFile(),
                                         document.getString("url")
                                 )
                         );

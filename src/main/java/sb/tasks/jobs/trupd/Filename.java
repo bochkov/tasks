@@ -2,22 +2,22 @@ package sb.tasks.jobs.trupd;
 
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
-import org.bson.Document;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Filename {
 
-    private final Document document;
+    private final Properties props;
     private final String torrentUrl;
 
-    public Filename(Document document, String torrentUrl) {
-        this.document = document;
+    public Filename(Properties props, String torrentUrl) {
+        this.props = props;
         this.torrentUrl = torrentUrl;
     }
 
@@ -39,7 +39,10 @@ public final class Filename {
             }
         }
         return new File(
-                this.document.get("download_dir", System.getProperty("user.dir")),
+                props.getProperty(
+                        "system.tmpdir",
+                        System.getProperty("java.io.tmpdir")
+                ),
                 filename
         );
     }
