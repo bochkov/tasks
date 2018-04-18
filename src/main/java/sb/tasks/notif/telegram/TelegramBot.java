@@ -28,6 +28,7 @@ public final class TelegramBot implements Handler {
     @Override
     public void handle(Context context) {
         String token = context.getPathTokens().get("token");
+        TgAnsFactory tgAnsFactory = new TgAnsFactory(props, token);
         try {
             context
                     .parse(Jackson.fromJson(Update.class))
@@ -39,14 +40,13 @@ public final class TelegramBot implements Handler {
                                 String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
                                 switch (cmd[0]) {
                                     case "/start":
-                                        new BotAnswer(token)
-                                                .send(chatId, String.format("Your chat_id is %s", chatId));
+                                        tgAnsFactory.answer().send(chatId, String.format("Your chat_id is %s", chatId));
                                         break;
                                     case "/admin":
                                         new AnsRequireAdmin(
                                                 new NoEmptyArgs(
                                                         "Please send me a new admin chatId",
-                                                        new AnsAdmin(db, token)
+                                                        new AnsAdmin(db, tgAnsFactory)
                                                 )
                                         ).handle(chatId, args);
                                         break;
@@ -55,21 +55,21 @@ public final class TelegramBot implements Handler {
                                                 new NoEmptyArgs(
                                                         "Please send me an URL and (optional) directory",
                                                         new AnsNormArgs(
-                                                                new AnsTask(db, token, props, schedule)
+                                                                new AnsTask(db, props, schedule, tgAnsFactory)
                                                         )
                                                 )
                                         ).handle(chatId, args);
                                         break;
                                     case "/ls":
                                         new AnsRequireAdmin(
-                                                new AnsList(db, schedule, token)
+                                                new AnsList(db, schedule, tgAnsFactory)
                                         ).handle(chatId, args);
                                         break;
                                     case "/info":
                                         new AnsRequireAdmin(
                                                 new NoEmptyArgs(
                                                         "Please send me JobId",
-                                                        new AnsInfo(db, token)
+                                                        new AnsInfo(db, tgAnsFactory)
                                                 )
                                         ).handle(chatId, args);
                                         break;
@@ -77,13 +77,12 @@ public final class TelegramBot implements Handler {
                                         new AnsRequireAdmin(
                                                 new NoEmptyArgs(
                                                         "Please send me ObjectId",
-                                                        new AnsRemove(db, token, schedule)
+                                                        new AnsRemove(db, schedule, tgAnsFactory)
                                                 )
                                         ).handle(chatId, args);
                                         break;
                                     default:
-                                        new BotAnswer(token)
-                                                .send(chatId, "Your request cannot be executed");
+                                        tgAnsFactory.answer().send(chatId, "Your request cannot be executed");
                                 }
                             }
                         }

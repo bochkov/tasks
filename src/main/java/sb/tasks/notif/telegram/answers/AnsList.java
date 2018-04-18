@@ -6,6 +6,7 @@ import org.bson.Document;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import sb.tasks.notif.telegram.BotAnswer;
+import sb.tasks.notif.telegram.TgAnsFactory;
 import sb.tasks.system.SchedulerInfo;
 
 import java.util.ArrayList;
@@ -16,12 +17,12 @@ public final class AnsList implements Answer {
 
     private final MongoDatabase db;
     private final Scheduler scheduler;
-    private final String token;
+    private final TgAnsFactory tgAnsFactory;
 
-    public AnsList(MongoDatabase db, Scheduler scheduler, String token) {
+    public AnsList(MongoDatabase db, Scheduler scheduler, TgAnsFactory tgAnsFactory) {
         this.db = db;
-        this.token = token;
         this.scheduler = scheduler;
+        this.tgAnsFactory = tgAnsFactory;
     }
 
     @Override
@@ -52,7 +53,8 @@ public final class AnsList implements Answer {
                         .append("\n");
             }
         }
-        new BotAnswer(token)
+        tgAnsFactory
+                .answer()
                 .send(chatId, str1.toString());
 
         /// NOT REGISTERED TASKS
@@ -68,7 +70,8 @@ public final class AnsList implements Answer {
                         .append("\n");
             }
         }
-        new BotAnswer(token)
+        tgAnsFactory
+                .answer()
                 .send(chatId, str2.toString());
     }
 
@@ -78,7 +81,7 @@ public final class AnsList implements Answer {
     }
 
     @Override
-    public String token() {
-        return token;
+    public TgAnsFactory ansFactory() {
+        return tgAnsFactory;
     }
 }

@@ -3,7 +3,7 @@ package sb.tasks.notif.telegram.answers;
 import com.google.common.collect.Sets;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import sb.tasks.notif.telegram.BotAnswer;
+import sb.tasks.notif.telegram.TgAnsFactory;
 
 public final class AnsRequireAdmin implements Answer {
 
@@ -24,7 +24,9 @@ public final class AnsRequireAdmin implements Answer {
         if (Sets.newHashSet(tgAdmins).contains(chatId))
             this.origin.handle(chatId, args);
         else
-            new BotAnswer(token()).send(chatId, "Your request not authorized");
+            ansFactory()
+                    .answer()
+                    .send(chatId, "Your request not authorized");
     }
 
     @Override
@@ -33,7 +35,7 @@ public final class AnsRequireAdmin implements Answer {
     }
 
     @Override
-    public String token() {
-        return this.origin.token();
+    public TgAnsFactory ansFactory() {
+        return this.origin.ansFactory();
     }
 }

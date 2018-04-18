@@ -1,6 +1,7 @@
 package sb.tasks.notif.telegram.answers;
 
 import com.mongodb.client.MongoDatabase;
+import sb.tasks.notif.telegram.TgAnsFactory;
 
 public final class AnsNormArgs implements Answer {
 
@@ -28,7 +29,7 @@ public final class AnsNormArgs implements Answer {
     }
 
     @Override
-    public String token() {
-        return this.origin.token();
+    public TgAnsFactory ansFactory() {
+        return this.origin.ansFactory();
     }
 }

@@ -3,6 +3,7 @@ package sb.tasks.notif.telegram.answers;
 import com.mongodb.client.MongoDatabase;
 import org.junit.Assert;
 import org.junit.Test;
+import sb.tasks.notif.telegram.TgAnsFactory;
 
 public class AnsNormArgsTest {
 
@@ -28,8 +29,8 @@ public class AnsNormArgsTest {
                     }
 
                     @Override
-                    public String token() {
-                        return "TEST_TOKEN";
+                    public TgAnsFactory ansFactory() {
+                        return null;
                     }
                 }
         );
@@ -66,8 +67,8 @@ public class AnsNormArgsTest {
                     }
 
                     @Override
-                    public String token() {
-                        return "TEST_TOKEN";
+                    public TgAnsFactory ansFactory() {
+                        return null;
                     }
                 }
         );

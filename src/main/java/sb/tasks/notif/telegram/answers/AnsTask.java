@@ -7,7 +7,7 @@ import org.bson.Document;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import sb.tasks.jobs.trupd.TrupdNewDoc;
-import sb.tasks.notif.telegram.BotAnswer;
+import sb.tasks.notif.telegram.TgAnsFactory;
 import sb.tasks.system.RegisteredJob;
 
 import java.util.Properties;
@@ -15,15 +15,15 @@ import java.util.Properties;
 public final class AnsTask implements Answer {
 
     private final MongoDatabase db;
-    private final String token;
     private final Properties properties;
     private final Scheduler scheduler;
+    private final TgAnsFactory tgAnsFactory;
 
-    public AnsTask(MongoDatabase db, String token, Properties properties, Scheduler scheduler) {
+    public AnsTask(MongoDatabase db, Properties properties, Scheduler scheduler, TgAnsFactory tgAnsFactory) {
         this.db = db;
-        this.token = token;
         this.scheduler = scheduler;
         this.properties = properties;
+        this.tgAnsFactory = tgAnsFactory;
     }
 
     @Override
@@ -40,13 +40,15 @@ public final class AnsTask implements Answer {
         try {
             JobKey jobKey = new RegisteredJob(properties, db, scheduler).register(document);
             Logger.info(this, "Successfully registered task %s", document.toJson());
-            new BotAnswer(token)
+            tgAnsFactory
+                    .answer()
                     .send(chatId, "Task successfully registered");
             scheduler.triggerJob(jobKey);
         } catch (Exception ex) {
             Logger.warn(this, "Cannot register task %s", document.toJson());
             Logger.warn(this, "%s", ex);
-            new BotAnswer(token)
+            tgAnsFactory
+                    .answer()
                     .send(chatId, "Task not registered");
         }
     }
@@ -57,7 +59,7 @@ public final class AnsTask implements Answer {
     }
 
     @Override
-    public String token() {
-        return token;
+    public TgAnsFactory ansFactory() {
+        return tgAnsFactory;
     }
 }

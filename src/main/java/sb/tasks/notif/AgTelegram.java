@@ -3,18 +3,21 @@ package sb.tasks.notif;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
-import sb.tasks.notif.telegram.BotAnswer;
+import sb.tasks.notif.telegram.TgAnsFactory;
 
 import java.util.List;
+import java.util.Properties;
 
 public final class AgTelegram<T extends NotifObj> implements Notification<T> {
 
     private final MongoDatabase db;
     private final Document doc;
+    private final Properties props;
 
-    public AgTelegram(MongoDatabase db, Document doc) {
+    public AgTelegram(Properties props, Document doc, MongoDatabase db) {
         this.db = db;
         this.doc = doc;
+        this.props = props;
     }
 
     @Override
@@ -23,17 +26,22 @@ public final class AgTelegram<T extends NotifObj> implements Notification<T> {
                 .find(Filters.eq("_id", "telegram.bot.token"))
                 .first()
                 .getString("value");
+        TgAnsFactory tgAnsFactory = new TgAnsFactory(props, botToken);
         for (NotifObj obj : objects) {
             if (!doc.get("telegram", "").isEmpty())
-                new BotAnswer(botToken).send(
-                        doc.getString("telegram"),
-                        obj.telegramText()
-                );
+                tgAnsFactory
+                        .answer()
+                        .send(
+                                doc.getString("telegram"),
+                                obj.telegramText()
+                        );
             if (!doc.get("admin_telegram", "").isEmpty())
-                new BotAnswer(botToken).send(
-                        doc.getString("admin_telegram"),
-                        obj.telegramText()
-                );
+                tgAnsFactory
+                        .answer()
+                        .send(
+                                doc.getString("admin_telegram"),
+                                obj.telegramText()
+                        );
         }
     }
 }

@@ -1,6 +1,7 @@
 package sb.tasks.notif.telegram.answers;
 
 import com.mongodb.client.MongoDatabase;
+import sb.tasks.notif.telegram.TgAnsFactory;
 
 public interface Answer {
 
@@ -8,6 +9,6 @@ public interface Answer {
 
     MongoDatabase db();
 
-    String token();
+    TgAnsFactory ansFactory();
 
 }

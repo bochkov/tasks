@@ -1,7 +1,7 @@
 package sb.tasks.notif.telegram.answers;
 
 import com.mongodb.client.MongoDatabase;
-import sb.tasks.notif.telegram.BotAnswer;
+import sb.tasks.notif.telegram.TgAnsFactory;
 
 public final class NoEmptyArgs implements Answer {
 
@@ -16,7 +16,7 @@ public final class NoEmptyArgs implements Answer {
     @Override
     public void handle(String chatId, String[] args) {
         if (args.length == 0)
-            new BotAnswer(token()).send(chatId, msg);
+            ansFactory().answer().send(chatId, msg);
         else
             this.origin.handle(chatId, args);
     }
@@ -27,7 +27,7 @@ public final class NoEmptyArgs implements Answer {
     }
 
     @Override
-    public String token() {
-        return this.origin.token();
+    public TgAnsFactory ansFactory() {
+        return this.origin.ansFactory();
     }
 }

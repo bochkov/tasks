@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import sb.tasks.notif.telegram.BotAnswer;
+import sb.tasks.notif.telegram.TgAnsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.List;
 public final class AnsRemove implements Answer {
 
     private final MongoDatabase db;
-    private final String token;
     private final Scheduler scheduler;
+    private final TgAnsFactory tgAnsFactory;
 
-    public AnsRemove(MongoDatabase db, String token, Scheduler scheduler) {
+    public AnsRemove(MongoDatabase db, Scheduler scheduler, TgAnsFactory tgAnsFactory) {
         this.db = db;
-        this.token = token;
         this.scheduler = scheduler;
+        this.tgAnsFactory = tgAnsFactory;
     }
 
     @Override
@@ -33,7 +33,8 @@ public final class AnsRemove implements Answer {
                     .find(Filters.eq("_id", new ObjectId(arg)))
                     .into(new ArrayList<>());
             if (docs.isEmpty())
-                new BotAnswer(token)
+                tgAnsFactory
+                        .answer()
                         .send(chatId, String.format("No task with id=%s", arg));
             else {
                 for (Document doc : docs) {
@@ -45,7 +46,8 @@ public final class AnsRemove implements Answer {
                         Logger.warn(this, "%s", ex);
                     }
                     db.getCollection("tasks").deleteOne(doc);
-                    new BotAnswer(token)
+                    tgAnsFactory
+                            .answer()
                             .send(chatId, String.format("Task %s successfully removed", doc));
                 }
             }
@@ -58,7 +60,7 @@ public final class AnsRemove implements Answer {
     }
 
     @Override
-    public String token() {
-        return token;
+    public TgAnsFactory ansFactory() {
+        return tgAnsFactory;
     }
 }

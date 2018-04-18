@@ -4,16 +4,16 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import sb.tasks.notif.telegram.BotAnswer;
+import sb.tasks.notif.telegram.TgAnsFactory;
 
 public final class AnsInfo implements Answer {
 
     private final MongoDatabase db;
-    private final String botToken;
+    private final TgAnsFactory tgAnsFactory;
 
-    public AnsInfo(MongoDatabase db, String botToken) {
+    public AnsInfo(MongoDatabase db, TgAnsFactory tgAnsFactory) {
         this.db = db;
-        this.botToken = botToken;
+        this.tgAnsFactory = tgAnsFactory;
     }
 
     @Override
@@ -23,7 +23,8 @@ public final class AnsInfo implements Answer {
             Document doc = db.getCollection("tasks")
                     .find(Filters.eq("_id", oid))
                     .first();
-            new BotAnswer(botToken)
+            tgAnsFactory
+                    .answer()
                     .send(
                             chatId,
                             doc == null ?
@@ -39,7 +40,7 @@ public final class AnsInfo implements Answer {
     }
 
     @Override
-    public String token() {
-        return botToken;
+    public TgAnsFactory ansFactory() {
+        return tgAnsFactory;
     }
 }

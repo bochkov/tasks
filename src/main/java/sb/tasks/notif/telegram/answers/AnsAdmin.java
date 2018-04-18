@@ -5,18 +5,18 @@ import com.google.common.collect.Sets;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
-import sb.tasks.notif.telegram.BotAnswer;
+import sb.tasks.notif.telegram.TgAnsFactory;
 
 import java.util.Set;
 
 public final class AnsAdmin implements Answer {
 
     private final MongoDatabase db;
-    private final String token;
+    private final TgAnsFactory tgAnsFactory;
 
-    public AnsAdmin(MongoDatabase db, String token) {
+    public AnsAdmin(MongoDatabase db, TgAnsFactory tgAnsFactory) {
         this.db = db;
-        this.token = token;
+        this.tgAnsFactory = tgAnsFactory;
     }
 
     @Override
@@ -30,7 +30,7 @@ public final class AnsAdmin implements Answer {
                             .split(",")
             );
             if (tgAdmins.contains(arg))
-                new BotAnswer(token)
+                tgAnsFactory.answer()
                         .send(chatId, String.format("Admin %s already registered", arg));
             else {
                 tgAdmins.add(arg);
@@ -39,7 +39,7 @@ public final class AnsAdmin implements Answer {
                                 Filters.eq("_id", "common.admin_telegram"),
                                 Updates.set("value", Joiner.on(",").join(tgAdmins))
                         );
-                new BotAnswer(token)
+                tgAnsFactory.answer()
                         .send(chatId, String.format("Added chatId=%s to admin list", arg));
             }
         }
@@ -51,7 +51,7 @@ public final class AnsAdmin implements Answer {
     }
 
     @Override
-    public String token() {
-        return token;
+    public TgAnsFactory ansFactory() {
+        return tgAnsFactory;
     }
 }
