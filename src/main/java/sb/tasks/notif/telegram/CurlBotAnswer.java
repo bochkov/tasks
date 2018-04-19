@@ -29,7 +29,12 @@ public final class CurlBotAnswer implements TgAnswer {
     @Override
     public void send(String chatId, String text) {
         try {
-            new ProcessBuilder(cmd(request(chatId, text)))
+            List<String> cmd = new CurlCmd()
+                    .fromRequest(
+                            this.origin.request(chatId, text)
+                    );
+            Logger.info(this, "#send [%s]", cmd);
+            new ProcessBuilder(cmd)
                     .start()
                     .waitFor();
         } catch (InterruptedException | IOException ex) {
@@ -37,25 +42,28 @@ public final class CurlBotAnswer implements TgAnswer {
         }
     }
 
-    private List<String> cmd(Request request) {
-        return new ListOf<>(
-                new Joined<>(
-                        new ListOf<>(
-                                "/usr/bin/curl",
-                                "--retry", "5",
-                                String.format("\"%s\"", request.uri())
-                        ),
-                        new UncheckedScalar<>(
-                                new Ternary<List<String>>(
-                                        () -> props.containsKey("curl.extra-opts")
-                                                && !props.getProperty("curl.extra-opts", "").isEmpty(),
-                                        () -> new ListOf<>(
-                                                props.getProperty("curl.extra-opts").split("\\s+")
-                                        ),
-                                        ListOf<String>::new
-                                )
-                        ).value()
-                )
-        );
+    private final class CurlCmd {
+
+        public List<String> fromRequest(Request request) {
+            return new ListOf<>(
+                    new Joined<>(
+                            new ListOf<>(
+                                    "/usr/bin/curl",
+                                    "--retry", "5",
+                                    String.format("\"%s\"", request.uri())
+                            ),
+                            new UncheckedScalar<>(
+                                    new Ternary<List<String>>(
+                                            () -> props.containsKey("curl.extra-opts")
+                                                    && !props.getProperty("curl.extra-opts", "").isEmpty(),
+                                            () -> new ListOf<>(
+                                                    props.getProperty("curl.extra-opts").split("\\s+")
+                                            ),
+                                            ListOf<String>::new
+                                    )
+                            ).value()
+                    )
+            );
+        }
     }
 }
