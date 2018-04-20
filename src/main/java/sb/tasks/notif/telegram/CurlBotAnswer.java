@@ -33,12 +33,12 @@ public final class CurlBotAnswer implements TgAnswer {
                     .fromRequest(
                             this.origin.request(chatId, text)
                     );
-            Logger.info(this, "#send [%s]", cmd);
             new ProcessBuilder(cmd)
                     .start()
                     .waitFor();
+            Logger.info(this, "#send [%s]", cmd);
         } catch (InterruptedException | IOException ex) {
-            Logger.info(this, "%s", ex);
+            Logger.warn(this, "#send %s", ex);
         }
     }
 
@@ -50,7 +50,7 @@ public final class CurlBotAnswer implements TgAnswer {
                             new ListOf<>(
                                     "/usr/bin/curl",
                                     "--retry", "5",
-                                    String.format("\"%s\"", request.uri())
+                                    String.format("%s", request.uri())
                             ),
                             new UncheckedScalar<>(
                                     new Ternary<List<String>>(
