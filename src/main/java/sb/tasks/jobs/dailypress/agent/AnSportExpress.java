@@ -26,19 +26,19 @@ public final class AnSportExpress implements Agent<MagResult> {
     private final Document document;
     private final Properties props;
     private final String phpSessId;
-    private final String username;
-    private final String selife;
+    private final String user;
+    private final String sess;
     private final String userAgent;
 
     public AnSportExpress(Document document, Properties props,
-                          String phpSessId, String username,
-                          String selife, String userAgent) {
+                          String phpSessId, String user,
+                          String sess, String userAgent) {
         this.document = document;
         this.props = props;
         this.phpSessId = phpSessId;
-        this.username = username;
+        this.user = user;
+        this.sess = sess;
         this.userAgent = userAgent;
-        this.selife = selife;
     }
 
     @Override
@@ -64,8 +64,8 @@ public final class AnSportExpress implements Agent<MagResult> {
                     .header(HttpHeaders.ACCEPT, "application/pdf")
                     .header(HttpHeaders.USER_AGENT, userAgent)
                     .header(HttpHeaders.COOKIE, String.format("PHPSESSID=%s", phpSessId))
-                    .header(HttpHeaders.COOKIE, String.format("RealUserName=%s", username))
-                    .header(HttpHeaders.COOKIE, String.format("SELIFE=%s", selife))
+                    .header(HttpHeaders.COOKIE, String.format("se.sess=%s", sess))
+                    .header(HttpHeaders.COOKIE, String.format("se.user=%s", user))
                     .fetch();
             new PdfFromResponse(response).saveTo(out);
         } else

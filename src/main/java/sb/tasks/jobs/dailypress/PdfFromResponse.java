@@ -18,15 +18,13 @@ public final class PdfFromResponse {
 
     public void saveTo(File out) throws IOException {
         if (response.status() == 200) {
-            if ("application/pdf"
-                    .equals(response
-                            .headers()
-                            .getOrDefault(
-                                    "Content-Type",
-                                    Collections.singletonList("")
-                            ).get(0))) {
+            String hdr = response.headers()
+                    .getOrDefault("Content-Type", Collections.singletonList(""))
+                    .get(0);
+            Logger.info(this, "Received headers %s", hdr);
+            if ("application/pdf".equals(hdr)) {
                 Files.write(response.binary(), out);
-                Logger.info(this, String.format("Downloaded file %s", out.getName()));
+                Logger.info(this, "Downloaded file %s", out.getName());
             } else
                 Logger.info(this, "No magazine for this date");
         } else
