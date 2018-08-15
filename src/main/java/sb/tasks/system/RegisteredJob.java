@@ -34,6 +34,7 @@ public final class RegisteredJob {
     public JobKey register(Document document) throws Exception {
         JobKey jobKey = new JobKey(document.getObjectId("_id").toString(), "TASK");
         Class<? extends Job> jobClass = Class.forName(document.getString("job")).asSubclass(Job.class);
+        data.put("objectId", document.getObjectId("_id"));
         JobDetail job = JobBuilder.newJob(jobClass)
                 .withIdentity(jobKey)
                 .setJobData(data)
@@ -55,7 +56,6 @@ public final class RegisteredJob {
             else
                 scheduler.scheduleJob(job, trigger);
         }
-        data.put("objectId", document.getObjectId("_id"));
         return jobKey;
     }
 }
