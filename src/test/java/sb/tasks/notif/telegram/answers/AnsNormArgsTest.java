@@ -3,6 +3,7 @@ package sb.tasks.notif.telegram.answers;
 import com.mongodb.client.MongoDatabase;
 import org.junit.Assert;
 import org.junit.Test;
+import sb.tasks.jobs.trupd.Trupd;
 import sb.tasks.notif.telegram.TgAnsFactory;
 
 public class AnsNormArgsTest {
@@ -73,5 +74,13 @@ public class AnsNormArgsTest {
                 }
         );
         ans.handle("234", new String[]{"http://anti-tor.org/1233123/"});
+    }
+
+    @Test
+    public void testClassName() {
+        Assert.assertEquals(
+                "sb.tasks.jobs.trupd.Trupd",
+                Trupd.class.getCanonicalName()
+        );
     }
 }

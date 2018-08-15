@@ -23,7 +23,7 @@ public final class TrupdNewDoc {
                 .insertOne(
                         new Document()
                                 .append("_id", id)
-                                .append("job", "sb.tasks.jobs.Trupd")
+                                .append("job", Trupd.class.getCanonicalName())
                                 .append("params", new Document()
                                         .append(isNum ? "num" : "url", url)
                                         .append("download_dir", dir)
