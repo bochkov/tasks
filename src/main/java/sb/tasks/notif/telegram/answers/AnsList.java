@@ -1,11 +1,11 @@
 package sb.tasks.notif.telegram.answers;
 
+import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
-import sb.tasks.notif.telegram.BotAnswer;
 import sb.tasks.notif.telegram.TgAnsFactory;
 import sb.tasks.system.SchedulerInfo;
 
@@ -44,13 +44,17 @@ public final class AnsList implements Answer {
                 Document doc = db.getCollection("tasks")
                         .find(Filters.eq("_id", key.getName()))
                         .first();
-                str1.append("\n")
-                        .append(String.format("ID=%s", doc.getObjectId("_id")))
-                        .append("\n")
-                        .append(String.format("Job=%s", doc.getString("job")))
-                        .append("\n")
-                        .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")))
-                        .append("\n");
+                Logger.info(AnsList.this, "key=%s, doc=%s", key.getName(), doc);
+                if (doc != null)
+                    str1.append("\n")
+                            .append(String.format("ID=%s", doc.getObjectId("_id")))
+                            .append("\n")
+                            .append(String.format("Job=%s", doc.getString("job")))
+                            .append("\n")
+                            .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")))
+                            .append("\n");
+                else
+                    str1.append("NULL DOC\n");
             }
         }
         tgAnsFactory
