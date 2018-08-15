@@ -4,6 +4,7 @@ import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import sb.tasks.notif.telegram.TgAnsFactory;
@@ -42,7 +43,7 @@ public final class AnsList implements Answer {
         else {
             for (JobKey key : schInfo.all()) {
                 Document doc = db.getCollection("tasks")
-                        .find(Filters.eq("_id", key.getName()))
+                        .find(Filters.eq("_id", new ObjectId(key.getName())))
                         .first();
                 Logger.info(AnsList.this, "key=%s, doc=%s", key.getName(), doc);
                 if (doc != null)
