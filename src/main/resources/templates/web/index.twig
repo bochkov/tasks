@@ -155,8 +155,8 @@
                     onApprove: function () {
                         $.post("api/delete/", {"id": id})
                             .done(function () {
-                                location.reload();
-                            })
+                                window.location.href = window.location.href;
+                            });
                     }
                 })
                 .modal('show');
