@@ -18,14 +18,16 @@ public interface TrNotif extends NotifObj {
     final class CheckedNotif implements TrNotif {
 
         private final Document document;
+        private final boolean force;
 
-        public CheckedNotif(Document document) {
+        public CheckedNotif(Document document, boolean force) {
             this.document = document;
+            this.force = force;
         }
 
         @Override
         public boolean afterThan(Date date) {
-            return false;
+            return force;
         }
 
         @Override

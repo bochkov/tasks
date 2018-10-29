@@ -25,7 +25,8 @@ public final class RegisteredJob {
                 new JobDataMap(
                         new MapOf<>(
                                 new MapEntry<>("properties", properties),
-                                new MapEntry<>("mongo", db)
+                                new MapEntry<>("mongo", db),
+                                new MapEntry<>("initial", true)
                         )
                 )
         );
