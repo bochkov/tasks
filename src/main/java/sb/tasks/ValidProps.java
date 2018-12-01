@@ -13,10 +13,9 @@ public final class ValidProps implements App<Properties> {
     }
 
     @Override
-    public Properties init() throws Exception {
+    public Properties init() {
         Logger.info(this, "Readed props: %s", properties);
         // TODO
-
         return properties;
     }
 }

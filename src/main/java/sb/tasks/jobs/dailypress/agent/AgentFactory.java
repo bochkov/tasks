@@ -29,10 +29,10 @@ public final class AgentFactory implements Agents<MagResult> {
             return new AnSportExpress(
                     document,
                     props,
-                    db.getCollection("settings").find(Filters.eq("_id", "se.phpsessid")).first().getString("value"),
-                    db.getCollection("settings").find(Filters.eq("_id", "se.user")).first().getString("value"),
-                    db.getCollection("settings").find(Filters.eq("_id", "se.sess")).first().getString("value"),
-                    db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first().getString("value")
+                    db.getCollection("settings").find(Filters.eq("_id", "se.phpsessid")).first(),
+                    db.getCollection("settings").find(Filters.eq("_id", "se.user")).first(),
+                    db.getCollection("settings").find(Filters.eq("_id", "se.sess")).first(),
+                    db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first()
             );
         else if (url.matches("^https?://www.oblgazeta.ru/$"))
             return new AnOblGazeta(

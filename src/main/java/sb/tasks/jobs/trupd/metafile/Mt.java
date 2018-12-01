@@ -10,23 +10,6 @@ public interface Mt {
 
     byte[] body();
 
-    class Fake implements Mt {
-        @Override
-        public String name() {
-            return "empty";
-        }
-
-        @Override
-        public Date creationDate() {
-            return new Date(0);
-        }
-
-        @Override
-        public byte[] body() {
-            return new byte[0];
-        }
-    }
-
     class Default implements Mt {
 
         private final Date created;

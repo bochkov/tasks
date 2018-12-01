@@ -36,7 +36,7 @@ public final class TelegramBot implements Handler {
                         for (MessageEntity entity : ac.getMessage().getEntities()) {
                             if ("bot_command".equals(entity.getType())) {
                                 String chatId = ac.getMessage().getChat().getId();
-                                String cmd[] = ac.getMessage().getText().split(" ");
+                                String[] cmd = ac.getMessage().getText().split(" ");
                                 String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
                                 switch (cmd[0]) {
                                     case "/start":

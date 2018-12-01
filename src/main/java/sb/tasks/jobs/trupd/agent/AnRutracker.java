@@ -24,7 +24,19 @@ public final class AnRutracker implements Agent<TrNotif> {
     private final String password;
     private final String userAgent;
 
-    public AnRutracker(Document document, Properties props, String login, String password, String userAgent) {
+    public AnRutracker(Document document, Properties props,
+                       Document login, Document password, Document userAgent) {
+        this(
+                document,
+                props,
+                login == null ? "" : login.getString("value"),
+                password == null ? "" : password.getString("value"),
+                userAgent == null ? "" : userAgent.getString("value")
+        );
+    }
+
+    public AnRutracker(Document document, Properties props,
+                       String login, String password, String userAgent) {
         this.login = login;
         this.properties = props;
         this.password = password;

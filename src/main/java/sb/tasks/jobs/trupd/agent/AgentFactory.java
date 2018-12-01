@@ -38,17 +38,17 @@ public final class AgentFactory implements Agents<TrNotif> {
                 agent = new AnLostFilm(
                         document,
                         props,
-                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.session")).first().getString("value"),
-                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.uid")).first().getString("value"),
-                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.quality")).first().getString("value")
+                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.session")).first(),
+                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.uid")).first(),
+                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.quality")).first()
                 );
             else if (!num.isEmpty() || url.matches("https?://rutracker.org/.*"))
                 agent = new AnRutracker(
                         document,
                         props,
-                        db.getCollection("settings").find(Filters.eq("_id", "rutracker.login")).first().getString("value"),
-                        db.getCollection("settings").find(Filters.eq("_id", "rutracker.password")).first().getString("value"),
-                        db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first().getString("value")
+                        db.getCollection("settings").find(Filters.eq("_id", "rutracker.login")).first(),
+                        db.getCollection("settings").find(Filters.eq("_id", "rutracker.password")).first(),
+                        db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first()
                 );
             else
                 agent = new Agent.EMPTY<>();

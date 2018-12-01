@@ -5,12 +5,8 @@ import com.jcabi.http.response.JsoupResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import sb.tasks.agent.Agent;
 import sb.tasks.jobs.trupd.ComboRequest;
-import sb.tasks.jobs.trupd.Filename;
-import sb.tasks.jobs.trupd.TorrentResult;
 import sb.tasks.jobs.trupd.TrNotif;
-import sb.tasks.jobs.trupd.metafile.Metafile;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -19,7 +15,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class AnRutor implements Agent<TrNotif> {
+public final class AnRutor extends TorrentFromPage {
 
     private static final Pattern[] LINK_PATTERNS = new Pattern[]{
             Pattern.compile("http://d.rutor.org/download/\\d+"),
@@ -35,7 +31,8 @@ public final class AnRutor implements Agent<TrNotif> {
         this.props = props;
     }
 
-    private String name(Document root) {
+    @Override
+    protected String name(Document root) {
         Matcher m = Pattern
                 .compile(".*?::(?<name>.*)")
                 .matcher(
@@ -45,7 +42,8 @@ public final class AnRutor implements Agent<TrNotif> {
                 "";
     }
 
-    private String torrentUrl(Document root) throws IOException {
+    @Override
+    protected String torrentUrl(Document root) throws IOException {
         Matcher matcher;
         if (root.getElementById("download") != null) {
             for (Element element : root.getElementById("download").children()) {
@@ -77,19 +75,8 @@ public final class AnRutor implements Agent<TrNotif> {
                         .body(),
                 document.getString("url")
         );
-        String torrentUrl = torrentUrl(root);
         return Collections.singletonList(
-                new TorrentResult(
-                        new Metafile(
-                                new ComboRequest(new JdkRequest(torrentUrl))
-                                        .fetch()
-                                        .binary()
-                        ),
-                        name(root),
-                        torrentUrl,
-                        new Filename(props, torrentUrl).toFile(),
-                        document.getString("url")
-                )
+                fromReq(root, props, document.getString("url"))
         );
     }
 }

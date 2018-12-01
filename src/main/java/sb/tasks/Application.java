@@ -1,7 +1,6 @@
 package sb.tasks;
 
 import com.jcabi.log.Logger;
-import com.mongodb.Block;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.quartz.Scheduler;
@@ -12,6 +11,7 @@ import sb.tasks.system.RegisteredJob;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 public final class Application {
 
@@ -38,9 +38,9 @@ public final class Application {
         MongoDatabase db = new DbApp(properties).init();
         db.getCollection("tasks")
                 .find()
-                .forEach(new Block<Document>() {
+                .forEach(new Consumer<Document>() {
                     @Override
-                    public void apply(Document document) {
+                    public void accept(Document document) {
                         Logger.info(this, "Readed task: %s", document.toJson());
                         try {
                             new RegisteredJob(properties, db, scheduler).register(document);

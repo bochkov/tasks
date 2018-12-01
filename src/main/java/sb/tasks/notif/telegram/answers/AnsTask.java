@@ -29,13 +29,14 @@ public final class AnsTask implements Answer {
     @Override
     public void handle(String chatId, String[] args) {
         String url = args[0];
+        Document dir = db.getCollection("settings")
+                .find(Filters.eq("_id", "common.download_dir"))
+                .first();
         String directory = args.length >= 2 ?
                 args[1] :
-                db.getCollection("settings")
-                        .find(Filters.eq("_id", "common.download_dir"))
-                        .first()
-                        .getOrDefault("value", ".")
-                        .toString();
+                dir == null ?
+                        "." :
+                        dir.getOrDefault("value", ".").toString();
         Document document = new TrupdNewDoc(db).add(url, directory, chatId);
         try {
             JobKey jobKey = new RegisteredJob(properties, db, scheduler).register(document);

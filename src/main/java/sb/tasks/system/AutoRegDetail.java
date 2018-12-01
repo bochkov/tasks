@@ -14,8 +14,8 @@ public final class AutoRegDetail implements Job {
     @Override
     public void execute(JobExecutionContext context) {
         JobDataMap data = context.getMergedJobDataMap();
-        MongoDatabase db = MongoDatabase.class.cast(data.get("db"));
-        Properties properties = Properties.class.cast(data.get("properties"));
+        MongoDatabase db = (MongoDatabase) data.get("db");
+        Properties properties = (Properties) data.get("properties");
         SchedulerInfo schInfo = new SchedulerInfo(context.getScheduler());
         for (Document document : db.getCollection("tasks").find()) {
             if (!schInfo.contains(document.getObjectId("_id").toString())) {

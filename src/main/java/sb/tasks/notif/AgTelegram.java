@@ -22,10 +22,12 @@ public final class AgTelegram<T extends NotifObj> implements Notification<T> {
 
     @Override
     public void send(List<T> objects) {
-        String botToken = db.getCollection("settings")
+        Document token = db.getCollection("settings")
                 .find(Filters.eq("_id", "telegram.bot.token"))
-                .first()
-                .getString("value");
+                .first();
+        String botToken = token == null ?
+                "" :
+                token.getString("value");
         TgAnsFactory tgAnsFactory = new TgAnsFactory(props, botToken);
         for (NotifObj obj : objects) {
             if (!doc.get("telegram", "").isEmpty())

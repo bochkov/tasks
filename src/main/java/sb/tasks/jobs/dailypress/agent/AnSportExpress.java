@@ -31,6 +31,19 @@ public final class AnSportExpress implements Agent<MagResult> {
     private final String userAgent;
 
     public AnSportExpress(Document document, Properties props,
+                          Document phpSessId, Document user,
+                          Document sess, Document userAgent) {
+        this(
+                document,
+                props,
+                phpSessId == null ? "" : phpSessId.getString("value"),
+                user == null ? "" : user.getString("value"),
+                sess == null ? "" : sess.getString("value"),
+                userAgent == null ? "" : userAgent.getString("value")
+        );
+    }
+
+    public AnSportExpress(Document document, Properties props,
                           String phpSessId, String user,
                           String sess, String userAgent) {
         this.document = document;

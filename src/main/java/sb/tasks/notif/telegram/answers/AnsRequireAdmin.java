@@ -3,7 +3,10 @@ package sb.tasks.notif.telegram.answers;
 import com.google.common.collect.Sets;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import org.bson.Document;
 import sb.tasks.notif.telegram.TgAnsFactory;
+
+import java.util.Set;
 
 public final class AnsRequireAdmin implements Answer {
 
@@ -15,13 +18,19 @@ public final class AnsRequireAdmin implements Answer {
 
     @Override
     public void handle(String chatId, String[] args) {
-        String[] tgAdmins = db()
+        Document admins = db()
                 .getCollection("settings")
                 .find(Filters.eq("_id", "common.admin_telegram"))
-                .first()
-                .getString("value")
-                .split(",");
-        if (Sets.newHashSet(tgAdmins).contains(chatId))
+                .first();
+        Set<String> tgAdmins = admins == null ?
+                Sets.newHashSet() :
+                Sets.newHashSet(
+                        admins
+                                .getString("value")
+                                .split(",")
+                );
+
+        if (tgAdmins.contains(chatId))
             this.origin.handle(chatId, args);
         else
             ansFactory()

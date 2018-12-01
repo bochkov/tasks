@@ -7,12 +7,8 @@ import com.jcabi.http.wire.CookieOptimizingWire;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import sb.tasks.agent.Agent;
 import sb.tasks.jobs.trupd.ComboRequest;
-import sb.tasks.jobs.trupd.Filename;
-import sb.tasks.jobs.trupd.TorrentResult;
 import sb.tasks.jobs.trupd.TrNotif;
-import sb.tasks.jobs.trupd.metafile.Metafile;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -21,13 +17,25 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class AnLostFilm implements Agent<TrNotif> {
+public final class AnLostFilm extends TorrentFromPage {
 
     private final org.bson.Document document;
     private final Properties props;
     private final String session;
     private final String uid;
     private final String quality;
+
+    public AnLostFilm(org.bson.Document document, Properties props,
+                      org.bson.Document session, org.bson.Document uid, org.bson.Document quality) {
+        this(
+                document,
+                props,
+                session == null ? "" : session.getString("value"),
+                uid == null ? "" : uid.getString("value"),
+                quality == null ? "" : quality.getString("value")
+        );
+
+    }
 
     public AnLostFilm(org.bson.Document document, Properties props,
                       String session, String uid, String quality) {
@@ -38,7 +46,8 @@ public final class AnLostFilm implements Agent<TrNotif> {
         this.quality = quality;
     }
 
-    private String name(Document document) throws IOException {
+    @Override
+    protected String name(Document document) throws IOException {
         for (Element item : document.getElementsByClass("inner-box--item")) {
             if (item.getElementsByClass("inner-box--label").get(0).text().equals(quality)) {
                 return item
@@ -50,7 +59,8 @@ public final class AnLostFilm implements Agent<TrNotif> {
         throw new IOException("Name not parsed");
     }
 
-    private String torrentUrl(Document document) throws IOException {
+    @Override
+    protected String torrentUrl(Document document) throws IOException {
         for (Element item : document.getElementsByClass("inner-box--item")) {
             if (item.getElementsByClass("inner-box--label").get(0).text().equals(quality)) {
                 return item
@@ -100,19 +110,8 @@ public final class AnLostFilm implements Agent<TrNotif> {
                                         )
                                 ).fetch().body()
                         );
-                        String torrentUrl = torrentUrl(doc2);
                         return Collections.singletonList(
-                                new TorrentResult(
-                                        new Metafile(
-                                                new ComboRequest(new JdkRequest(torrentUrl))
-                                                        .fetch()
-                                                        .binary()
-                                        ),
-                                        name(doc2),
-                                        torrentUrl,
-                                        new Filename(props, torrentUrl).toFile(),
-                                        document.getString("url")
-                                )
+                                fromReq(doc2, props, document.getString("url"))
                         );
                     }
                     throw new IOException("Document not found");
