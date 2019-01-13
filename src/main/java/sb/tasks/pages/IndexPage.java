@@ -2,12 +2,9 @@ package sb.tasks.pages;
 
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
-import org.jtwig.JtwigModel;
-import org.jtwig.JtwigTemplate;
 import org.quartz.Scheduler;
 import ratpack.handling.Context;
+import ratpack.jackson.Jackson;
 import sb.tasks.system.SchedulerInfo;
 
 import java.util.ArrayList;
@@ -36,18 +33,8 @@ public final class IndexPage implements HttpPage {
                     )
             );
         }
-        ctx
-                .header("Content-Type", "text/html")
-                .render(
-                        JtwigTemplate
-                                .classpathTemplate("templates/web/index.twig")
-                                .render(
-                                        JtwigModel.newModel(
-                                                new MapOf<>(
-                                                        new MapEntry<>("tasks", docs)
-                                                )
-                                        )
-                                )
-                );
+        ctx.render(
+                Jackson.json(docs)
+        );
     }
 }

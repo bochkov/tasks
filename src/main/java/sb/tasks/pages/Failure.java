@@ -1,8 +1,13 @@
 package sb.tasks.pages;
 
+import lombok.Data;
+
+@Data
 public final class Failure {
 
-    public String toJson() {
-        return "{success: false}";
+    private final boolean success;
+
+    public Failure() {
+        this.success = false;
     }
 }

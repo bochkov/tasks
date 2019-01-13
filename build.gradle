@@ -1,5 +1,5 @@
 plugins {
-    id 'io.ratpack.ratpack-java' version '1.5.4'
+    id 'io.ratpack.ratpack-java' version '1.6.0'
     id 'com.github.johnrengelman.shadow' version '4.0.3'
     id 'io.franzbecker.gradle-lombok' version '1.14'
     id 'java'

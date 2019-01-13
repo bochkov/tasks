@@ -38,7 +38,7 @@ public final class Application {
         MongoDatabase db = new DbApp(properties).init();
         db.getCollection("tasks")
                 .find()
-                .forEach(new Consumer<Document>() {
+                .forEach(new Consumer<>() {
                     @Override
                     public void accept(Document document) {
                         Logger.info(this, "Readed task: %s", document.toJson());

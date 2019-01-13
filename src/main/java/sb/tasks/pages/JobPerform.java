@@ -6,6 +6,7 @@ import org.quartz.Scheduler;
 import ratpack.exec.Promise;
 import ratpack.form.Form;
 import ratpack.handling.Context;
+import ratpack.jackson.Jackson;
 import sb.tasks.system.SchedulerInfo;
 
 import java.util.List;
@@ -29,9 +30,7 @@ public final class JobPerform implements HttpPage {
                 scheduler.triggerJob(key);
                 Logger.info(this, "Job with key = %s triggered", key);
             }
-            ctx.getResponse()
-                    .contentType("application/json")
-                    .send(new Success().json());
+            ctx.render(Jackson.json(new Success()));
         });
     }
 }

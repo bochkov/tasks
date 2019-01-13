@@ -9,6 +9,7 @@ import org.quartz.Scheduler;
 import ratpack.exec.Promise;
 import ratpack.form.Form;
 import ratpack.handling.Context;
+import ratpack.jackson.Jackson;
 import sb.tasks.system.SchedulerInfo;
 
 import java.util.List;
@@ -35,14 +36,10 @@ public final class JobDelete implements HttpPage {
                     scheduler.deleteJob(key);
                     db.getCollection("tasks").findOneAndDelete(Filters.eq("_id", new ObjectId(jobkey)));
                     Logger.info(this, "Successfully delete job with id = %s", new ObjectId(jobkey));
-                    ctx.getResponse()
-                            .contentType("application/json")
-                            .send(new Success().json());
+                    ctx.render(Jackson.json(new Success()));
                 } else {
                     Logger.warn(this, "Cannot find job with jobkey = %s", jobkey);
-                    ctx.getResponse()
-                            .contentType("application/json")
-                            .send(new Failure().toJson());
+                    ctx.render(Jackson.json(new Failure()));
                 }
             }
         });
