@@ -26,6 +26,7 @@ public final class IndexPage implements HttpPage {
         db.getCollection("tasks").find().into(docs);
         SchedulerInfo schInfo = new SchedulerInfo(scheduler);
         for (Document doc : docs) {
+            doc.put("oid", doc.getObjectId("_id").toString());
             doc.put(
                     "registered",
                     schInfo.contains(
@@ -33,7 +34,8 @@ public final class IndexPage implements HttpPage {
                     )
             );
         }
-        ctx.render(
+        ctx.header("Access-Control-Allow-Origin", "*")
+                .render(
                 Jackson.json(docs)
         );
     }

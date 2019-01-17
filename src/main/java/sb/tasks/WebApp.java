@@ -40,7 +40,7 @@ public final class WebApp implements App<RatpackServer> {
                                 new JobPerform(scheduler))
                         .post("api/delete",
                                 new JobDelete(db, scheduler))
-                        .get("",
+                        .get("api/tasks",
                                 new IndexPage(db, scheduler))
                 )
         );
