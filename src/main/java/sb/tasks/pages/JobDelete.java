@@ -7,12 +7,13 @@ import org.bson.types.ObjectId;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import ratpack.exec.Promise;
-import ratpack.form.Form;
 import ratpack.handling.Context;
 import ratpack.jackson.Jackson;
 import sb.tasks.system.SchedulerInfo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class JobDelete implements HttpPage {
 
@@ -26,22 +27,24 @@ public final class JobDelete implements HttpPage {
 
     @Override
     public void handle(Context ctx) {
-        Promise<Form> promise = ctx.parse(Form.class);
+        Promise<Ids> promise = ctx.parse(Jackson.fromJson(Ids.class));
         promise.then(f -> {
             SchedulerInfo schInfo = new SchedulerInfo(scheduler);
-            List<String> jobkeys = f.getAll("id");
+            List<String> jobkeys = f.getAll();
+            Map<String, HttpAnswer> answer = new HashMap<>();
             for (String jobkey : jobkeys) {
                 JobKey key = schInfo.get(jobkey);
                 if (scheduler.checkExists(key)) {
                     scheduler.deleteJob(key);
                     db.getCollection("tasks").findOneAndDelete(Filters.eq("_id", new ObjectId(jobkey)));
                     Logger.info(this, "Successfully delete job with id = %s", new ObjectId(jobkey));
-                    ctx.render(Jackson.json(new Success()));
+                    answer.put(jobkey, new Success());
                 } else {
                     Logger.warn(this, "Cannot find job with jobkey = %s", jobkey);
-                    ctx.render(Jackson.json(new Failure()));
+                    answer.put(jobkey, new Failure());
                 }
             }
+            ctx.render(Jackson.json(answer));
         });
     }
 }

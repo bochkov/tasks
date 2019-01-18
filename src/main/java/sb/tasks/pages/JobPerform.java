@@ -4,12 +4,13 @@ import com.jcabi.log.Logger;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import ratpack.exec.Promise;
-import ratpack.form.Form;
 import ratpack.handling.Context;
 import ratpack.jackson.Jackson;
 import sb.tasks.system.SchedulerInfo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class JobPerform implements HttpPage {
 
@@ -21,16 +22,18 @@ public final class JobPerform implements HttpPage {
 
     @Override
     public void handle(Context ctx) {
-        Promise<Form> promise = ctx.parse(Form.class);
+        Promise<Ids> promise = ctx.parse(Ids.class);
         promise.then(f -> {
-            List<String> jobkeys = f.getAll("id");
+            List<String> jobkeys = f.getAll();
             SchedulerInfo schInfo = new SchedulerInfo(scheduler);
+            Map<String, HttpAnswer> answers = new HashMap<>();
             for (String jobkey : jobkeys) {
                 JobKey key = schInfo.get(jobkey);
                 scheduler.triggerJob(key);
                 Logger.info(this, "Job with key = %s triggered", key);
+                answers.put(jobkey, new Success());
             }
-            ctx.render(Jackson.json(new Success()));
+            ctx.render(Jackson.json(answers));
         });
     }
 }

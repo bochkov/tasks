@@ -34,9 +34,6 @@ public final class IndexPage implements HttpPage {
                     )
             );
         }
-        ctx.header("Access-Control-Allow-Origin", "*")
-                .render(
-                Jackson.json(docs)
-        );
+        ctx.render(Jackson.json(docs));
     }
 }
