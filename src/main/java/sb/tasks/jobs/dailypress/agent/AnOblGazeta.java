@@ -2,7 +2,6 @@ package sb.tasks.jobs.dailypress.agent;
 
 import com.jcabi.http.Response;
 import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.response.JsoupResponse;
 import com.jcabi.http.wire.AutoRedirectingWire;
 import com.jcabi.http.wire.RetryWire;
 import com.jcabi.log.Logger;
@@ -35,20 +34,19 @@ public final class AnOblGazeta implements Agent<MagResult> {
     public List<MagResult> perform() throws IOException {
         String source = new JdkRequest("https://oblgazeta.ru/")
                 .through(AutoRedirectingWire.class)
+                .header(HttpHeaders.ACCEPT_ENCODING, "deflate")
                 .fetch()
-                .as(JsoupResponse.class)
                 .body();
         String newPaper = Jsoup.parse(source)
-                .getElementsByClass("foot-newspaper block100")
+                .getElementsByAttributeValue("title", "Свежий номер")
                 .get(0).attr("href");
         String paperSource = new JdkRequest(String.format("https://oblgazeta.ru%s", newPaper))
                 .through(AutoRedirectingWire.class)
+                .header(HttpHeaders.ACCEPT_ENCODING, "deflate")
                 .fetch()
-                .as(JsoupResponse.class)
                 .body();
         String pdfUrl = Jsoup.parse(paperSource)
-                .getElementsByClass("download_label").get(0)
-                .getElementsByTag("a").get(0)
+                .getElementsByClass("download_btn-doc").get(0)
                 .attr("href");
         String url = String.format("https://www.oblgazeta.ru%s", pdfUrl);
         Logger.info(this, String.format("Checking link: %s", url));
