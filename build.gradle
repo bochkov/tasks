@@ -9,6 +9,15 @@ plugins {
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'io.ratpack.ratpack-java'
 apply plugin: 'java'
+apply plugin: 'jacoco'
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+    }
+}
+
+check.dependsOn jacocoTestReport
 
 repositories {
     jcenter()
