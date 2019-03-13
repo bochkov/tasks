@@ -7,13 +7,12 @@ import org.cactoos.collection.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.RetryScalar;
 import org.cactoos.scalar.SyncScalar;
-import org.cactoos.scalar.Ternary;
-import org.cactoos.scalar.UncheckedScalar;
+import sb.tasks.ValidProps;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
-import java.util.Properties;
 
 public final class RutrackerCurl {
 
@@ -23,80 +22,17 @@ public final class RutrackerCurl {
     private final String login;
     private final String password;
     private final String userAgent;
-    private final Properties props;
+    private final ValidProps props;
 
-    public RutrackerCurl(String login, String password, Properties properties, String userAgent) {
+    public RutrackerCurl(String login, String password, ValidProps properties, String userAgent) {
         this.login = login;
         this.password = password;
         this.userAgent = userAgent;
         this.props = properties;
     }
 
-    private List<String> cookieCmd() {
-        return new ListOf<>(
-                new Joined<>(
-                        new ListOf<>(
-                                "/usr/bin/curl",
-                                "--retry", "5",
-                                "--data",
-                                String.format("login_username=%s&login_password=%s&login=%%C2%%F5%%EE%%E4",
-                                        login, password),
-                                "--output", "login.php",
-                                "--insecure",
-                                "--silent",
-                                "--ipv4",
-                                "--user-agent", userAgent,
-                                "--cookie-jar", COOKIES,
-                                "http://rutracker.org/forum/login.php"
-                        ),
-                        new UncheckedScalar<>(
-                                new Ternary<List<String>>(
-                                        () -> props.containsKey("curl.extra-opts")
-                                                && !props.getProperty("curl.extra-opts", "").isEmpty(),
-                                        () -> new ListOf<>(
-                                                props.getProperty("curl.extra-opts").split("\\s+")
-                                        ),
-                                        ListOf<String>::new
-                                )
-                        ).value()
-                )
-        );
-    }
-
-    private List<String> downloadCmd(String num, File file) {
-        return new ListOf<>(
-                new Joined<>(
-                        new ListOf<>(
-                                "/usr/bin/curl",
-                                "--cookie", COOKIES,
-                                "--referer", String.format("http://rutracker.org/forum/viewtopic.php?t=%s", num),
-                                "--header", "Content-Type:application/x-www-form-urlencoded",
-                                "--header", String.format("t:%s", num),
-                                "--data", String.format("t=%s", num),
-                                "--output", file.getName(),
-                                String.format("http://rutracker.org/forum/dl.php?t=%s", num)
-                        ),
-                        new UncheckedScalar<>(
-                                new Ternary<List<String>>(
-                                        () -> props.containsKey("curl.extra-opts")
-                                                && !props.getProperty("curl.extra-opts", "").isEmpty(),
-                                        () -> new ListOf<>(
-                                                props.getProperty("curl.extra-opts").split("\\s+")
-                                        ),
-                                        ListOf<String>::new
-                                )
-                        ).value()
-                )
-        );
-    }
-
     public File save(String num) throws Exception {
-        File workDir = new File(
-                props.getProperty(
-                        "system.tmpdir",
-                        System.getProperty("java.io.tmpdir")
-                )
-        );
+        File workDir = new File(props.tmpDir());
         return new RetryScalar<>(
                 new FetchFile(
                         workDir,
@@ -137,6 +73,24 @@ public final class RutrackerCurl {
                 return file;
             throw new IOException("File doesn't downloaded");
         }
+
+        private List<String> downloadCmd(String num, File file) {
+            return new ListOf<>(
+                    new Joined<>(
+                            new ListOf<>(
+                                    "/usr/bin/curl",
+                                    "--cookie", COOKIES,
+                                    "--referer", String.format("http://rutracker.org/forum/viewtopic.php?t=%s", num),
+                                    "--header", "Content-Type:application/x-www-form-urlencoded",
+                                    "--header", String.format("t:%s", num),
+                                    "--data", String.format("t=%s", num),
+                                    "--output", file.getName(),
+                                    String.format("http://rutracker.org/forum/dl.php?t=%s", num)
+                            ),
+                            props.curlExtraAsList()
+                    )
+            );
+        }
     }
 
     private final class FetchCookies implements Scalar<Integer> {
@@ -161,12 +115,34 @@ public final class RutrackerCurl {
                         .waitFor();
                 Logger.info(this, String.format("Cookies fetch code %s", res));
                 File lp = new File(workDir, "login.php");
-                if (lp.exists() && !lp.delete())
-                    Logger.warn(this, "Cannot delete 'login.php'");
+                if (lp.exists())
+                    Files.delete(lp.toPath());
                 if (cook.exists() && cook.length() > 0)
                     return res;
             }
             throw new IOException("Cookies not fetched");
+        }
+
+        private List<String> cookieCmd() {
+            return new ListOf<>(
+                    new Joined<>(
+                            new ListOf<>(
+                                    "/usr/bin/curl",
+                                    "--retry", "5",
+                                    "--data",
+                                    String.format("login_username=%s&login_password=%s&login=%%C2%%F5%%EE%%E4",
+                                            login, password),
+                                    "--output", "login.php",
+                                    "--insecure",
+                                    "--silent",
+                                    "--ipv4",
+                                    "--user-agent", userAgent,
+                                    "--cookie-jar", COOKIES,
+                                    "http://rutracker.org/forum/login.php"
+                            ),
+                            props.curlExtraAsList()
+                    )
+            );
         }
     }
 }

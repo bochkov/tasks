@@ -2,6 +2,7 @@ package sb.tasks.jobs.trupd.agent;
 
 import org.bson.Document;
 import org.cactoos.scalar.RetryScalar;
+import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
 import sb.tasks.agent.AgentException;
 import sb.tasks.jobs.trupd.RutrackerCurl;
@@ -14,17 +15,16 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 public final class AnRutracker implements Agent<TrNotif> {
 
     private final Document document;
-    private final Properties properties;
+    private final ValidProps properties;
     private final String login;
     private final String password;
     private final String userAgent;
 
-    public AnRutracker(Document document, Properties props,
+    public AnRutracker(Document document, ValidProps props,
                        Document login, Document password, Document userAgent) {
         this(
                 document,
@@ -35,7 +35,7 @@ public final class AnRutracker implements Agent<TrNotif> {
         );
     }
 
-    public AnRutracker(Document document, Properties props,
+    public AnRutracker(Document document, ValidProps props,
                        String login, String password, String userAgent) {
         this.login = login;
         this.properties = props;

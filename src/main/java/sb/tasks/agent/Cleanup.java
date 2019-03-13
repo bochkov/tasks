@@ -5,6 +5,7 @@ import org.bson.Document;
 import sb.tasks.notif.NotifObj;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,8 +24,7 @@ public final class Cleanup<T extends NotifObj> implements Agent<T> {
         List<T> objects = this.agent.perform();
         Logger.info(this, "obj_size=%s, doc=%s", objects.size(), document);
         for (NotifObj res : objects) {
-            Logger.info(this, res.file().delete() ?
-                    "File '%s' deleted" : "File '%s' NOT deleted", res.file());
+            Files.delete(res.file().toPath());
         }
         return Collections.emptyList();
     }

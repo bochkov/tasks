@@ -1,13 +1,13 @@
 package sb.tasks.notif.telegram;
 
-import java.util.Properties;
+import sb.tasks.ValidProps;
 
 public final class TgAnsFactory {
 
-    private final Properties props;
+    private final ValidProps props;
     private final String token;
 
-    public TgAnsFactory(Properties props, String token) {
+    public TgAnsFactory(ValidProps props, String token) {
         this.props = props;
         this.token = token;
     }

@@ -3,6 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.0.0'
     id 'io.franzbecker.gradle-lombok' version '2.1'
     id 'java'
+    id 'org.sonarqube' version '2.6'
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'

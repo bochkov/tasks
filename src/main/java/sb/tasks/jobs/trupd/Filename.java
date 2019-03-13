@@ -2,21 +2,21 @@ package sb.tasks.jobs.trupd;
 
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
+import sb.tasks.ValidProps;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Filename {
 
-    private final Properties props;
+    private final ValidProps props;
     private final String torrentUrl;
 
-    public Filename(Properties props, String torrentUrl) {
+    public Filename(ValidProps props, String torrentUrl) {
         this.props = props;
         this.torrentUrl = torrentUrl;
     }
@@ -24,7 +24,7 @@ public final class Filename {
     public File toFile() throws IOException {
         String filename = "default";
         if (torrentUrl.endsWith(".torrent"))
-            filename = torrentUrl.substring(torrentUrl.lastIndexOf("/"));
+            filename = torrentUrl.substring(torrentUrl.lastIndexOf('/'));
         else {
             List<String> headers = new JdkRequest(torrentUrl)
                     .fetch()
@@ -39,10 +39,7 @@ public final class Filename {
             }
         }
         return new File(
-                props.getProperty(
-                        "system.tmpdir",
-                        System.getProperty("java.io.tmpdir")
-                ),
+                props.tmpDir(),
                 filename
         );
     }

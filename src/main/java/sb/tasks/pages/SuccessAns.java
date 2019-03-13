@@ -3,11 +3,11 @@ package sb.tasks.pages;
 import lombok.Data;
 
 @Data
-public final class Success implements HttpAnswer {
+public final class SuccessAns implements HttpAnswer {
 
     private final boolean success;
 
-    public Success() {
+    public SuccessAns() {
         this.success = true;
     }
 }

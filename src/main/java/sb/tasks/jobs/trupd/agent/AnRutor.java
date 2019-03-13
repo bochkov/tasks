@@ -5,13 +5,13 @@ import com.jcabi.http.response.JsoupResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import sb.tasks.ValidProps;
 import sb.tasks.jobs.trupd.ComboRequest;
 import sb.tasks.jobs.trupd.TrNotif;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,9 +24,9 @@ public final class AnRutor extends TorrentFromPage {
     };
 
     private final org.bson.Document document;
-    private final Properties props;
+    private final ValidProps props;
 
-    public AnRutor(org.bson.Document document, Properties props) {
+    public AnRutor(org.bson.Document document, ValidProps props) {
         this.document = document;
         this.props = props;
     }

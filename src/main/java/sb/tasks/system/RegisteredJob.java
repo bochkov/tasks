@@ -5,9 +5,9 @@ import org.bson.Document;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.quartz.*;
+import sb.tasks.ValidProps;
 
 import java.util.List;
-import java.util.Properties;
 
 public final class RegisteredJob {
 
@@ -19,7 +19,7 @@ public final class RegisteredJob {
         this.data = data;
     }
 
-    public RegisteredJob(Properties properties, MongoDatabase db, Scheduler scheduler) {
+    public RegisteredJob(MongoDatabase db, Scheduler scheduler, ValidProps properties) {
         this(
                 scheduler,
                 new JobDataMap(
@@ -32,7 +32,7 @@ public final class RegisteredJob {
         );
     }
 
-    public JobKey register(Document document) throws Exception {
+    public JobKey register(Document document) throws ClassNotFoundException, SchedulerException {
         JobKey jobKey = new JobKey(document.getObjectId("_id").toString(), "TASK");
         Class<? extends Job> jobClass = Class.forName(document.getString("job")).asSubclass(Job.class);
         data.put("objectId", document.getObjectId("_id"));

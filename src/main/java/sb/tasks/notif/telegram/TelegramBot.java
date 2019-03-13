@@ -6,20 +6,20 @@ import org.quartz.Scheduler;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
 import ratpack.jackson.Jackson;
+import sb.tasks.ValidProps;
 import sb.tasks.notif.telegram.answers.*;
 import sb.tasks.notif.telegram.pojos.MessageEntity;
 import sb.tasks.notif.telegram.pojos.Update;
 
 import java.util.Arrays;
-import java.util.Properties;
 
 public final class TelegramBot implements Handler {
 
-    private final Properties props;
+    private final ValidProps props;
     private final MongoDatabase db;
     private final Scheduler schedule;
 
-    public TelegramBot(Properties props, MongoDatabase db, Scheduler schedule) {
+    public TelegramBot(MongoDatabase db, Scheduler schedule, ValidProps props) {
         this.db = db;
         this.props = props;
         this.schedule = schedule;

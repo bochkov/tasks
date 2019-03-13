@@ -1,6 +1,5 @@
 package sb.tasks.notif.telegram.answers;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -42,7 +41,7 @@ public final class AnsAdmin implements Answer {
                 db.getCollection("settings")
                         .findOneAndUpdate(
                                 Filters.eq("_id", "common.admin_telegram"),
-                                Updates.set("value", Joiner.on(",").join(tgAdmins))
+                                Updates.set("value", String.join(",", tgAdmins))
                         );
                 tgAnsFactory.answer()
                         .send(chatId, String.format("Added chatId=%s to admin list", arg));

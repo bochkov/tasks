@@ -46,7 +46,9 @@ public final class AnsList implements Answer {
                         .find(Filters.eq("_id", new ObjectId(key.getName())))
                         .first();
                 Logger.info(AnsList.this, "key=%s, doc=%s", key.getName(), doc);
-                if (doc != null)
+                if (doc == null)
+                    str1.append("NULL DOC\n");
+                else
                     str1.append("\n")
                             .append(String.format("ID=%s", doc.getObjectId("_id")))
                             .append("\n")
@@ -54,8 +56,6 @@ public final class AnsList implements Answer {
                             .append("\n")
                             .append(String.format("Name=%s", doc.get("vars", Document.class).getString("name")))
                             .append("\n");
-                else
-                    str1.append("NULL DOC\n");
             }
         }
         tgAnsFactory

@@ -4,22 +4,21 @@ import com.jcabi.log.Logger;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
-import java.util.Properties;
-
 public final class DbApp implements App<MongoDatabase> {
 
-    private final Properties props;
+    private final ValidProps props;
 
-    public DbApp(Properties props) {
+    public DbApp(ValidProps props) {
         this.props = props;
     }
 
     @Override
     public MongoDatabase init() {
         Logger.info(this, "Communicating with database");
-        return new MongoClient(
-                props.getProperty("mongo.host"),
-                Integer.parseInt(props.getProperty("mongo.port"))
-        ).getDatabase(props.getProperty("mongo.db"));
+        String host = props.mongoHost();
+        int port = props.mongoPort();
+        try (MongoClient client = new MongoClient(host, port)) {
+            return client.getDatabase(props.mongoDb());
+        }
     }
 }

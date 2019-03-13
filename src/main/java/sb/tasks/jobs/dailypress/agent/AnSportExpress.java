@@ -8,6 +8,7 @@ import com.jcabi.http.wire.RetryWire;
 import com.jcabi.log.Logger;
 import org.bson.Document;
 import org.jsoup.Jsoup;
+import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
 import sb.tasks.jobs.dailypress.MagResult;
 import sb.tasks.jobs.dailypress.PdfFromResponse;
@@ -19,18 +20,17 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 public final class AnSportExpress implements Agent<MagResult> {
 
     private final Document document;
-    private final Properties props;
+    private final ValidProps props;
     private final String phpSessId;
     private final String user;
     private final String sess;
     private final String userAgent;
 
-    public AnSportExpress(Document document, Properties props,
+    public AnSportExpress(Document document, ValidProps props,
                           Document phpSessId, Document user,
                           Document sess, Document userAgent) {
         this(
@@ -43,7 +43,7 @@ public final class AnSportExpress implements Agent<MagResult> {
         );
     }
 
-    public AnSportExpress(Document document, Properties props,
+    public AnSportExpress(Document document, ValidProps props,
                           String phpSessId, String user,
                           String sess, String userAgent) {
         this.document = document;
@@ -62,10 +62,7 @@ public final class AnSportExpress implements Agent<MagResult> {
                 .attr("href");
         Logger.info(this, String.format("Checking link: %s", url));
         File out = new File(
-                props.getProperty(
-                        "system.tmpdir",
-                        System.getProperty("java.io.tmpdir")
-                ),
+                props.tmpDir(),
                 String.format("se%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
         if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {

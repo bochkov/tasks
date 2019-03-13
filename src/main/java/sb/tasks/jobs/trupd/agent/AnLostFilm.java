@@ -7,25 +7,25 @@ import com.jcabi.http.wire.CookieOptimizingWire;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import sb.tasks.ValidProps;
 import sb.tasks.jobs.trupd.ComboRequest;
 import sb.tasks.jobs.trupd.TrNotif;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class AnLostFilm extends TorrentFromPage {
 
     private final org.bson.Document document;
-    private final Properties props;
+    private final ValidProps props;
     private final String session;
     private final String uid;
     private final String quality;
 
-    public AnLostFilm(org.bson.Document document, Properties props,
+    public AnLostFilm(org.bson.Document document, ValidProps props,
                       org.bson.Document session, org.bson.Document uid, org.bson.Document quality) {
         this(
                 document,
@@ -37,7 +37,7 @@ public final class AnLostFilm extends TorrentFromPage {
 
     }
 
-    public AnLostFilm(org.bson.Document document, Properties props,
+    public AnLostFilm(org.bson.Document document, ValidProps props,
                       String session, String uid, String quality) {
         this.document = document;
         this.props = props;
@@ -119,7 +119,7 @@ public final class AnLostFilm extends TorrentFromPage {
             }
         }
         return Collections.singletonList(
-                new TrNotif.CheckedNotif(document, props.contains("initial"))
+                new TrNotif.CheckedNotif(document, props.isInitial())
         );
     }
 }

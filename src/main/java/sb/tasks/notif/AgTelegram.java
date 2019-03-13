@@ -3,6 +3,7 @@ package sb.tasks.notif;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import sb.tasks.ValidProps;
 import sb.tasks.notif.telegram.TgAnsFactory;
 
 import java.util.List;
@@ -12,9 +13,9 @@ public final class AgTelegram<T extends NotifObj> implements Notification<T> {
 
     private final MongoDatabase db;
     private final Document doc;
-    private final Properties props;
+    private final ValidProps props;
 
-    public AgTelegram(Properties props, Document doc, MongoDatabase db) {
+    public AgTelegram(ValidProps props, Document doc, MongoDatabase db) {
         this.db = db;
         this.doc = doc;
         this.props = props;

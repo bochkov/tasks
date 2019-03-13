@@ -5,16 +5,15 @@ import com.mongodb.client.MongoDatabase;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.quartz.*;
-
-import java.util.Properties;
+import sb.tasks.ValidProps;
 
 public final class AutoRegJob {
 
     private final Scheduler scheduler;
     private final MongoDatabase db;
-    private final Properties properties;
+    private final ValidProps properties;
 
-    public AutoRegJob(MongoDatabase db, Scheduler scheduler, Properties properties) {
+    public AutoRegJob(MongoDatabase db, Scheduler scheduler, ValidProps properties) {
         this.scheduler = scheduler;
         this.db = db;
         this.properties = properties;

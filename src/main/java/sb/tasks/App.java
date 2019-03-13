@@ -1,7 +1,9 @@
 package sb.tasks;
 
+import org.quartz.SchedulerException;
+
 public interface App<T> {
 
-    T init() throws Exception;
+    T init() throws HttpServException, SchedulerException;
 
 }

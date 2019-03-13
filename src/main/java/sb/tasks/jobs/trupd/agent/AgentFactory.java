@@ -4,19 +4,18 @@ import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
 import sb.tasks.agent.Agents;
 import sb.tasks.jobs.trupd.TrNotif;
-
-import java.util.Properties;
 
 public final class AgentFactory implements Agents<TrNotif> {
 
     private final MongoDatabase db;
     private final Document document;
-    private final Properties props;
+    private final ValidProps props;
 
-    public AgentFactory(MongoDatabase db, Document document, Properties props) {
+    public AgentFactory(MongoDatabase db, Document document, ValidProps props) {
         this.db = db;
         this.document = document;
         this.props = props;
@@ -30,25 +29,28 @@ public final class AgentFactory implements Agents<TrNotif> {
             agent = new Agent.EMPTY<>();
         else {
             if (url.matches("https?://.*?tor.org/.*"))
-                agent = new AnRutor(
-                        document,
-                        props
-                );
+                agent = new AnRutor(document, props);
             else if (url.matches("https?://.*?lostfilm.tv/.*"))
                 agent = new AnLostFilm(
                         document,
                         props,
-                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.session")).first(),
-                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.uid")).first(),
-                        db.getCollection("settings").find(Filters.eq("_id", "lostfilm.quality")).first()
+                        db.getCollection(ValidProps.SETTINGS_COLL)
+                                .find(Filters.eq("_id", "lostfilm.session")).first(),
+                        db.getCollection(ValidProps.SETTINGS_COLL)
+                                .find(Filters.eq("_id", "lostfilm.uid")).first(),
+                        db.getCollection(ValidProps.SETTINGS_COLL)
+                                .find(Filters.eq("_id", "lostfilm.quality")).first()
                 );
             else if (!num.isEmpty() || url.matches("https?://rutracker.org/.*"))
                 agent = new AnRutracker(
                         document,
                         props,
-                        db.getCollection("settings").find(Filters.eq("_id", "rutracker.login")).first(),
-                        db.getCollection("settings").find(Filters.eq("_id", "rutracker.password")).first(),
-                        db.getCollection("settings").find(Filters.eq("_id", "common.user-agent")).first()
+                        db.getCollection(ValidProps.SETTINGS_COLL)
+                                .find(Filters.eq("_id", "rutracker.login")).first(),
+                        db.getCollection(ValidProps.SETTINGS_COLL)
+                                .find(Filters.eq("_id", "rutracker.password")).first(),
+                        db.getCollection(ValidProps.SETTINGS_COLL)
+                                .find(Filters.eq("_id", "common.user-agent")).first()
                 );
             else
                 agent = new Agent.EMPTY<>();

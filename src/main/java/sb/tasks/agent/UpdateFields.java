@@ -25,14 +25,13 @@ public final class UpdateFields<T extends NotifObj> implements Agent<T> {
     public List<T> perform() throws AgentException, IOException {
         List<T> results = agent.perform();
         for (NotifObj res : results) {
-            UpdateResult update = db.getCollection("tasks")
-                    .updateOne(
-                            document,
-                            res.updateSets()
-                    );
+            UpdateResult update = db
+                    .getCollection("tasks")
+                    .updateOne(document, res.updateSets());
             Logger.info(this, "Update '%s' in db: matched=%s, modified=%s, acknowledged=%s",
                     document, update.getMatchedCount(),
-                    update.getModifiedCount(), update.wasAcknowledged());
+                    update.getModifiedCount(), update.wasAcknowledged()
+            );
         }
         return results;
     }

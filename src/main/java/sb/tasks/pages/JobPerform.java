@@ -31,7 +31,7 @@ public final class JobPerform implements HttpPage {
                 JobKey key = schInfo.get(jobkey);
                 scheduler.triggerJob(key);
                 Logger.info(this, "Job with key = %s triggered", key);
-                answers.put(jobkey, new Success());
+                answers.put(jobkey, new SuccessAns());
             }
             ctx.render(Jackson.json(answers));
         });

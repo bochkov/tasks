@@ -7,8 +7,7 @@ import org.bson.types.ObjectId;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
-import java.util.Properties;
+import sb.tasks.ValidProps;
 
 public abstract class BaseJob implements Job {
 
@@ -16,13 +15,14 @@ public abstract class BaseJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         MongoDatabase db = (MongoDatabase) context.getMergedJobDataMap().get("mongo");
         ObjectId id = (ObjectId) context.getMergedJobDataMap().get("objectId");
-        Document bson = db.getCollection("tasks").find(
-                Filters.eq("_id", id)
-        ).first();
-        Properties props = (Properties) context.getMergedJobDataMap().get("properties");
+        ValidProps props = (ValidProps) context.getMergedJobDataMap().get("properties");
+        Document bson = db
+                .getCollection("tasks")
+                .find(Filters.eq("_id", id))
+                .first();
         exec(db, bson, props);
     }
 
-    protected abstract void exec(MongoDatabase db, Document bson, Properties props)
+    protected abstract void exec(MongoDatabase db, Document bson, ValidProps props)
             throws JobExecutionException;
 }

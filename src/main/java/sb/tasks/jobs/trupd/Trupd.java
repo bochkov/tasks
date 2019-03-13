@@ -3,6 +3,7 @@ package sb.tasks.jobs.trupd;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.quartz.JobExecutionException;
+import sb.tasks.ValidProps;
 import sb.tasks.agent.AgNotify;
 import sb.tasks.agent.Cleanup;
 import sb.tasks.agent.UpdateFields;
@@ -12,12 +13,10 @@ import sb.tasks.jobs.trupd.agent.AgentFactory;
 import sb.tasks.jobs.trupd.agent.Download;
 import sb.tasks.jobs.trupd.agent.MetafileUpdated;
 
-import java.util.Properties;
-
 public final class Trupd extends BaseJob {
 
     @Override
-    protected void exec(MongoDatabase db, Document bson, Properties props) throws JobExecutionException {
+    protected void exec(MongoDatabase db, Document bson, ValidProps props) throws JobExecutionException {
         try {
             new ValidDoc<>(
                     bson,

@@ -2,6 +2,7 @@ package sb.tasks.agent;
 
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import sb.tasks.ValidProps;
 import sb.tasks.notif.AgDirectory;
 import sb.tasks.notif.AgMail;
 import sb.tasks.notif.AgTelegram;
@@ -9,17 +10,16 @@ import sb.tasks.notif.NotifObj;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 public final class AgNotify<T extends NotifObj> implements Agent<T> {
 
     private final MongoDatabase db;
-    private final Properties properties;
+    private final ValidProps properties;
     private final Document document;
     private final Agent<T> agent;
     private final String subject;
 
-    public AgNotify(MongoDatabase db, Properties properties, Document document, String subject, Agent<T> agent) {
+    public AgNotify(MongoDatabase db, ValidProps properties, Document document, String subject, Agent<T> agent) {
         this.subject = subject;
         this.db = db;
         this.properties = properties;

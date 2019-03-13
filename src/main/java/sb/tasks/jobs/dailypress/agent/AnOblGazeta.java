@@ -7,6 +7,7 @@ import com.jcabi.http.wire.RetryWire;
 import com.jcabi.log.Logger;
 import org.bson.Document;
 import org.jsoup.Jsoup;
+import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
 import sb.tasks.jobs.dailypress.MagResult;
 import sb.tasks.jobs.dailypress.PdfFromResponse;
@@ -18,14 +19,13 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 public final class AnOblGazeta implements Agent<MagResult> {
 
     private final Document document;
-    private final Properties props;
+    private final ValidProps props;
 
-    public AnOblGazeta(Document document, Properties props) {
+    public AnOblGazeta(Document document, ValidProps props) {
         this.document = document;
         this.props = props;
     }
@@ -51,10 +51,7 @@ public final class AnOblGazeta implements Agent<MagResult> {
         String url = String.format("https://www.oblgazeta.ru%s", pdfUrl);
         Logger.info(this, String.format("Checking link: %s", url));
         File out = new File(
-                props.getProperty(
-                        "system.tmpdir",
-                        System.getProperty("java.io.tmpdir")
-                ),
+                props.tmpDir(),
                 String.format("og%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
         if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {

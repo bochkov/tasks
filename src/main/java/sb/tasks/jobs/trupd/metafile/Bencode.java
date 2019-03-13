@@ -10,6 +10,8 @@ import java.util.TreeMap;
 
 public abstract class Bencode {
 
+    private static final String EOF = "Unexpected EOF found";
+
     private final SortedMap rootElement;
 
     public Bencode(InputStream is) throws IOException {
@@ -62,7 +64,7 @@ public abstract class Bencode {
         StringBuilder buff = new StringBuilder();
         do {
             if (readChar < 0)
-                throw new IOException("Unexpected EOF found");
+                throw new IOException(EOF);
             buff.append((char) readChar);
             readChar = is.read();
         } while (readChar != 'e');
@@ -75,7 +77,7 @@ public abstract class Bencode {
         int readChar = is.read();
         while (readChar != 'e') {
             if (readChar < 0)
-                throw new IOException("Unexpected EOF found");
+                throw new IOException(EOF);
             is.reset();
             list.add(parse(is));
             is.mark(0);
@@ -90,7 +92,7 @@ public abstract class Bencode {
         int readChar = is.read();
         while (readChar != 'e') {
             if (readChar < 0)
-                throw new IOException("Unexpected EOF found");
+                throw new IOException(EOF);
             is.reset();
             map.put(parseByteString(is), parse(is));
             is.mark(0);
@@ -104,7 +106,7 @@ public abstract class Bencode {
         StringBuilder buff = new StringBuilder();
         do {
             if (readChar < 0)
-                throw new IOException("Unexpected EOF found");
+                throw new IOException(EOF);
             buff.append((char) readChar);
             readChar = is.read();
         } while (readChar != ':');

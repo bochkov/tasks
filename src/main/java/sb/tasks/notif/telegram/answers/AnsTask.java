@@ -6,20 +6,19 @@ import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
+import sb.tasks.ValidProps;
 import sb.tasks.jobs.trupd.TrupdNewDoc;
 import sb.tasks.notif.telegram.TgAnsFactory;
 import sb.tasks.system.RegisteredJob;
 
-import java.util.Properties;
-
 public final class AnsTask implements Answer {
 
     private final MongoDatabase db;
-    private final Properties properties;
+    private final ValidProps properties;
     private final Scheduler scheduler;
     private final TgAnsFactory tgAnsFactory;
 
-    public AnsTask(MongoDatabase db, Properties properties, Scheduler scheduler, TgAnsFactory tgAnsFactory) {
+    public AnsTask(MongoDatabase db, ValidProps properties, Scheduler scheduler, TgAnsFactory tgAnsFactory) {
         this.db = db;
         this.scheduler = scheduler;
         this.properties = properties;
@@ -29,7 +28,8 @@ public final class AnsTask implements Answer {
     @Override
     public void handle(String chatId, String[] args) {
         String url = args[0];
-        Document dir = db.getCollection("settings")
+        Document dir = db
+                .getCollection(ValidProps.SETTINGS_COLL)
                 .find(Filters.eq("_id", "common.download_dir"))
                 .first();
         String directory = args.length >= 2 ?
@@ -39,7 +39,7 @@ public final class AnsTask implements Answer {
                         dir.getOrDefault("value", ".").toString();
         Document document = new TrupdNewDoc(db).add(url, directory, chatId);
         try {
-            JobKey jobKey = new RegisteredJob(properties, db, scheduler).register(document);
+            JobKey jobKey = new RegisteredJob(db, scheduler, properties).register(document);
             Logger.info(this, "Successfully registered task %s", document.toJson());
             tgAnsFactory
                     .answer()

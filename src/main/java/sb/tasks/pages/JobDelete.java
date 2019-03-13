@@ -38,10 +38,10 @@ public final class JobDelete implements HttpPage {
                     scheduler.deleteJob(key);
                     db.getCollection("tasks").findOneAndDelete(Filters.eq("_id", new ObjectId(jobkey)));
                     Logger.info(this, "Successfully delete job with id = %s", new ObjectId(jobkey));
-                    answer.put(jobkey, new Success());
+                    answer.put(jobkey, new SuccessAns());
                 } else {
                     Logger.warn(this, "Cannot find job with jobkey = %s", jobkey);
-                    answer.put(jobkey, new Failure());
+                    answer.put(jobkey, new FailureAns());
                 }
             }
             ctx.render(Jackson.json(answer));

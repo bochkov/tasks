@@ -2,6 +2,7 @@ package sb.tasks.jobs.trupd.agent;
 
 import com.jcabi.http.request.JdkRequest;
 import org.jsoup.nodes.Document;
+import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
 import sb.tasks.jobs.trupd.ComboRequest;
 import sb.tasks.jobs.trupd.Filename;
@@ -18,7 +19,7 @@ public abstract class TorrentFromPage implements Agent<TrNotif> {
 
     protected abstract String torrentUrl(Document doc) throws IOException;
 
-    protected TorrentResult fromReq(Document root, Properties props, String url) throws IOException {
+    protected TorrentResult fromReq(Document root, ValidProps props, String url) throws IOException {
         String torrentUrl = torrentUrl(root);
         return new TorrentResult(
                 new Metafile(

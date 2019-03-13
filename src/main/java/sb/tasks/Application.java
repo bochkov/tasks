@@ -15,10 +15,10 @@ import java.util.function.Consumer;
 
 public final class Application {
 
-    private final Properties properties;
+    private final ValidProps properties;
 
     public Application(Properties properties) {
-        this.properties = properties;
+        this.properties = new ValidProps(properties);
     }
 
     public static void main(String[] args) throws Exception {
@@ -26,14 +26,14 @@ public final class Application {
         try (FileInputStream fis = new FileInputStream("tasks.properties")) {
             properties.load(fis);
         } catch (IOException ex) {
-            System.err.println("Unable to find tasks.properties. Exit.");
+            Logger.warn(Application.class, "Unable to find tasks.properties. Exit.");
             System.exit(1);
         }
         new Application(properties).run();
     }
 
     public void run() throws Exception {
-        new ValidProps(properties).init();
+        properties.init();
         Scheduler scheduler = new SchedulerApp().init();
         MongoDatabase db = new DbApp(properties).init();
         db.getCollection("tasks")
@@ -43,7 +43,7 @@ public final class Application {
                     public void accept(Document document) {
                         Logger.info(this, "Readed task: %s", document.toJson());
                         try {
-                            new RegisteredJob(properties, db, scheduler).register(document);
+                            new RegisteredJob(db, scheduler, properties).register(document);
                             Logger.info(this, "Successfully registered task %s", document.toJson());
                         } catch (Exception ex) {
                             Logger.warn(this, "Cannot register task %s", document.toJson());
@@ -53,7 +53,7 @@ public final class Application {
                 });
         new AutoRegJob(db, scheduler, properties).start();
         new AutoChangesJob().start();
-        new WebApp(properties, db, scheduler).init();
+        new WebApp(db, scheduler, properties).init();
         scheduler.start();
         Logger.info(this, "Application started");
     }

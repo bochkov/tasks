@@ -10,39 +10,41 @@ import sb.tasks.pages.IndexPage;
 import sb.tasks.pages.JobDelete;
 import sb.tasks.pages.JobPerform;
 
-import java.util.Properties;
-
 public final class WebApp implements App<RatpackServer> {
 
-    private final Properties props;
+    private final ValidProps props;
     private final MongoDatabase db;
     private final Scheduler scheduler;
 
-    public WebApp(Properties properties, MongoDatabase db, Scheduler scheduler) {
+    public WebApp(MongoDatabase db, Scheduler scheduler, ValidProps properties) {
         this.props = properties;
         this.db = db;
         this.scheduler = scheduler;
     }
 
     @Override
-    public RatpackServer init() throws Exception {
+    public RatpackServer init() throws HttpServException {
         Logger.info(this, "Starting HTTP Server");
-        return RatpackServer.start(server -> server
-                .serverConfig(config -> {
-                    config.baseDir(BaseDir.find());
-                    config.port(Integer.parseInt(props.getProperty("http.port")));
-                })
-                .handlers(chain -> chain
-                        .files(f -> f.files("static"))
-                        .post("bot/:token",
-                                new TelegramBot(props, db, scheduler))
-                        .post("api/run",
-                                new JobPerform(scheduler))
-                        .post("api/delete",
-                                new JobDelete(db, scheduler))
-                        .get("api/tasks",
-                                new IndexPage(db, scheduler))
-                )
-        );
+        try {
+            return RatpackServer.start(server -> server
+                    .serverConfig(config -> {
+                        config.baseDir(BaseDir.find());
+                        config.port(props.httpPort());
+                    })
+                    .handlers(chain -> chain
+                            .files(f -> f.files("static"))
+                            .post("bot/:token",
+                                    new TelegramBot(db, scheduler, props))
+                            .post("api/run",
+                                    new JobPerform(scheduler))
+                            .post("api/delete",
+                                    new JobDelete(db, scheduler))
+                            .get("api/tasks",
+                                    new IndexPage(db, scheduler))
+                    )
+            );
+        } catch (Exception ex) {
+            throw new HttpServException(ex);
+        }
     }
 }

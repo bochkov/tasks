@@ -1,19 +1,19 @@
 package sb.tasks.jobs.trupd.agent;
 
+import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
 import sb.tasks.agent.AgentException;
 import sb.tasks.jobs.trupd.TrNotif;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 public final class Download implements Agent<TrNotif> {
 
     private final Agent<TrNotif> agent;
-    private final Properties props;
+    private final ValidProps props;
 
-    public Download(Properties props, Agent<TrNotif> agent) {
+    public Download(ValidProps props, Agent<TrNotif> agent) {
         this.props = props;
         this.agent = agent;
     }
@@ -23,10 +23,7 @@ public final class Download implements Agent<TrNotif> {
         List<TrNotif> torrents = this.agent.perform();
         for (TrNotif result : torrents) {
             result.writeTo(
-                    props.getProperty(
-                            "system.tmpdir",
-                            System.getProperty("java.io.tmpdir")
-                    )
+                    props.tmpDir()
             );
         }
         return torrents;

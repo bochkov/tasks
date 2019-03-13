@@ -9,6 +9,7 @@ import com.jcabi.email.stamp.StSubject;
 import com.jcabi.email.wire.Smtps;
 import com.jcabi.immutable.Array;
 import org.bson.Document;
+import sb.tasks.ValidProps;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -17,7 +18,6 @@ import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public final class AgMail<T extends NotifObj> implements Notification<T> {
 
@@ -26,22 +26,22 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
     private final List<String> recipients;
     private final String subject;
 
-    public AgMail(Properties props, Document params, String subject) {
+    public AgMail(ValidProps props, Document params, String subject) {
         this(
                 new Postman.Default(
                         new Smtps(
                                 new Token(
-                                        props.getProperty("mail.user"),
-                                        props.getProperty("mail.pass")
+                                        props.mailUser(),
+                                        props.mailPassword()
                                 ).access(
                                         new Protocol.Smtps(
-                                                props.getProperty("mail.host"),
-                                                Integer.parseInt(props.getProperty("mail.port"))
+                                                props.mailHost(),
+                                                props.mailPort()
                                         )
                                 )
                         )
                 ),
-                props.getProperty("mail.from"),
+                props.mailFrom(),
                 params.get("mail_to", new ArrayList<>()),
                 subject
         );
@@ -102,8 +102,8 @@ public final class AgMail<T extends NotifObj> implements Notification<T> {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final class ReMIME implements Envelope {
 
-        private final transient Array<Stamp> stamps;
-        private final transient Array<Enclosure> encs;
+        private final Array<Stamp> stamps;
+        private final Array<Enclosure> encs;
 
         public ReMIME(final Iterable<Stamp> stmps, final Iterable<Enclosure> list) {
             this.stamps = new Array<>(stmps);

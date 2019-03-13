@@ -32,6 +32,7 @@ public interface TrNotif extends NotifObj {
 
         @Override
         public void writeTo(String directory) {
+            // do nothing
         }
 
         @Override

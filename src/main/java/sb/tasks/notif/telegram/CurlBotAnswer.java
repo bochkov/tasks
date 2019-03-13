@@ -4,19 +4,17 @@ import com.jcabi.http.Request;
 import com.jcabi.log.Logger;
 import org.cactoos.collection.Joined;
 import org.cactoos.list.ListOf;
-import org.cactoos.scalar.Ternary;
-import org.cactoos.scalar.UncheckedScalar;
+import sb.tasks.ValidProps;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 public final class CurlBotAnswer implements TgAnswer {
 
     private final TgAnswer origin;
-    private final Properties props;
+    private final ValidProps props;
 
-    public CurlBotAnswer(Properties props, TgAnswer origin) {
+    public CurlBotAnswer(ValidProps props, TgAnswer origin) {
         this.origin = origin;
         this.props = props;
     }
@@ -52,16 +50,7 @@ public final class CurlBotAnswer implements TgAnswer {
                                     "--retry", "5",
                                     String.format("%s", request.uri())
                             ),
-                            new UncheckedScalar<>(
-                                    new Ternary<List<String>>(
-                                            () -> props.containsKey("curl.extra-opts")
-                                                    && !props.getProperty("curl.extra-opts", "").isEmpty(),
-                                            () -> new ListOf<>(
-                                                    props.getProperty("curl.extra-opts").split("\\s+")
-                                            ),
-                                            ListOf<String>::new
-                                    )
-                            ).value()
+                            props.curlExtraAsList()
                     )
             );
         }
