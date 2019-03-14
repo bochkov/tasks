@@ -13,12 +13,11 @@ public final class DbApp implements App<MongoDatabase> {
     }
 
     @Override
+    @SuppressWarnings("squid:S2095")
     public MongoDatabase init() {
-        Logger.info(this, "Communicating with database");
-        String host = props.mongoHost();
-        int port = props.mongoPort();
-        try (MongoClient client = new MongoClient(host, port)) {
-            return client.getDatabase(props.mongoDb());
-        }
+        Logger.info(this, "Communicating with database %s:%s/%s",
+                props.mongoHost(), props.mongoPort(), props.mongoDb());
+        return new MongoClient(props.mongoHost(), props.mongoPort())
+                .getDatabase(props.mongoDb());
     }
 }

@@ -4,6 +4,7 @@ import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import sb.tasks.system.AutoChangesJob;
 import sb.tasks.system.AutoRegJob;
 import sb.tasks.system.RegisteredJob;
@@ -32,7 +33,7 @@ public final class Application {
         new Application(properties).run();
     }
 
-    public void run() throws Exception {
+    public void run() throws HttpServException, SchedulerException {
         properties.init();
         Scheduler scheduler = new SchedulerApp().init();
         MongoDatabase db = new DbApp(properties).init();
