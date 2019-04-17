@@ -28,10 +28,14 @@ public final class JobPerform implements HttpPage {
             SchedulerInfo schInfo = new SchedulerInfo(scheduler);
             Map<String, HttpAnswer> answers = new HashMap<>();
             for (String jobkey : jobkeys) {
-                JobKey key = schInfo.get(jobkey);
-                scheduler.triggerJob(key);
-                Logger.info(this, "Job with key = %s triggered", key);
-                answers.put(jobkey, new SuccessAns());
+                try {
+                    JobKey key = schInfo.get(jobkey);
+                    scheduler.triggerJob(key);
+                    Logger.info(JobPerform.this, "Job with key = %s triggered", key);
+                    answers.put(jobkey, new SuccessAns());
+                } catch (Exception ex) {
+                    answers.put(jobkey, new FailureAns());
+                }
             }
             ctx.render(Jackson.json(answers));
         });
