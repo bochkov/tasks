@@ -1,23 +1,13 @@
 plugins {
     id 'io.ratpack.ratpack-java' version '1.6.0'
     id 'com.github.johnrengelman.shadow' version '5.0.0'
-    id 'io.franzbecker.gradle-lombok' version '2.1'
+    id 'io.franzbecker.gradle-lombok' version '2.2'
     id 'java'
-    id 'org.sonarqube' version '2.6'
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'io.ratpack.ratpack-java'
 apply plugin: 'java'
-apply plugin: 'jacoco'
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-    }
-}
-
-check.dependsOn jacocoTestReport
 
 repositories {
     jcenter()
@@ -25,9 +15,9 @@ repositories {
 
 dependencies {
 
-    compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
+    compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.1'
 
-    compile group: 'org.mongodb', name: 'mongodb-driver', version: '3.10.1'
+    compile group: 'org.mongodb', name: 'mongodb-driver', version: '3.10.2'
 
     compile group: 'com.jcabi', name: 'jcabi-log', version: '0.18'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
