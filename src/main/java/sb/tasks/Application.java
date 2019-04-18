@@ -7,6 +7,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import sb.tasks.system.AutoChangesJob;
 import sb.tasks.system.AutoRegJob;
+import sb.tasks.system.MetaFetchJob;
 import sb.tasks.system.RegisteredJob;
 
 import java.io.FileInputStream;
@@ -54,6 +55,7 @@ public final class Application {
                 });
         new AutoRegJob(db, scheduler, properties).start();
         new AutoChangesJob().start();
+        new MetaFetchJob(properties, scheduler).start();
         new WebApp(db, scheduler, properties).init();
         scheduler.start();
         Logger.info(this, "Application started");

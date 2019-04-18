@@ -1,9 +1,11 @@
 package sb.tasks.jobs.trupd;
 
 import com.jcabi.http.*;
+import com.jcabi.http.response.XmlResponse;
 import com.jcabi.http.wire.AutoRedirectingWire;
 import com.jcabi.http.wire.RetryWire;
 import com.jcabi.http.wire.TrustedWire;
+import sb.tasks.jobs.meta.XmlResponseValid;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +60,14 @@ public final class ComboRequest implements Request {
                 .through(RetryWire.class)
                 .through(AutoRedirectingWire.class)
                 .fetch();
+    }
+
+    public XmlResponse xmlResp() throws IOException {
+        return new XmlResponse(
+                new XmlResponseValid(
+                        fetch()
+                )
+        );
     }
 
     @Override

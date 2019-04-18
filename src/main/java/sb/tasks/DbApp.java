@@ -13,7 +13,6 @@ public final class DbApp implements App<MongoDatabase> {
     }
 
     @Override
-    @SuppressWarnings("squid:S2095")
     public MongoDatabase init() {
         Logger.info(this, "Communicating with database %s:%s/%s",
                 props.mongoHost(), props.mongoPort(), props.mongoDb());

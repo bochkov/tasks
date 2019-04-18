@@ -2,15 +2,19 @@ package sb.tasks.jobs.trupd.agent;
 
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.JsoupResponse;
-import com.jcabi.http.response.XmlResponse;
 import com.jcabi.http.wire.CookieOptimizingWire;
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.w3c.dom.Node;
 import sb.tasks.ValidProps;
+import sb.tasks.jobs.meta.MetaInfo;
 import sb.tasks.jobs.trupd.ComboRequest;
 import sb.tasks.jobs.trupd.TrNotif;
 
+import javax.xml.namespace.NamespaceContext;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -74,12 +78,8 @@ public final class AnLostFilm extends TorrentFromPage {
 
     @Override
     public List<TrNotif> perform() throws IOException {
-        List<String> items = new ComboRequest(new JdkRequest("http://lostfilm.tv/rss.xml"))
-                .fetch()
-                .as(XmlResponse.class)
-                .xml()
-                .xpath("//item/link/text()");
-        for (String str : items) {
+        XML rss = MetaInfo.get("rssFeed", XML.class, new EmptyFeed());
+        for (String str : rss.xpath("//item/link/text()")) {
             if (str.startsWith(document.getString("url"))) {
                 Document root = Jsoup.parse(
                         new ComboRequest(new JdkRequest(str)).fetch().as(JsoupResponse.class).body(),
@@ -121,5 +121,34 @@ public final class AnLostFilm extends TorrentFromPage {
         return Collections.singletonList(
                 new TrNotif.CheckedNotif(document, props.isInitial())
         );
+    }
+
+    private final class EmptyFeed implements XML {
+
+        @Override
+        public List<String> xpath(String query) {
+            Logger.info(AnLostFilm.this, "rss is empty");
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<XML> nodes(String query) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public XML registerNs(String prefix, Object uri) {
+            return this;
+        }
+
+        @Override
+        public XML merge(NamespaceContext context) {
+            return this;
+        }
+
+        @Override
+        public Node node() {
+            return null;
+        }
     }
 }
