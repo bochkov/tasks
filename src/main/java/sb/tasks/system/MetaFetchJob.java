@@ -31,7 +31,7 @@ public final class MetaFetchJob {
         Trigger trigger = TriggerBuilder.newTrigger()
                 .startNow()
                 .withSchedule(
-                        CronScheduleBuilder.cronSchedule("0 0 * * * ?"))
+                        CronScheduleBuilder.cronSchedule("0 50 * * * ?"))
                 .forJob(jobDetail)
                 .build();
         try {
