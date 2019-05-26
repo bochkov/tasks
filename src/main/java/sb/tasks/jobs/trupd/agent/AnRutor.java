@@ -1,12 +1,10 @@
 package sb.tasks.jobs.trupd.agent;
 
-import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.response.JsoupResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import sb.tasks.ValidProps;
-import sb.tasks.jobs.trupd.ComboRequest;
+import sb.tasks.jobs.trupd.CurlFetch;
 import sb.tasks.jobs.trupd.TrNotif;
 
 import java.io.IOException;
@@ -69,11 +67,8 @@ public final class AnRutor extends TorrentFromPage {
     @Override
     public List<TrNotif> perform() throws IOException {
         Document root = Jsoup.parse(
-                new ComboRequest(new JdkRequest(document.getString("url")))
-                        .fetch()
-                        .as(JsoupResponse.class)
-                        .body(),
-                document.getString("url")
+                new CurlFetch(props)
+                        .fetch(document.getString("url"))
         );
         return Collections.singletonList(
                 fromReq(root, props, document.getString("url"))
