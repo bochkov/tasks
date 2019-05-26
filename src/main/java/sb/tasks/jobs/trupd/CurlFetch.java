@@ -5,6 +5,7 @@ import org.cactoos.list.ListOf;
 import sb.tasks.ValidProps;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -28,6 +29,18 @@ public final class CurlFetch {
                 res.append(line).append("\n");
         }
         return res.toString();
+    }
+
+    public byte[] binary(String url) throws IOException {
+        Process pp = new ProcessBuilder(downloadCmd(url))
+                .redirectInput(ProcessBuilder.Redirect.PIPE)
+                .start();
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        byte[] buf = new byte[2048];
+        while (pp.getInputStream().read(buf) != -1) {
+            bout.writeBytes(buf);
+        }
+        return bout.toByteArray();
     }
 
     private List<String> downloadCmd(String url) {

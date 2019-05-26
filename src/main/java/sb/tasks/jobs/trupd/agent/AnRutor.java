@@ -1,5 +1,6 @@
 package sb.tasks.jobs.trupd.agent;
 
+import com.jcabi.log.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -56,6 +57,7 @@ public final class AnRutor extends TorrentFromPage {
                             if (m.find())
                                 link = String.format("%s%s", m.group("domain"), link);
                         }
+                        Logger.info(this, "Found download link %s", link);
                         return link;
                     }
                 }
@@ -71,7 +73,7 @@ public final class AnRutor extends TorrentFromPage {
                         .fetch(document.getString("url"))
         );
         return Collections.singletonList(
-                fromReq(root, props, document.getString("url"))
+                fromCurlReq(root, props, document.getString("url"))
         );
     }
 }
