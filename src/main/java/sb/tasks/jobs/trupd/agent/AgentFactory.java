@@ -28,9 +28,9 @@ public final class AgentFactory implements Agents<TrNotif> {
         if (url.isEmpty() && num.isEmpty())
             agent = new Agent.EMPTY<>();
         else {
-            if (url.matches("https?://.*?tor.org/.*"))
+            if (url.matches("https?://rutor\\.info/.*"))
                 agent = new AnRutor(document, props);
-            else if (url.matches("https?://.*?lostfilm.tv/.*"))
+            else if (url.matches("https?://.*?lostfilm\\.tv/.*"))
                 agent = new AnLostFilm(
                         document,
                         props,
@@ -41,7 +41,7 @@ public final class AgentFactory implements Agents<TrNotif> {
                         db.getCollection(ValidProps.SETTINGS_COLL)
                                 .find(Filters.eq("_id", "lostfilm.quality")).first()
                 );
-            else if (!num.isEmpty() || url.matches("https?://rutracker.org/.*"))
+            else if (!num.isEmpty() || url.matches("https?://rutracker\\.org/.*"))
                 agent = new AnRutracker(
                         document,
                         props,
