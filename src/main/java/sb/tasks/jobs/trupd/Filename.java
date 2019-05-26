@@ -8,10 +8,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Filename {
+
+    private static final AtomicInteger COUNT = new AtomicInteger(1);
 
     private final ValidProps props;
     private final String torrentUrl;
@@ -22,7 +25,7 @@ public final class Filename {
     }
 
     public File toFile() throws IOException {
-        String filename = "default";
+        String filename = String.format("%d", COUNT.incrementAndGet());
         if (torrentUrl.endsWith(".torrent"))
             filename = torrentUrl.substring(torrentUrl.lastIndexOf('/'));
         else {
@@ -40,7 +43,7 @@ public final class Filename {
         }
         return new File(
                 props.tmpDir(),
-                filename
+                String.format("%s.torrent", filename)
         );
     }
 }
