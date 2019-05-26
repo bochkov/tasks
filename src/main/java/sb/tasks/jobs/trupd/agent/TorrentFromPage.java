@@ -34,7 +34,7 @@ public abstract class TorrentFromPage implements Agent<TrNotif> {
         String torrentUrl = torrentUrl(root);
         return new TorrentResult(
                 new Metafile(
-                        new CurlFetch(props).binary(url)
+                        new CurlFetch(props).binary(torrentUrl)
                 ),
                 name(root),
                 torrentUrl,

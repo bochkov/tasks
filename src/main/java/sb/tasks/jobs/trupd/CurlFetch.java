@@ -1,11 +1,12 @@
 package sb.tasks.jobs.trupd;
 
+import com.google.common.io.ByteStreams;
+import com.jcabi.log.Logger;
 import org.cactoos.collection.Joined;
 import org.cactoos.list.ListOf;
 import sb.tasks.ValidProps;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -32,15 +33,11 @@ public final class CurlFetch {
     }
 
     public byte[] binary(String url) throws IOException {
+        Logger.info(this, "Downloading from url %s", url);
         Process pp = new ProcessBuilder(downloadCmd(url))
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
                 .start();
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        byte[] buf = new byte[2048];
-        while (pp.getInputStream().read(buf) != -1) {
-            bout.writeBytes(buf);
-        }
-        return bout.toByteArray();
+        return ByteStreams.toByteArray(pp.getInputStream());
     }
 
     private List<String> downloadCmd(String url) {

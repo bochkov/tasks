@@ -17,9 +17,9 @@ import java.util.regex.Pattern;
 public final class AnRutor extends TorrentFromPage {
 
     private static final Pattern[] LINK_PATTERNS = new Pattern[]{
-            Pattern.compile("http://d.rutor.org/download/\\d+"),
-            Pattern.compile("/parse/d.rutor.org/download/\\d+"),
-            Pattern.compile("/download/\\d+")
+            Pattern.compile("http://d.rutor.info/download/\\d+"),
+            Pattern.compile("/parse/d.rutor.info/download/\\d+"),
+            Pattern.compile("/download/\\d+"),
     };
 
     private final org.bson.Document document;
