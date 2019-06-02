@@ -11,6 +11,7 @@ import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
 import sb.tasks.jobs.dailypress.MagResult;
 import sb.tasks.jobs.dailypress.PdfFromResponse;
+import sb.tasks.jobs.trupd.GzipWire;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.File;
@@ -34,7 +35,7 @@ public final class AnOblGazeta implements Agent<MagResult> {
     public List<MagResult> perform() throws IOException {
         String source = new JdkRequest("https://oblgazeta.ru/")
                 .through(AutoRedirectingWire.class)
-                .header(HttpHeaders.ACCEPT_ENCODING, "deflate")
+                .through(GzipWire.class)
                 .fetch()
                 .body();
         String newPaper = Jsoup.parse(source)
