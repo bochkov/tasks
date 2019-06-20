@@ -11,7 +11,7 @@ import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
 import sb.tasks.jobs.dailypress.MagResult;
 import sb.tasks.jobs.dailypress.PdfFromResponse;
-import sb.tasks.jobs.trupd.GzipWire;
+import sb.tasks.system.net.GzipWire;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.File;

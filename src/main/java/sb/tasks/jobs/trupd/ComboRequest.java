@@ -5,7 +5,7 @@ import com.jcabi.http.response.XmlResponse;
 import com.jcabi.http.wire.AutoRedirectingWire;
 import com.jcabi.http.wire.RetryWire;
 import com.jcabi.http.wire.TrustedWire;
-import sb.tasks.jobs.meta.XmlResponseValid;
+import sb.tasks.system.net.XmlResponseValid;
 
 import java.io.IOException;
 import java.io.InputStream;
