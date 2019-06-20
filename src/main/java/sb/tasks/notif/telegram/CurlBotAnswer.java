@@ -37,6 +37,7 @@ public final class CurlBotAnswer implements TgAnswer {
             Logger.info(this, "#send [%s]", cmd);
         } catch (InterruptedException | IOException ex) {
             Logger.warn(this, "#send %s", ex);
+            Thread.currentThread().interrupt();
         }
     }
 

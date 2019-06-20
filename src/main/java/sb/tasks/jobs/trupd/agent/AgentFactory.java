@@ -21,6 +21,7 @@ public final class AgentFactory implements Agents<TrNotif> {
         this.props = props;
     }
 
+    @Override
     public Agent<TrNotif> choose() {
         Agent<TrNotif> agent;
         String url = document.get("url", "");
@@ -35,22 +36,28 @@ public final class AgentFactory implements Agents<TrNotif> {
                         document,
                         props,
                         db.getCollection(ValidProps.SETTINGS_COLL)
-                                .find(Filters.eq("_id", "lostfilm.session")).first(),
+                                .find(Filters.eq("_id", "lostfilm.session"))
+                                .first(),
                         db.getCollection(ValidProps.SETTINGS_COLL)
-                                .find(Filters.eq("_id", "lostfilm.uid")).first(),
+                                .find(Filters.eq("_id", "lostfilm.uid"))
+                                .first(),
                         db.getCollection(ValidProps.SETTINGS_COLL)
-                                .find(Filters.eq("_id", "lostfilm.quality")).first()
+                                .find(Filters.eq("_id", "lostfilm.quality"))
+                                .first()
                 );
             else if (!num.isEmpty() || url.matches("https?://rutracker\\.org/.*"))
                 agent = new AnRutracker(
                         document,
                         props,
                         db.getCollection(ValidProps.SETTINGS_COLL)
-                                .find(Filters.eq("_id", "rutracker.login")).first(),
+                                .find(Filters.eq("_id", "rutracker.login"))
+                                .first(),
                         db.getCollection(ValidProps.SETTINGS_COLL)
-                                .find(Filters.eq("_id", "rutracker.password")).first(),
+                                .find(Filters.eq("_id", "rutracker.password"))
+                                .first(),
                         db.getCollection(ValidProps.SETTINGS_COLL)
-                                .find(Filters.eq("_id", "common.user-agent")).first()
+                                .find(Filters.eq("_id", "common.user-agent"))
+                                .first()
                 );
             else
                 agent = new Agent.EMPTY<>();

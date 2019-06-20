@@ -43,4 +43,10 @@ dependencies {
 
 }
 
+sonarqube {
+    properties {
+        property('sonar.projectKey', 'tasks')
+    }
+}
+
 mainClassName = 'sb.tasks.Application'

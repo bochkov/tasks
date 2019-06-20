@@ -18,6 +18,8 @@ import java.util.List;
 
 public final class AnRutracker implements Agent<TrNotif> {
 
+    private static final String VALUE = "value";
+
     private final Document document;
     private final ValidProps properties;
     private final String login;
@@ -29,9 +31,9 @@ public final class AnRutracker implements Agent<TrNotif> {
         this(
                 document,
                 props,
-                login == null ? "" : login.getString("value"),
-                password == null ? "" : password.getString("value"),
-                userAgent == null ? "" : userAgent.getString("value")
+                login == null ? "" : login.getString(VALUE),
+                password == null ? "" : password.getString(VALUE),
+                userAgent == null ? "" : userAgent.getString(VALUE)
         );
     }
 

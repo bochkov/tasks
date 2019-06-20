@@ -23,6 +23,8 @@ import java.util.List;
 
 public final class AnSportExpress implements Agent<MagResult> {
 
+    private static final String VALUE = "value";
+
     private final Document document;
     private final ValidProps props;
     private final String phpSessId;
@@ -36,10 +38,10 @@ public final class AnSportExpress implements Agent<MagResult> {
         this(
                 document,
                 props,
-                phpSessId == null ? "" : phpSessId.getString("value"),
-                user == null ? "" : user.getString("value"),
-                sess == null ? "" : sess.getString("value"),
-                userAgent == null ? "" : userAgent.getString("value")
+                phpSessId == null ? "" : phpSessId.getString(VALUE),
+                user == null ? "" : user.getString(VALUE),
+                sess == null ? "" : sess.getString(VALUE),
+                userAgent == null ? "" : userAgent.getString(VALUE)
         );
     }
 

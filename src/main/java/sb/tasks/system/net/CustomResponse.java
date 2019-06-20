@@ -8,7 +8,7 @@ import java.util.Map;
 
 public abstract class CustomResponse implements Response {
 
-    protected final transient Response response;
+    protected final Response response;
 
     CustomResponse(final Response resp) {
         this.response = resp;

@@ -7,7 +7,6 @@ import sb.tasks.ValidProps;
 import sb.tasks.notif.telegram.TgAnsFactory;
 
 import java.util.List;
-import java.util.Properties;
 
 public final class AgTelegram<T extends NotifObj> implements Notification<T> {
 

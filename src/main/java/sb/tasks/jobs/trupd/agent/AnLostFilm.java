@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 
 public final class AnLostFilm extends TorrentFromPage {
 
+    private static final String VALUE = "value";
+
     private final org.bson.Document document;
     private final ValidProps props;
     private final String session;
@@ -34,11 +36,10 @@ public final class AnLostFilm extends TorrentFromPage {
         this(
                 document,
                 props,
-                session == null ? "" : session.getString("value"),
-                uid == null ? "" : uid.getString("value"),
-                quality == null ? "" : quality.getString("value")
+                session == null ? "" : session.getString(VALUE),
+                uid == null ? "" : uid.getString(VALUE),
+                quality == null ? "" : quality.getString(VALUE)
         );
-
     }
 
     public AnLostFilm(org.bson.Document document, ValidProps props,
