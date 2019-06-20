@@ -2,9 +2,10 @@ package sb.tasks.jobs.meta;
 
 import org.quartz.JobExecutionContext;
 
+import java.io.IOException;
 import java.util.Map;
 
-public abstract class MetaFetch {
+public interface MetaFetch {
 
-    public abstract Map<String, Object> fetch(JobExecutionContext context) throws Exception;
+    Map<String, Object> fetch(JobExecutionContext context) throws IOException;
 }

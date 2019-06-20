@@ -7,12 +7,13 @@ import org.cactoos.map.MapOf;
 import org.quartz.JobExecutionContext;
 import sb.tasks.jobs.trupd.ComboRequest;
 
+import java.io.IOException;
 import java.util.Map;
 
-public final class LfRss extends MetaFetch {
+public final class LfRss implements MetaFetch {
 
     @Override
-    public Map<String, Object> fetch(JobExecutionContext context) throws Exception {
+    public Map<String, Object> fetch(JobExecutionContext context) throws IOException {
         XML xml = new ComboRequest(new JdkRequest("https://lostfilm.tv/rss.xml"))
                 .xmlResp()
                 .xml();
