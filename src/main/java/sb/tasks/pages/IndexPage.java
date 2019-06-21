@@ -1,5 +1,7 @@
 package sb.tasks.pages;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.quartz.Scheduler;
@@ -7,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.handling.Context;
 import ratpack.jackson.Jackson;
+import ratpack.jackson.JsonRender;
 import sb.tasks.system.SchedulerInfo;
 
 import java.util.ArrayList;
@@ -18,10 +21,12 @@ public final class IndexPage implements HttpPage {
 
     private final MongoDatabase db;
     private final Scheduler scheduler;
+    private final ObjectMapper jackson;
 
     public IndexPage(MongoDatabase db, Scheduler scheduler) {
         this.db = db;
         this.scheduler = scheduler;
+        this.jackson = new ObjectMapper();
     }
 
     @Override
@@ -42,7 +47,17 @@ public final class IndexPage implements HttpPage {
             );
         }
         LOG.info("index page: complete computed values, start rendering");
-        ctx.render(Jackson.json(docs));
+        JsonRender render = Jackson.json(docs);
+        LOG.info("index page: json render complete");
+
+        try {
+            jackson.writeValueAsString(docs);
+        } catch (JsonProcessingException ex) {
+            LOG.warn(ex.getMessage());
+        }
+        LOG.info("index page: json render objectmapper complete");
+
+        ctx.render(render);
         LOG.info("index page: end handling");
     }
 }
