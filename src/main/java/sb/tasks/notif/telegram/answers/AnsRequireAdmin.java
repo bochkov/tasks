@@ -30,7 +30,7 @@ public final class AnsRequireAdmin implements Answer {
                                 .split(",")
                 );
 
-        if (tgAdmins.contains(chatId))
+        if (tgAdmins.contains(String.valueOf(chatId)))
             this.origin.handle(chatId, args);
         else
             ansFactory()
