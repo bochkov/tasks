@@ -23,6 +23,7 @@ public final class BotAnswer implements TgAnswer {
         SendMessage msg = new SendMessage(token, chatId, text);
         msg.setDisablePreview(true);
         return new JdkRequest("https://resnyx.sergeybochkov.com/tg")
+                .method("POST")
                 .body()
                 .set(MAPPER.writeValueAsString(msg))
                 .back();
