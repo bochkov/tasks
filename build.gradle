@@ -53,7 +53,7 @@ sonarqube {
 }
 
 artifactory {
-    contextUrl = "${artifactory_contextUrl}"
+    contextUrl = "http://artifactory.sergeybochkov.com/artifactory"
     resolve {
         repository {
             repoKey = 'libs-release'
