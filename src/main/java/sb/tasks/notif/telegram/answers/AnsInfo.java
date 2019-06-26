@@ -17,7 +17,7 @@ public final class AnsInfo implements Answer {
     }
 
     @Override
-    public void handle(String chatId, String[] args) {
+    public void handle(Long chatId, String[] args) {
         for (String arg : args) {
             ObjectId oid = new ObjectId(arg);
             Document doc = db.getCollection("tasks")

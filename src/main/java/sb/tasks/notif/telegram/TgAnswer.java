@@ -2,10 +2,12 @@ package sb.tasks.notif.telegram;
 
 import com.jcabi.http.Request;
 
+import java.io.IOException;
+
 public interface TgAnswer {
 
-    Request request(String chatId, String text);
+    Request request(Long chatId, String text) throws IOException;
 
-    void send(String chatId, String text);
+    void send(Long chatId, String text);
 
 }

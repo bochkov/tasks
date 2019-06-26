@@ -26,7 +26,7 @@ public final class AnsRemove implements Answer {
     }
 
     @Override
-    public void handle(String chatId, String[] args) {
+    public void handle(Long chatId, String[] args) {
         for (String arg : args) {
             List<Document> docs = db
                     .getCollection("tasks")

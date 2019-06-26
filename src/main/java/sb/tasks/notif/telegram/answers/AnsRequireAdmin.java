@@ -17,7 +17,7 @@ public final class AnsRequireAdmin implements Answer {
     }
 
     @Override
-    public void handle(String chatId, String[] args) {
+    public void handle(Long chatId, String[] args) {
         Document admins = db()
                 .getCollection("settings")
                 .find(Filters.eq("_id", "common.admin_telegram"))

@@ -12,7 +12,7 @@ public final class AnsNormArgs implements Answer {
     }
 
     @Override
-    public void handle(String chatId, String[] args) {
+    public void handle(Long chatId, String[] args) {
         String url = args[0];
         String[] pass = new String[args.length];
         System.arraycopy(args, 1, pass, 1, args.length - 1);

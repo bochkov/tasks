@@ -20,7 +20,7 @@ public final class AnsAdmin implements Answer {
     }
 
     @Override
-    public void handle(String chatId, String[] args) {
+    public void handle(Long chatId, String[] args) {
         for (String arg : args) {
             Document admins = db.getCollection("settings")
                     .find(Filters.eq("_id", "common.admin_telegram"))

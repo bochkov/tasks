@@ -16,7 +16,7 @@ public final class TrupdNewDoc {
         this.db = db;
     }
 
-    public Document add(String url, String dir, String chatId) {
+    public Document add(String url, String dir, Long chatId) {
         boolean isNum = url.matches("\\d+");
         ObjectId id = new ObjectId();
         db.getCollection("tasks")

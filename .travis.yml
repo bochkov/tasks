@@ -7,7 +7,7 @@ sudo: required
 language: java
 
 jdk:
- - openjdk11
+  - openjdk11
 
 services:
   - docker
@@ -28,3 +28,8 @@ after_success:
   - docker build -t tasks .
   - docker tag tasks:latest 902382300595.dkr.ecr.us-east-1.amazonaws.com/tasks:latest
   - docker push 902382300595.dkr.ecr.us-east-1.amazonaws.com/tasks:latest
+
+notifications:
+  webhooks:
+    urls:
+      - https://resnyx.sergeybochkov.com/travis

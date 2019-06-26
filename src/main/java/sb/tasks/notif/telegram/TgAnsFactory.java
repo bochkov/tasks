@@ -13,9 +13,6 @@ public final class TgAnsFactory {
     }
 
     public TgAnswer answer() {
-        return new CurlBotAnswer(
-                props,
-                new BotAnswer(token)
-        );
+        return new BotAnswer(token);
     }
 }

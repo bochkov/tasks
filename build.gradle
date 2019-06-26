@@ -4,11 +4,13 @@ plugins {
     id 'io.franzbecker.gradle-lombok' version '2.2'
     id 'java'
     id "org.sonarqube" version "2.7.1"
+    id "com.jfrog.artifactory" version "4.9.5"
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'io.ratpack.ratpack-java'
 apply plugin: 'java'
+apply plugin: 'com.jfrog.artifactory'
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
@@ -23,21 +25,22 @@ dependencies {
 
     compile group: 'org.mongodb', name: 'mongodb-driver', version: '3.10.2'
 
-    compile group: 'com.jcabi', name: 'jcabi-log', version: '0.18'
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    compile group: 'com.jcabi', name: 'jcabi-email', version: '1.10'
-    compile group: 'javax.mail', name: 'mail', version: '1.4.7'
-    compile group: 'com.jcabi', name: 'jcabi-http', version: '1.17.2'
-    compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.19.4'
-
     compile group: 'org.cactoos', name: 'cactoos', version: '0.40'
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
+    compile group: 'com.jcabi', name: 'jcabi-log', version: '0.18'
+    compile group: 'com.jcabi', name: 'jcabi-email', version: '1.10'
+    compile group: 'com.jcabi', name: 'jcabi-http', version: '1.17.2'
     compile group: 'com.jcabi', name: 'jcabi-xml', version: '0.21.4'
+    
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'javax.mail', name: 'mail', version: '1.4.7'
+    compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.19.4'
+    compile group: 'org.glassfish', name: 'javax.json', version: '1.0.4'
+
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
     compile group: 'org.jtwig', name: 'jtwig-core', version: '5.87.0.RELEASE'
     compile group: 'joda-time', name: 'joda-time', version: '2.10.1'
 
-    compileOnly 'org.projectlombok:lombok:1.18.8'
-    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    implementation(group: 'resnyx', name: 'resnyx', version: '1.0')
     
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
@@ -46,6 +49,16 @@ dependencies {
 sonarqube {
     properties {
         property('sonar.projectKey', 'tasks')
+    }
+}
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+            maven = true
+        }
     }
 }
 

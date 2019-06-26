@@ -27,7 +27,7 @@ public final class AnsList implements Answer {
     }
 
     @Override
-    public void handle(String chatId, String[] args) {
+    public void handle(Long chatId, String[] args) {
         SchedulerInfo schInfo = new SchedulerInfo(scheduler);
         List<Document> notregistered = db.getCollection("tasks")
                 .find()

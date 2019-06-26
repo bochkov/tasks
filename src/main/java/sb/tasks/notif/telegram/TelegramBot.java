@@ -6,10 +6,10 @@ import org.quartz.Scheduler;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
 import ratpack.jackson.Jackson;
+import resnyx.model.MessageEntity;
+import resnyx.model.Update;
 import sb.tasks.ValidProps;
 import sb.tasks.notif.telegram.answers.*;
-import sb.tasks.notif.telegram.pojos.MessageEntity;
-import sb.tasks.notif.telegram.pojos.Update;
 
 import java.util.Arrays;
 
@@ -35,7 +35,7 @@ public final class TelegramBot implements Handler {
                     .then(ac -> {
                         for (MessageEntity entity : ac.getMessage().getEntities()) {
                             if ("bot_command".equals(entity.getType())) {
-                                String chatId = ac.getMessage().getChat().getId();
+                                Long chatId = ac.getMessage().getChat().getId();
                                 String[] cmd = ac.getMessage().getText().split(" ");
                                 String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
                                 switch (cmd[0]) {

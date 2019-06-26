@@ -34,14 +34,14 @@ public final class AgTelegram<T extends NotifObj> implements Notification<T> {
                 tgAnsFactory
                         .answer()
                         .send(
-                                doc.getString("telegram"),
+                                doc.getLong("telegram"),
                                 obj.telegramText()
                         );
             if (!doc.get("admin_telegram", "").isEmpty())
                 tgAnsFactory
                         .answer()
                         .send(
-                                doc.getString("admin_telegram"),
+                                doc.getLong("admin_telegram"),
                                 obj.telegramText()
                         );
         }

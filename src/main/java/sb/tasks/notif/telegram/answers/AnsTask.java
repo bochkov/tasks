@@ -26,7 +26,7 @@ public final class AnsTask implements Answer {
     }
 
     @Override
-    public void handle(String chatId, String[] args) {
+    public void handle(Long chatId, String[] args) {
         String url = args[0];
         Document dir = db
                 .getCollection(ValidProps.SETTINGS_COLL)

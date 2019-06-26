@@ -13,7 +13,7 @@ public class AnsNormArgsTest {
         AnsNormArgs ans = new AnsNormArgs(
                 new Answer() {
                     @Override
-                    public void handle(String chatId, String[] args) {
+                    public void handle(Long chatId, String[] args) {
                         Assert.assertArrayEquals(
                                 new String[]{
                                         "https://lostfilm.tv/series/Altered_Carbon/",
@@ -21,7 +21,7 @@ public class AnsNormArgsTest {
                                 },
                                 args
                         );
-                        Assert.assertEquals("123", chatId);
+                        Assert.assertEquals(Long.valueOf(123L), chatId);
                     }
 
                     @Override
@@ -35,15 +35,15 @@ public class AnsNormArgsTest {
                     }
                 }
         );
-        ans.handle("123", new String[]{
+        ans.handle(123L, new String[]{
                 "http://www.lostfilm.tv/series/Altered_Carbon/",
                 "1", "2", "3"
         });
-        ans.handle("123", new String[]{
+        ans.handle(123L, new String[]{
                 "https://www.lostfilm.tv/series/Altered_Carbon/",
                 "1", "2", "3"
         });
-        ans.handle("123", new String[]{
+        ans.handle(123L, new String[]{
                 "https://lostfilm.tv/series/Altered_Carbon/",
                 "1", "2", "3"
         });
@@ -54,12 +54,12 @@ public class AnsNormArgsTest {
         AnsNormArgs ans = new AnsNormArgs(
                 new Answer() {
                     @Override
-                    public void handle(String chatId, String[] args) {
+                    public void handle(Long chatId, String[] args) {
                         Assert.assertArrayEquals(
                                 new String[]{"http://anti-tor.org/1233123/"},
                                 args
                         );
-                        Assert.assertEquals("234", chatId);
+                        Assert.assertEquals(Long.valueOf(234L), chatId);
                     }
 
                     @Override
@@ -73,7 +73,7 @@ public class AnsNormArgsTest {
                     }
                 }
         );
-        ans.handle("234", new String[]{"http://anti-tor.org/1233123/"});
+        ans.handle(234L, new String[]{"http://anti-tor.org/1233123/"});
     }
 
     @Test

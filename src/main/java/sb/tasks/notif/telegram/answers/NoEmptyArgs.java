@@ -14,7 +14,7 @@ public final class NoEmptyArgs implements Answer {
     }
 
     @Override
-    public void handle(String chatId, String[] args) {
+    public void handle(Long chatId, String[] args) {
         if (args.length == 0)
             ansFactory().answer().send(chatId, msg);
         else
