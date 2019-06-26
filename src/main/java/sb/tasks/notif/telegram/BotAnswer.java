@@ -24,6 +24,7 @@ public final class BotAnswer implements TgAnswer {
         msg.setDisablePreview(true);
         return new JdkRequest("https://resnyx.sergeybochkov.com/tg")
                 .method("POST")
+                .header("Content-Type", "application/json")
                 .body()
                 .set(MAPPER.writeValueAsString(msg))
                 .back();
