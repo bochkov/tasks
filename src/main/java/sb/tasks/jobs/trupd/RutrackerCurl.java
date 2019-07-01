@@ -5,8 +5,8 @@ import org.cactoos.Func;
 import org.cactoos.Scalar;
 import org.cactoos.collection.Joined;
 import org.cactoos.list.ListOf;
-import org.cactoos.scalar.RetryScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.Retry;
+import org.cactoos.scalar.Synced;
 import sb.tasks.ValidProps;
 
 import java.io.File;
@@ -33,12 +33,12 @@ public final class RutrackerCurl {
 
     public File save(String num) throws Exception {
         File workDir = new File(props.tmpDir());
-        return new RetryScalar<>(
+        return new Retry<>(
                 new FetchFile(
                         workDir,
                         num,
-                        new SyncScalar<>(
-                                new RetryScalar<>(
+                        new Synced<>(
+                                new Retry<>(
                                         new FetchCookies(
                                                 workDir,
                                                 File::exists // TODO cookies validation and maybe check expiration time

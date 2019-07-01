@@ -3,7 +3,7 @@ package sb.tasks;
 import com.jcabi.log.Logger;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.Ternary;
-import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.scalar.Unchecked;
 
 import java.util.List;
 import java.util.Properties;
@@ -74,7 +74,7 @@ public final class ValidProps implements App<Properties> {
     }
 
     public List<String> curlExtraAsList() {
-        return new UncheckedScalar<>(
+        return new Unchecked<>(
                 new Ternary<List<String>>(
                         () -> properties.containsKey(ValidProps.CURL_EXTRA)
                                 && !properties.getProperty(ValidProps.CURL_EXTRA, "").isEmpty(),

@@ -1,7 +1,7 @@
 package sb.tasks.jobs.trupd.agent;
 
 import org.bson.Document;
-import org.cactoos.scalar.RetryScalar;
+import org.cactoos.scalar.Retry;
 import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
 import sb.tasks.agent.AgentException;
@@ -50,7 +50,7 @@ public final class AnRutracker implements Agent<TrNotif> {
     public List<TrNotif> perform() throws AgentException {
         RutrackerCurl curl = new RutrackerCurl(login, password, properties, userAgent);
         try {
-            File file = new RetryScalar<>(
+            File file = new Retry<>(
                     () -> curl.save(document.getString("num"))
             ).value();
             Mt mt = new Metafile(Files.readAllBytes(file.toPath()));

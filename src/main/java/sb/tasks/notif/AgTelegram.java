@@ -30,14 +30,14 @@ public final class AgTelegram<T extends NotifObj> implements Notification<T> {
                 token.getString("value");
         TgAnsFactory tgAnsFactory = new TgAnsFactory(props, botToken);
         for (NotifObj obj : objects) {
-            if (!doc.get("telegram", "").isEmpty())
+            if (doc.get("telegram") != null)
                 tgAnsFactory
                         .answer()
                         .send(
                                 doc.getLong("telegram"),
                                 obj.telegramText()
                         );
-            if (!doc.get("admin_telegram", "").isEmpty())
+            if (doc.get("admin_telegram") != null)
                 tgAnsFactory
                         .answer()
                         .send(
