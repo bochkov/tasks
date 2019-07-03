@@ -4,8 +4,12 @@ import com.jcabi.http.request.JdkRequest;
 import org.jsoup.nodes.Document;
 import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
-import sb.tasks.jobs.trupd.*;
+import sb.tasks.jobs.trupd.CurlFetch;
+import sb.tasks.jobs.trupd.Filename;
+import sb.tasks.jobs.trupd.TorrentResult;
+import sb.tasks.jobs.trupd.TrNotif;
 import sb.tasks.jobs.trupd.metafile.Metafile;
+import sb.tasks.system.net.ComboRequest;
 
 import java.io.IOException;
 

@@ -5,7 +5,7 @@ import com.jcabi.xml.XML;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.quartz.JobExecutionContext;
-import sb.tasks.jobs.trupd.ComboRequest;
+import sb.tasks.system.net.ComboRequest;
 
 import java.io.IOException;
 import java.util.Map;

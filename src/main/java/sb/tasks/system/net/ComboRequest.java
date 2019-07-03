@@ -1,11 +1,10 @@
-package sb.tasks.jobs.trupd;
+package sb.tasks.system.net;
 
 import com.jcabi.http.*;
 import com.jcabi.http.response.XmlResponse;
 import com.jcabi.http.wire.AutoRedirectingWire;
 import com.jcabi.http.wire.RetryWire;
 import com.jcabi.http.wire.TrustedWire;
-import sb.tasks.system.net.XmlResponseValid;
 
 import java.io.IOException;
 import java.io.InputStream;

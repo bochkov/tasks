@@ -11,8 +11,8 @@ import org.jsoup.nodes.Element;
 import org.w3c.dom.Node;
 import sb.tasks.ValidProps;
 import sb.tasks.jobs.meta.MetaInfo;
-import sb.tasks.jobs.trupd.ComboRequest;
 import sb.tasks.jobs.trupd.TrNotif;
+import sb.tasks.system.net.ComboRequest;
 
 import javax.xml.namespace.NamespaceContext;
 import java.io.IOException;

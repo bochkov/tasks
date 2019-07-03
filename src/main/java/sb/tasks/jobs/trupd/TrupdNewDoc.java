@@ -27,7 +27,7 @@ public final class TrupdNewDoc {
                                 .append("params", new Document()
                                         .append(isNum ? "num" : "url", url)
                                         .append("download_dir", dir)
-                                        .append("telegram", chatId))
+                                        .append("telegram", String.valueOf(chatId)))
                                 .append("vars", new Document()
                                         .append("name", "NOT EVALUATED"))
                                 .append("schedule", isNum ?
