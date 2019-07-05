@@ -16,6 +16,7 @@ import sb.tasks.system.net.ComboRequest;
 
 import javax.xml.namespace.NamespaceContext;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -80,6 +81,7 @@ public final class AnLostFilm extends TorrentFromPage {
     @Override
     public List<TrNotif> perform() throws IOException {
         XML rss = MetaInfo.get("rssFeed", XML.class, new EmptyFeed());
+        List<TrNotif> result = new ArrayList<>();
         for (String str : rss.xpath("//item/link/text()")) {
             if (str.startsWith(document.getString("url"))) {
                 Document root = Jsoup.parse(
@@ -111,17 +113,19 @@ public final class AnLostFilm extends TorrentFromPage {
                                         )
                                 ).fetch().body()
                         );
-                        return Collections.singletonList(
+                        result.add(
                                 fromReq(doc2, props, document.getString("url"))
                         );
                     }
-                    throw new IOException("Document not found");
                 }
             }
         }
-        return Collections.singletonList(
-                new TrNotif.CheckedNotif(document, props.isInitial())
-        );
+
+        return result.isEmpty() ?
+                Collections.singletonList(
+                        new TrNotif.CheckedNotif(document, props.isInitial())
+                ) :
+                result;
     }
 
     private final class EmptyFeed implements XML {
