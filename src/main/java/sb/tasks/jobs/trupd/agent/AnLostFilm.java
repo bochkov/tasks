@@ -16,6 +16,8 @@ import sb.tasks.system.net.ComboRequest;
 
 import javax.xml.namespace.NamespaceContext;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,7 +85,8 @@ public final class AnLostFilm extends TorrentFromPage {
         XML rss = MetaInfo.get("rssFeed", XML.class, new EmptyFeed());
         List<TrNotif> result = new ArrayList<>();
         for (String str : rss.xpath("//item/link/text()")) {
-            if (str.startsWith(document.getString("url"))) {
+            String decodedUrl = URLDecoder.decode(document.getString("url"), StandardCharsets.UTF_8);
+            if (str.startsWith(decodedUrl)) {
                 Document root = Jsoup.parse(
                         new ComboRequest(new JdkRequest(str)).fetch().as(JsoupResponse.class).body(),
                         document.getString("url")
