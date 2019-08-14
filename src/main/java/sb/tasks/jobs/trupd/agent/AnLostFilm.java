@@ -17,6 +17,7 @@ import sb.tasks.system.net.ComboRequest;
 import javax.xml.namespace.NamespaceContext;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,8 +88,9 @@ public final class AnLostFilm extends TorrentFromPage {
         for (String str : rss.xpath("//item/link/text()")) {
             String decodedUrl = URLDecoder.decode(document.getString("url"), StandardCharsets.UTF_8);
             if (str.startsWith(decodedUrl)) {
+                String url = URLEncoder.encode(str, StandardCharsets.UTF_8);
                 Document root = Jsoup.parse(
-                        new ComboRequest(new JdkRequest(str)).fetch().as(JsoupResponse.class).body(),
+                        new ComboRequest(new JdkRequest(url)).fetch().as(JsoupResponse.class).body(),
                         document.getString("url")
                 );
                 Matcher m = Pattern.compile("PlayEpisode\\('(\\d{3})(\\d{3})(\\d{3})'\\)")
