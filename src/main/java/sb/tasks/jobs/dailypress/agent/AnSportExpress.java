@@ -58,9 +58,9 @@ public final class AnSportExpress implements Agent<MagResult> {
 
     @Override
     public List<MagResult> perform() throws IOException {
-        String url = Jsoup.connect("http://www.sport-express.ru/newspaper/")
-                .get()
-                .getElementsByAttribute("data-newspaper-link")
+        String url = Jsoup.connect("http://www.sport-express.ru/newspaper/").get()
+                .getElementsByClass("se19-newspaper").first()
+                .getElementsByAttribute("data-newspaper-link").first()
                 .attr("href");
         Logger.info(this, String.format("Checking link: %s", url));
         File out = new File(
