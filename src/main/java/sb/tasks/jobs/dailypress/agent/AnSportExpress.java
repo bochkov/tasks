@@ -60,7 +60,7 @@ public final class AnSportExpress implements Agent<MagResult> {
     public List<MagResult> perform() throws IOException {
         String url = Jsoup.connect("http://www.sport-express.ru/newspaper/")
                 .get()
-                .getElementById("pdf_load")
+                .getElementsByAttribute("data-newspaper-link")
                 .attr("href");
         Logger.info(this, String.format("Checking link: %s", url));
         File out = new File(
