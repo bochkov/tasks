@@ -29,13 +29,7 @@ public final class AgentFactory implements Agents<MagResult> {
                     document,
                     props,
                     db.getCollection(ValidProps.SETTINGS_COLL)
-                            .find(Filters.eq("_id", "se.phpsessid"))
-                            .first(),
-                    db.getCollection(ValidProps.SETTINGS_COLL)
-                            .find(Filters.eq("_id", "se.user"))
-                            .first(),
-                    db.getCollection(ValidProps.SETTINGS_COLL)
-                            .find(Filters.eq("_id", "se.sess"))
+                            .find(Filters.eq("_id", "se.seuid"))
                             .first(),
                     db.getCollection(ValidProps.SETTINGS_COLL)
                             .find(Filters.eq("_id", "common.user-agent"))

@@ -27,32 +27,24 @@ public final class AnSportExpress implements Agent<MagResult> {
 
     private final Document document;
     private final ValidProps props;
-    private final String phpSessId;
-    private final String user;
-    private final String sess;
+    private final String uid;
     private final String userAgent;
 
     public AnSportExpress(Document document, ValidProps props,
-                          Document phpSessId, Document user,
-                          Document sess, Document userAgent) {
+                          Document uid, Document userAgent) {
         this(
                 document,
                 props,
-                phpSessId == null ? "" : phpSessId.getString(VALUE),
-                user == null ? "" : user.getString(VALUE),
-                sess == null ? "" : sess.getString(VALUE),
+                uid == null ? "" : uid.getString(VALUE),
                 userAgent == null ? "" : userAgent.getString(VALUE)
         );
     }
 
     public AnSportExpress(Document document, ValidProps props,
-                          String phpSessId, String user,
-                          String sess, String userAgent) {
+                          String uid, String userAgent) {
         this.document = document;
         this.props = props;
-        this.phpSessId = phpSessId;
-        this.user = user;
-        this.sess = sess;
+        this.uid = uid;
         this.userAgent = userAgent;
     }
 
@@ -72,12 +64,10 @@ public final class AnSportExpress implements Agent<MagResult> {
                     .through(RetryWire.class)
                     .through(CookieOptimizingWire.class)
                     .through(AutoRedirectingWire.class)
-                    .header("Upgrade-Insecure-Requests", "0")
+                    .header("Upgrade-Insecure-Requests", "1")
                     .header(HttpHeaders.ACCEPT, "application/pdf")
                     .header(HttpHeaders.USER_AGENT, userAgent)
-                    .header(HttpHeaders.COOKIE, String.format("PHPSESSID=%s", phpSessId))
-                    .header(HttpHeaders.COOKIE, String.format("se.sess=%s", sess))
-                    .header(HttpHeaders.COOKIE, String.format("se.user=%s", user))
+                    .header(HttpHeaders.COOKIE, String.format("seuid=%s", uid))
                     .fetch();
             new PdfFromResponse(response).saveTo(out);
         } else
@@ -85,5 +75,30 @@ public final class AnSportExpress implements Agent<MagResult> {
         return Collections.singletonList(
                 new MagResult(out, url, document.get("params", Document.class).getString("text"))
         );
+    }
+
+    public static void main(String[] args) throws Exception {
+        String url = Jsoup.connect("http://www.sport-express.ru/newspaper/").get()
+                .getElementsByClass("se19-newspaper").first()
+                .getElementsByAttribute("data-newspaper-link").first()
+                .attr("href");
+        System.out.println(String.format("Checking link: %s", url));
+        File out = new File(
+                String.format("se%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
+        );
+        Response response = new JdkRequest(url)
+                .through(RetryWire.class)
+                .through(CookieOptimizingWire.class)
+                .through(AutoRedirectingWire.class)
+                .header("Upgrade-Insecure-Requests", "1")
+                .header(HttpHeaders.ACCEPT, "application/pdf")
+                .header(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36")
+                .header(HttpHeaders.COOKIE, "seuid=%7B%22id%22%3A1121911%7D")
+//                .header(HttpHeaders.COOKIE, String.format("PHPSESSID=%s", phpSessId))
+//                .header(HttpHeaders.COOKIE, String.format("se.sess=%s", sess))
+//                .header(HttpHeaders.COOKIE, String.format("se.user=%s", user))
+                .fetch();
+        System.out.println(response.headers());
+        new PdfFromResponse(response).saveTo(out);
     }
 }
