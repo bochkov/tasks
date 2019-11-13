@@ -36,8 +36,9 @@ public final class MetaFetchJob {
                 .build();
         try {
             scheduler.scheduleJob(jobDetail, trigger);
+            Logger.info(this, "Service started");
         } catch (Exception ex) {
-            Logger.warn(this, "Cannot schedule MetaFetchJob\n%s", ex);
+            Logger.warn(this, "Service failed\n%s", ex);
         }
         try {
             scheduler.triggerJob(jobDetail.getKey());

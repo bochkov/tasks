@@ -39,8 +39,9 @@ public final class AutoRegJob {
                 .build();
         try {
             scheduler.scheduleJob(jobDetail, trigger);
+            Logger.info(this, "Service started");
         } catch (Exception ex) {
-            Logger.warn(this, "Cannot start AutoRegJob\n%s", ex);
+            Logger.warn(this, "Service failed\n%s", ex);
         }
     }
 }

@@ -54,7 +54,7 @@ public final class Application {
                     }
                 });
         new AutoRegJob(db, scheduler, properties).start();
-        new AutoChangesJob().start();
+        new AutoChangesJob(db, scheduler).start();
         new MetaFetchJob(properties, scheduler).start();
         new WebApp(db, scheduler, properties).init();
         scheduler.start();
