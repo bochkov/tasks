@@ -35,6 +35,7 @@ public final class AnOblGazeta implements Agent<MagResult> {
     public List<MagResult> perform() throws IOException {
         String source = new JdkRequest("https://oblgazeta.ru/")
                 .through(AutoRedirectingWire.class)
+                .header(HttpHeaders.ACCEPT_ENCODING, "gzip")
                 .through(GzipWire.class)
                 .fetch()
                 .body();
