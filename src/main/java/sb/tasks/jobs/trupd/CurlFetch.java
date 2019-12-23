@@ -1,6 +1,7 @@
 package sb.tasks.jobs.trupd;
 
 import com.google.common.io.ByteStreams;
+import com.jcabi.immutable.Array;
 import com.jcabi.log.Logger;
 import org.cactoos.collection.Joined;
 import org.cactoos.list.ListOf;
@@ -9,7 +10,9 @@ import sb.tasks.ValidProps;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class CurlFetch {
 
@@ -20,7 +23,15 @@ public final class CurlFetch {
     }
 
     public String fetch(String url) throws IOException {
-        Process pp = new ProcessBuilder(downloadCmd(url))
+        return fetch0(downloadCmd(url));
+    }
+
+    public String fetch(String url, Array<Map.Entry<String, String>> headers) throws IOException {
+        return fetch0(downloadCmd(url, headers));
+    }
+
+    private String fetch0(List<String> url) throws IOException {
+        Process pp = new ProcessBuilder(url)
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
                 .start();
         StringBuilder res = new StringBuilder();
@@ -48,6 +59,24 @@ public final class CurlFetch {
                                 url
                         ),
                         props.curlExtraAsList()
+                )
+        );
+    }
+
+    private List<String> downloadCmd(String url, Array<Map.Entry<String, String>> adds) {
+        List<String> headers = new ArrayList<>();
+        for (Map.Entry<String, String> add : adds) {
+            headers.add("-H");
+            headers.add(String.format("\"%s: %s\"", add.getKey(), add.getValue()));
+        }
+        return new ListOf<>(
+                new Joined<>(
+                        new ListOf<>(
+                                "/usr/bin/curl",
+                                url
+                        ),
+                        props.curlExtraAsList(),
+                        headers
                 )
         );
     }

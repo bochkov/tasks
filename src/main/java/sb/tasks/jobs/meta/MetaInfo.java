@@ -33,5 +33,6 @@ public final class MetaInfo implements Job {
                 Logger.warn(this, "Cannot fetch metadata %s\n%s", fetch, ex);
             }
         }
+        Logger.info(this, "MetaInfo execution completed");
     }
 }

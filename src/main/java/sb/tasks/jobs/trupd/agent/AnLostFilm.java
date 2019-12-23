@@ -1,18 +1,17 @@
 package sb.tasks.jobs.trupd.agent;
 
-import com.jcabi.http.request.JdkRequest;
-import com.jcabi.http.response.JsoupResponse;
-import com.jcabi.http.wire.CookieOptimizingWire;
+import com.jcabi.immutable.Array;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import org.cactoos.map.MapEntry;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.Node;
 import sb.tasks.ValidProps;
 import sb.tasks.jobs.meta.MetaInfo;
+import sb.tasks.jobs.trupd.CurlFetch;
 import sb.tasks.jobs.trupd.TrNotif;
-import sb.tasks.system.net.ComboRequest;
 
 import javax.xml.namespace.NamespaceContext;
 import java.io.IOException;
@@ -89,7 +88,7 @@ public final class AnLostFilm extends TorrentFromPage {
             if (str.startsWith(decodedUrl)) {
                 String url = str.replaceAll("\\s", "%20");
                 Document root = Jsoup.parse(
-                        new ComboRequest(new JdkRequest(url)).fetch().as(JsoupResponse.class).body(),
+                        new CurlFetch(props).fetch(url),
                         document.getString("url")
                 );
                 Matcher m = Pattern.compile("PlayEpisode\\('(\\d{3})(\\d{3})(\\d{3})'\\)")
@@ -98,27 +97,21 @@ public final class AnLostFilm extends TorrentFromPage {
                         );
                 if (m.find()) {
                     Document doc = Jsoup.parse(
-                            new ComboRequest(
-                                    new JdkRequest(
-                                            String.format("https://lostfilm.tv/v_search.php?c=%s&s=%s&e=%s",
-                                                    m.group(1), m.group(2), m.group(3))))
-                                    .through(CookieOptimizingWire.class)
-                                    .header("Cookie", String.format("lf_session=%s", session))
-                                    .header("Cookie", String.format("lnk_uid=%s", uid))
-                                    .fetch()
-                                    .as(JsoupResponse.class)
-                                    .body()
+                            new CurlFetch(props).fetch(
+                                    String.format("https://lostfilm.tv/v_search.php?c=%s&s=%s&e=%s",
+                                            m.group(1), m.group(2), m.group(3)),
+                                    new Array<>(
+                                            new MapEntry<>("Cookie", String.format("lf_session=%s", session)),
+                                            new MapEntry<>("Cookie", String.format("lnk_uid=%s", uid))
+                                    )
+                            )
                     );
                     if (!doc.getElementsByTag("a").isEmpty()) {
                         org.jsoup.nodes.Document doc2 = Jsoup.parse(
-                                new ComboRequest(
-                                        new JdkRequest(
-                                                doc.getElementsByTag("a").get(0).attr("href")
-                                        )
-                                ).fetch().body()
+                                new CurlFetch(props).fetch(doc.getElementsByTag("a").get(0).attr("href"))
                         );
                         result.add(
-                                fromReq(doc2, props, document.getString("url"))
+                                fromCurlReq(doc2, props, document.getString("url"))
                         );
                     }
                 }
