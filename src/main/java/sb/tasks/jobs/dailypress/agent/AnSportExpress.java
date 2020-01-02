@@ -20,9 +20,12 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class AnSportExpress implements Agent<MagResult> {
 
+    private static final Pattern DATE_PATTERN = Pattern.compile(".*\\(№\\s+(\\d+)\\)");
     private static final String VALUE = "value";
 
     private final Document document;
@@ -50,17 +53,22 @@ public final class AnSportExpress implements Agent<MagResult> {
 
     @Override
     public List<MagResult> perform() throws IOException {
-        String url = Jsoup.connect("http://www.sport-express.ru/newspaper/").get()
+        String dt = Jsoup.connect("https://www.sport-express.ru/newspaper/").get()
                 .getElementsByClass("se19-newspaper").first()
-                .getElementsByAttribute("data-newspaper-link").first()
-                .attr("href");
-        Logger.info(this, String.format("Checking link: %s", url));
+                .getElementsByAttribute("se19-newspaper-header-textblock__date").first()
+                .text();
+        Matcher matcher = DATE_PATTERN.matcher(dt);
+        if (!matcher.find()) {
+            throw new IOException("date not parsed: " + dt);
+        }
+        String no = matcher.group(1);
+        Logger.info(this, String.format("Checking date: %s, # %s", dt, no));
         File out = new File(
                 props.tmpDir(),
                 String.format("se%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
-        if (!url.equals(document.get("vars", Document.class).getString("download_url"))) {
-            Response response = new JdkRequest(url)
+        if (!no.equals(document.get("vars", Document.class).getString("download_url"))) {
+            Response response = new JdkRequest("https://www.sport-express.ru/newspaper/download/")
                     .through(RetryWire.class)
                     .through(CookieOptimizingWire.class)
                     .through(AutoRedirectingWire.class)
@@ -71,9 +79,9 @@ public final class AnSportExpress implements Agent<MagResult> {
                     .fetch();
             new PdfFromResponse(response).saveTo(out);
         } else
-            Logger.info(this, String.format("%s already downloaded. Exiting", url));
+            Logger.info(this, String.format("%s already downloaded. Exiting", no));
         return Collections.singletonList(
-                new MagResult(out, url, document.get("params", Document.class).getString("text"))
+                new MagResult(out, no, document.get("params", Document.class).getString("text"))
         );
     }
 }
