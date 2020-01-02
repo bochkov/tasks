@@ -54,8 +54,7 @@ public final class AnSportExpress implements Agent<MagResult> {
     @Override
     public List<MagResult> perform() throws IOException {
         String dt = Jsoup.connect("https://www.sport-express.ru/newspaper/").get()
-                .getElementsByClass("se19-newspaper").first()
-                .getElementsByAttribute("se19-newspaper-header-textblock__date").first()
+                .getElementsByClass("se19-newspaper-header-textblock__date").first()
                 .text();
         Matcher matcher = DATE_PATTERN.matcher(dt);
         if (!matcher.find()) {
