@@ -12,7 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class MetaInfo implements Job {
 
     private static final Map<String, Object> META = new ConcurrentHashMap<>();
-    private static final List<MetaFetch> FETCH = Collections.emptyList();
+    private static final List<MetaFetch> FETCH = Collections.singletonList(
+            new LfRss()
+    );
 
     public static <T> T get(String key, Class<T> clz, T def) {
         return META.containsKey(key) ?
