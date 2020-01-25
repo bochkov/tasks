@@ -1,27 +1,31 @@
 package sb.tasks.jobs.trupd.agent;
 
-import com.jcabi.immutable.Array;
+import com.jcabi.http.Request;
+import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import org.cactoos.map.MapEntry;
+import com.jcabi.xml.XMLDocument;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.w3c.dom.Node;
 import sb.tasks.ValidProps;
 import sb.tasks.jobs.meta.MetaInfo;
 import sb.tasks.jobs.trupd.CurlFetch;
+import sb.tasks.jobs.trupd.Filename;
+import sb.tasks.jobs.trupd.TorrentResult;
 import sb.tasks.jobs.trupd.TrNotif;
+import sb.tasks.jobs.trupd.metafile.Metafile;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.xml.namespace.NamespaceContext;
+import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class AnLostFilm extends TorrentFromPage {
 
@@ -29,54 +33,38 @@ public final class AnLostFilm extends TorrentFromPage {
 
     private final org.bson.Document document;
     private final ValidProps props;
-    private final String session;
+    private final String usess;
     private final String uid;
     private final String quality;
 
     public AnLostFilm(org.bson.Document document, ValidProps props,
-                      org.bson.Document session, org.bson.Document uid, org.bson.Document quality) {
+                      org.bson.Document usess, org.bson.Document uid, org.bson.Document quality) {
         this(
                 document,
                 props,
-                session == null ? "" : session.getString(VALUE),
+                usess == null ? "" : usess.getString(VALUE),
                 uid == null ? "" : uid.getString(VALUE),
                 quality == null ? "" : quality.getString(VALUE)
         );
     }
 
     public AnLostFilm(org.bson.Document document, ValidProps props,
-                      String session, String uid, String quality) {
+                      String usess, String uid, String quality) {
         this.document = document;
         this.props = props;
-        this.session = session;
+        this.usess = usess;
         this.uid = uid;
         this.quality = quality;
     }
 
     @Override
-    protected String name(Document document) throws IOException {
-        for (Element item : document.getElementsByClass("inner-box--item")) {
-            if (item.getElementsByClass("inner-box--label").get(0).text().equals(quality)) {
-                return item
-                        .getElementsByClass("main").get(0)
-                        .getElementsByTag("a").get(0)
-                        .text();
-            }
-        }
-        throw new IOException("Name not parsed");
+    protected String name(Document document) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    protected String torrentUrl(Document document) throws IOException {
-        for (Element item : document.getElementsByClass("inner-box--item")) {
-            if (item.getElementsByClass("inner-box--label").get(0).text().equals(quality)) {
-                return item
-                        .getElementsByClass("main").get(0)
-                        .getElementsByTag("a").get(0)
-                        .attr("href");
-            }
-        }
-        throw new IOException("URL not found");
+    protected String torrentUrl(Document document) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -91,27 +79,28 @@ public final class AnLostFilm extends TorrentFromPage {
                         new CurlFetch(props).fetch(url),
                         document.getString("url")
                 );
-                Matcher m = Pattern.compile("PlayEpisode\\('(\\d{3})(\\d{3})(\\d{3})'\\)")
-                        .matcher(
-                                root.getElementsByClass("external-btn").attr("onclick")
-                        );
-                if (m.find()) {
-                    Document doc = Jsoup.parse(
-                            new CurlFetch(props).fetch(
-                                    String.format("https://lostfilm.tv/v_search.php?c=%s&s=%s&e=%s",
-                                            m.group(1), m.group(2), m.group(3)),
-                                    new Array<>(
-                                            new MapEntry<>("Cookie", String.format("lf_session=%s", session)),
-                                            new MapEntry<>("Cookie", String.format("lnk_uid=%s", uid))
-                                    )
-                            )
-                    );
-                    if (!doc.getElementsByTag("a").isEmpty()) {
-                        org.jsoup.nodes.Document doc2 = Jsoup.parse(
-                                new CurlFetch(props).fetch(doc.getElementsByTag("a").get(0).attr("href"))
-                        );
+                String title = root.getElementsByClass("title-ru").get(0).text();
+                XML xml = new XMLDocument(
+                        new JdkRequest("http://insearch.site/rssdd.xml")
+                                .fetch()
+                                .body()
+                );
+                List<String> items = xml.xpath("//item/title/text()");
+                for (int i = 0; i < items.size(); ++i) {
+                    String ttl = items.get(i);
+                    String category = xml.xpath("//item/category/text()").get(i);
+                    if (ttl.contains(title) && category.equals(String.format("[%s]", quality))) {
+                        String torUrl = xml.xpath("//item/link/text()").get(i);
+                        Request req = new JdkRequest(torUrl)
+                                .header(HttpHeaders.COOKIE, String.format("uid=%s;usess=%s", uid, usess));
                         result.add(
-                                fromCurlReq(doc2, props, document.getString("url"))
+                                new TorrentResult(
+                                        new Metafile(req.fetch().binary()),
+                                        ttl,
+                                        torUrl,
+                                        new Filename(props, torUrl).toFile(),
+                                        url
+                                )
                         );
                     }
                 }

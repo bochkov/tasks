@@ -36,7 +36,7 @@ public final class AgentFactory implements Agents<TrNotif> {
                         document,
                         props,
                         db.getCollection(ValidProps.SETTINGS_COLL)
-                                .find(Filters.eq("_id", "lostfilm.session"))
+                                .find(Filters.eq("_id", "lostfilm.usess"))
                                 .first(),
                         db.getCollection(ValidProps.SETTINGS_COLL)
                                 .find(Filters.eq("_id", "lostfilm.uid"))

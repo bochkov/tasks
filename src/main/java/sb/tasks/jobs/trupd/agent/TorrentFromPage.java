@@ -1,6 +1,7 @@
 package sb.tasks.jobs.trupd.agent;
 
 import com.jcabi.http.request.JdkRequest;
+import com.jcabi.log.Logger;
 import org.jsoup.nodes.Document;
 import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
@@ -36,6 +37,7 @@ public abstract class TorrentFromPage implements Agent<TrNotif> {
 
     protected TorrentResult fromCurlReq(Document root, ValidProps props, String url) throws IOException {
         String torrentUrl = torrentUrl(root);
+        Logger.info(this, "%s", torrentUrl);
         return new TorrentResult(
                 new Metafile(
                         new CurlFetch(props).binary(torrentUrl)

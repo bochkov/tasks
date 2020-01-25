@@ -31,6 +31,7 @@ public final class CurlFetch {
     }
 
     private String fetch0(List<String> url) throws IOException {
+        Logger.info(this, "download cmd = %s", url);
         Process pp = new ProcessBuilder(url)
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
                 .start();
