@@ -12,9 +12,7 @@ public final class DictionaryComparator implements Comparator<ByteBuffer> {
     public int compare(ByteBuffer o1, ByteBuffer o2) {
         byte[] byteString1 = o1.array();
         byte[] byteString2 = o2.array();
-        int minLength = byteString1.length > byteString2.length ?
-                byteString2.length :
-                byteString1.length;
+        int minLength = Math.min(byteString1.length, byteString2.length);
         for (int i = 0; i < minLength; i++) {
             int bitCompare = bitCompare(byteString1[i], byteString2[i]);
             if (bitCompare != 0)

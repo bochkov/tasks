@@ -1,6 +1,0 @@
-POST http://localhost:8088/api/run
-Content-Type: application/json
-
-{"id":["59902e59d620293af34ada05"]}
-
-###
