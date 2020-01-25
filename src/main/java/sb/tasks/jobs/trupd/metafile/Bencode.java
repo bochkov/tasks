@@ -110,7 +110,7 @@ public abstract class Bencode {
             buff.append((char) readChar);
             readChar = is.read();
         } while (readChar != ':');
-        Integer length = Integer.parseInt(buff.toString());
+        int length = Integer.parseInt(buff.toString());
         byte[] byteString = new byte[length];
         for (int i = 0; i < byteString.length; i++)
             byteString[i] = (byte) is.read();

@@ -56,7 +56,8 @@ public final class CurlFetch {
                 new Joined<>(
                         new ListOf<>(
                                 "/usr/bin/curl",
-                                url
+                                url,
+                                "-L" // follow redirects
                         ),
                         props.curlExtraAsList()
                 )
@@ -73,7 +74,8 @@ public final class CurlFetch {
                 new Joined<>(
                         new ListOf<>(
                                 "/usr/bin/curl",
-                                url
+                                url,
+                                "-L" // follow redirects
                         ),
                         props.curlExtraAsList(),
                         headers
