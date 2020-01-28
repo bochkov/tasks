@@ -92,7 +92,7 @@ public final class AnLostFilm extends TorrentFromPage {
                                         ttl,
                                         torUrl,
                                         new Filename(props, torUrl).toFile(),
-                                        document.getString(url)
+                                        document.getString("url")
                                 )
                         );
                     }
