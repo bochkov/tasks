@@ -4,7 +4,6 @@ import com.jcabi.http.Request;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.w3c.dom.Node;
@@ -18,11 +17,9 @@ import sb.tasks.jobs.trupd.metafile.Metafile;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.xml.namespace.NamespaceContext;
-import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,6 +67,7 @@ public final class AnLostFilm extends TorrentFromPage {
     @Override
     public List<TrNotif> perform() throws IOException {
         XML rss = MetaInfo.get("rssFeed", XML.class, new EmptyFeed());
+        XML rdd = MetaInfo.get("rssDdFeed", XML.class, new EmptyFeed());
         List<TrNotif> result = new ArrayList<>();
         for (String str : rss.xpath("//item/link/text()")) {
             String decodedUrl = URLDecoder.decode(document.getString("url"), StandardCharsets.UTF_8);
@@ -80,17 +78,12 @@ public final class AnLostFilm extends TorrentFromPage {
                         document.getString("url")
                 );
                 String title = root.getElementsByClass("title-ru").get(0).text();
-                XML xml = new XMLDocument(
-                        new JdkRequest("http://insearch.site/rssdd.xml")
-                                .fetch()
-                                .body()
-                );
-                List<String> items = xml.xpath("//item/title/text()");
+                List<String> items = rdd.xpath("//item/title/text()");
                 for (int i = 0; i < items.size(); ++i) {
                     String ttl = items.get(i);
-                    String category = xml.xpath("//item/category/text()").get(i);
+                    String category = rdd.xpath("//item/category/text()").get(i);
                     if (ttl.contains(title) && category.equals(String.format("[%s]", quality))) {
-                        String torUrl = xml.xpath("//item/link/text()").get(i);
+                        String torUrl = rdd.xpath("//item/link/text()").get(i);
                         Request req = new JdkRequest(torUrl)
                                 .header(HttpHeaders.COOKIE, String.format("uid=%s;usess=%s", uid, usess));
                         result.add(
@@ -99,7 +92,7 @@ public final class AnLostFilm extends TorrentFromPage {
                                         ttl,
                                         torUrl,
                                         new Filename(props, torUrl).toFile(),
-                                        url
+                                        document.getString(url)
                                 )
                         );
                     }

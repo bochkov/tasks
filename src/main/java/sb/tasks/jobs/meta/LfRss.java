@@ -1,5 +1,6 @@
 package sb.tasks.jobs.meta;
 
+import com.jcabi.http.request.JdkRequest;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import org.cactoos.map.MapEntry;
@@ -19,10 +20,14 @@ public final class LfRss implements MetaFetch {
         XML xml = new XMLDocument(
                 new CurlFetch(props).fetch("https://lostfilm.tv/rss.xml")
         );
+        XML xmldd = new XMLDocument(
+                new JdkRequest("http://insearch.site/rssdd.xml")
+                        .fetch()
+                        .body()
+        );
         return new MapOf<>(
-                new MapEntry<>(
-                        "rssFeed", xml
-                )
+                new MapEntry<>("rssFeed", xml),
+                new MapEntry<>("rssDdFeed", xmldd)
         );
     }
 }
