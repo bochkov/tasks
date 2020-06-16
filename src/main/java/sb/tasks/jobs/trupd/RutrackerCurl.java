@@ -3,7 +3,7 @@ package sb.tasks.jobs.trupd;
 import com.jcabi.log.Logger;
 import org.cactoos.Func;
 import org.cactoos.Scalar;
-import org.cactoos.collection.Joined;
+import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.Retry;
 import org.cactoos.scalar.Synced;

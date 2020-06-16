@@ -3,7 +3,7 @@ package sb.tasks.jobs.trupd;
 import com.google.common.io.ByteStreams;
 import com.jcabi.immutable.Array;
 import com.jcabi.log.Logger;
-import org.cactoos.collection.Joined;
+import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 import sb.tasks.ValidProps;
 
