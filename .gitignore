@@ -14,3 +14,4 @@ out/
 *.iml
 tasks.properties
 cookies.txt
+.DS_Store

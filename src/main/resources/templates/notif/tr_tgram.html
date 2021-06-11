@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+Обновлена раздача <span th:text="${t.title}"></span>
+<br>
+<span th:unless="${t.url().isEmpty()}" th:text="${t.url()}"></span>
+</body>
+</html>

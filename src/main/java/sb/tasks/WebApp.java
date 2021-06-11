@@ -1,30 +1,27 @@
 package sb.tasks;
 
-import com.jcabi.log.Logger;
 import com.mongodb.client.MongoDatabase;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.Scheduler;
 import ratpack.server.BaseDir;
 import ratpack.server.RatpackServer;
-import sb.tasks.notif.telegram.TelegramBot;
-import sb.tasks.pages.IndexPage;
-import sb.tasks.pages.JobDelete;
-import sb.tasks.pages.JobPerform;
+import sb.tasks.pages.HdAllTasks;
+import sb.tasks.pages.HdDeleteJob;
+import sb.tasks.pages.HdPerformJob;
+import sb.tasks.pages.HdTelegram;
 
+@Slf4j
+@RequiredArgsConstructor
 public final class WebApp implements App<RatpackServer> {
 
-    private final ValidProps props;
     private final MongoDatabase db;
     private final Scheduler scheduler;
-
-    public WebApp(MongoDatabase db, Scheduler scheduler, ValidProps properties) {
-        this.props = properties;
-        this.db = db;
-        this.scheduler = scheduler;
-    }
+    private final ValidProps props;
 
     @Override
     public RatpackServer init() throws HttpServException {
-        Logger.info(this, "Starting HTTP Server");
+        LOG.info("Starting HTTP Server");
         try {
             return RatpackServer.start(server -> server
                     .serverConfig(config -> {
@@ -33,14 +30,11 @@ public final class WebApp implements App<RatpackServer> {
                     })
                     .handlers(chain -> chain
                             .files(f -> f.files("static"))
-                            .post("bot/:token",
-                                    new TelegramBot(db, scheduler, props))
-                            .post("api/run",
-                                    new JobPerform(scheduler))
-                            .post("api/delete",
-                                    new JobDelete(db, scheduler))
-                            .get("api/tasks",
-                                    new IndexPage(db, scheduler))
+                            .get("", new HdAllTasks(db, scheduler, "no-json"))
+                            .get("api/tasks", new HdAllTasks(db, scheduler))
+                            .post("api/run", new HdPerformJob(scheduler))
+                            .post("api/delete", new HdDeleteJob(db, scheduler))
+                            .post("bot/:token", new HdTelegram(db, scheduler, props))
                     )
             );
         } catch (Exception ex) {

@@ -4,30 +4,30 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.quartz.JobExecutionException;
 import sb.tasks.ValidProps;
-import sb.tasks.agent.AgNotify;
-import sb.tasks.agent.Cleanup;
-import sb.tasks.agent.UpdateFields;
+import sb.tasks.agent.DailyPressFactory;
+import sb.tasks.agent.common.AgCleanup;
+import sb.tasks.agent.common.AgNotify;
+import sb.tasks.agent.common.AgUpdateFields;
+import sb.tasks.agent.dailypress.AnDailyPressUpd;
 import sb.tasks.jobs.BaseJob;
-import sb.tasks.jobs.dailypress.agent.AgentFactory;
-import sb.tasks.jobs.dailypress.agent.PressUpdated;
 
 public final class DailyPress extends BaseJob {
 
     @Override
     protected void exec(MongoDatabase db, Document bson, ValidProps props) throws JobExecutionException {
         try {
-            new Cleanup<>(
+            new AgCleanup<>(
                     bson.get("params", Document.class),
                     new AgNotify<>(
                             db,
                             props,
                             bson,
                             bson.get("params", Document.class).getString("subject"),
-                            new PressUpdated(
-                                    new UpdateFields<>(
+                            new AnDailyPressUpd(
+                                    new AgUpdateFields<>(
                                             db,
                                             bson,
-                                            new AgentFactory(db, bson, props).choose()
+                                            new DailyPressFactory(db, bson, props).choose()
                                     )
                             )
                     )

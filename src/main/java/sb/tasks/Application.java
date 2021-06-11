@@ -1,34 +1,34 @@
 package sb.tasks;
 
-import com.jcabi.log.Logger;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import sb.tasks.system.AutoChangesJob;
-import sb.tasks.system.AutoRegJob;
-import sb.tasks.system.MetaFetchJob;
-import sb.tasks.system.RegisteredJob;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import org.quartz.SchedulerException;
+import sb.tasks.system.AutoChangesJob;
+import sb.tasks.system.AutoRegJob;
+import sb.tasks.system.RegisteredJob;
+
+@Slf4j
+@RequiredArgsConstructor
 public final class Application {
 
     private final ValidProps properties;
 
     public Application(Properties properties) {
-        this.properties = new ValidProps(properties);
+        this(new ValidProps(properties));
     }
 
     public static void main(String[] args) throws Exception {
-        Properties properties = new Properties();
-        try (FileInputStream fis = new FileInputStream("tasks.properties")) {
+        var properties = new Properties();
+        try (var fis = new FileInputStream("tasks.properties")) {
             properties.load(fis);
         } catch (IOException ex) {
-            Logger.warn(Application.class, "Unable to find tasks.properties. Exit.");
+            LOG.warn("Unable to find tasks.properties. Exit.");
             System.exit(1);
         }
         new Application(properties).run();
@@ -36,28 +36,24 @@ public final class Application {
 
     public void run() throws HttpServException, SchedulerException {
         properties.init();
-        Scheduler scheduler = new SchedulerApp().init();
-        MongoDatabase db = new DbApp(properties).init();
+        var scheduler = new SchedulerApp().init();
+        var db = new DbApp(properties).init();
         db.getCollection("tasks")
                 .find()
-                .forEach(new Consumer<>() {
-                    @Override
-                    public void accept(Document document) {
-                        Logger.info(this, "Readed task: %s", document.toJson());
-                        try {
-                            new RegisteredJob(db, scheduler, properties).register(document);
-                            Logger.info(this, "Successfully registered task %s", document.toJson());
-                        } catch (Exception ex) {
-                            Logger.warn(this, "Cannot register task %s", document.toJson());
-                            Logger.warn(this, "%s", ex);
-                        }
+                .forEach((Consumer<Document>) document -> {
+                    LOG.info("Readed task: {}", document.toJson());
+                    try {
+                        new RegisteredJob(db, scheduler, properties).register(document);
+                        LOG.info("Successfully registered task {}", document.toJson());
+                    } catch (Exception ex) {
+                        LOG.warn("Cannot register task {}", document.toJson());
+                        LOG.warn(ex.getMessage(), ex);
                     }
                 });
         new AutoRegJob(db, scheduler, properties).start();
         new AutoChangesJob(db, scheduler).start();
-        new MetaFetchJob(properties, scheduler).start();
         new WebApp(db, scheduler, properties).init();
         scheduler.start();
-        Logger.info(this, "Application started");
+        LOG.info("Application started");
     }
 }

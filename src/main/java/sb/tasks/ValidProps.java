@@ -1,13 +1,10 @@
 package sb.tasks;
 
-import com.jcabi.log.Logger;
-import org.cactoos.list.ListOf;
-import org.cactoos.scalar.Ternary;
-import org.cactoos.scalar.Unchecked;
-
-import java.util.List;
 import java.util.Properties;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public final class ValidProps implements App<Properties> {
 
     public static final String SETTINGS_COLL = "settings";
@@ -21,8 +18,7 @@ public final class ValidProps implements App<Properties> {
 
     @Override
     public Properties init() {
-        Logger.info(this, "Readed props: %s", properties);
-        // TODO
+        LOG.info("Readed props: {}", properties);
         return properties;
     }
 
@@ -47,10 +43,7 @@ public final class ValidProps implements App<Properties> {
     }
 
     public String tmpDir() {
-        return properties.getProperty(
-                "system.tmpdir",
-                System.getProperty("java.io.tmpdir")
-        );
+        return properties.getProperty("system.tmpdir", System.getProperty("java.io.tmpdir"));
     }
 
     public String mailHost() {
@@ -73,16 +66,7 @@ public final class ValidProps implements App<Properties> {
         return properties.getProperty("mail.from");
     }
 
-    public List<String> curlExtraAsList() {
-        return new Unchecked<>(
-                new Ternary<List<String>>(
-                        () -> properties.containsKey(ValidProps.CURL_EXTRA)
-                                && !properties.getProperty(ValidProps.CURL_EXTRA, "").isEmpty(),
-                        () -> new ListOf<>(
-                                properties.getProperty(ValidProps.CURL_EXTRA).split("\\s+")
-                        ),
-                        ListOf<String>::new
-                )
-        ).value();
+    public String curlExtra() {
+        return properties.getProperty(ValidProps.CURL_EXTRA, "");
     }
 }

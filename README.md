@@ -12,9 +12,8 @@ At this time we support:
 #### Torrent update
 Periodic check torrents on popular (nope) trackers and download it if they changed.
 At this time we support trackers:
-- RuTor (address often chages)
+- RuTor
 - [Rutracker](https://rutracker.org)
-- [LostFilm.TV](https://lostfilm.tv)
 
 ## Requirements
 1. Java 8

@@ -1,13 +1,46 @@
-h2 {
-    margin: 2em 0;
+body {
+    font-family: sans-serif;
+    font-size: small;
 }
 
-.ui.container {
-    padding-top: 5em;
-    padding-bottom: 5em;
+.name {
+    font-weight: bold;
+    font-size: 1.2em;
 }
 
-.code {
-    font-family: 'Inconsolata', monospace;
-    font-size: 14px;
+.mono {
+    font-family: monospace;
+}
+
+.task-block {
+    padding: 10px;
+    margin: 10px;
+    border-bottom: darkred 1px solid;
+}
+
+.oid {
+    font-size: 0.8em;
+    color: darkgray;
+}
+
+a, a:visited {
+    text-decoration: none;
+    color: navy;
+}
+
+table {
+    border-collapse: collapse;
+    border: none;
+    margin: 15px 0;
+}
+
+th, td {
+    text-align: left;
+    border: 1px darkgray solid;
+    padding: 5px;
+    vertical-align: top;
+}
+
+.space-right {
+    padding-right: 10px;
 }

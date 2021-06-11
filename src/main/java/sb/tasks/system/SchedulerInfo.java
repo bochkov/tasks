@@ -1,23 +1,25 @@
 package sb.tasks.system;
 
-import com.jcabi.log.Logger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.matchers.GroupMatcher;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+@Slf4j
+@RequiredArgsConstructor
 public final class SchedulerInfo {
 
     private final Scheduler scheduler;
     private final String group;
 
     public SchedulerInfo(Scheduler scheduler) {
-        this.scheduler = scheduler;
-        this.group = "TASK";
+        this(scheduler, "TASK");
     }
 
     public boolean contains(String key) {
@@ -27,7 +29,7 @@ public final class SchedulerInfo {
                     return true;
             }
         } catch (SchedulerException ex) {
-            Logger.warn(this, "%s", ex);
+            LOG.warn(ex.getMessage(), ex);
         }
         return false;
     }
@@ -37,9 +39,7 @@ public final class SchedulerInfo {
             if (key.equals(jk.getName()))
                 return jk;
         }
-        throw new SchedulerException(
-                String.format("No JobKey with name=%s",  key)
-        );
+        throw new SchedulerException(String.format("No JobKey with name=%s", key));
     }
 
     public int sizeOf() throws SchedulerException {

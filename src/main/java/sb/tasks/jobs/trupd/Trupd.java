@@ -4,37 +4,37 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.quartz.JobExecutionException;
 import sb.tasks.ValidProps;
-import sb.tasks.agent.AgNotify;
-import sb.tasks.agent.Cleanup;
-import sb.tasks.agent.UpdateFields;
-import sb.tasks.agent.ValidDoc;
+import sb.tasks.agent.TrupdFactory;
+import sb.tasks.agent.common.AgCleanup;
+import sb.tasks.agent.common.AgNotify;
+import sb.tasks.agent.common.AgUpdateFields;
+import sb.tasks.agent.common.AgValidDoc;
+import sb.tasks.agent.trupd.AnSaveTorrent;
+import sb.tasks.agent.trupd.AnTorrentUpd;
 import sb.tasks.jobs.BaseJob;
-import sb.tasks.jobs.trupd.agent.AgentFactory;
-import sb.tasks.jobs.trupd.agent.Download;
-import sb.tasks.jobs.trupd.agent.MetafileUpdated;
 
 public final class Trupd extends BaseJob {
 
     @Override
     protected void exec(MongoDatabase db, Document bson, ValidProps props) throws JobExecutionException {
         try {
-            new ValidDoc<>(
+            new AgValidDoc<>(
                     bson,
-                    new Cleanup<>(
+                    new AgCleanup<>(
                             bson.get("params", Document.class),
                             new AgNotify<>(
                                     db,
                                     props,
                                     bson,
                                     "torrent updated",
-                                    new Download(
+                                    new AnSaveTorrent(
                                             props,
-                                            new MetafileUpdated(
+                                            new AnTorrentUpd(
                                                     bson,
-                                                    new UpdateFields<>(
+                                                    new AgUpdateFields<>(
                                                             db,
                                                             bson,
-                                                            new AgentFactory(
+                                                            new TrupdFactory(
                                                                     db,
                                                                     bson.get("params", Document.class),
                                                                     props

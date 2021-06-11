@@ -1,0 +1,45 @@
+package sb.tasks.pages;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import ratpack.exec.Promise;
+import ratpack.handling.Context;
+import ratpack.handling.Handler;
+import ratpack.jackson.Jackson;
+import sb.tasks.models.http.Ids;
+import sb.tasks.models.http.JsonAnswer;
+import sb.tasks.system.SchedulerInfo;
+
+@Slf4j
+@RequiredArgsConstructor
+public final class HdPerformJob implements Handler {
+
+    private final Scheduler scheduler;
+
+    @Override
+    public void handle(Context ctx) {
+        Promise<Ids> promise = ctx.parse(Ids.class);
+        promise.then(f -> {
+            List<String> jobkeys = f.getAll();
+            var schInfo = new SchedulerInfo(scheduler);
+            Map<String, JsonAnswer> answers = new HashMap<>();
+            for (String jobkey : jobkeys) {
+                try {
+                    JobKey key = schInfo.get(jobkey);
+                    scheduler.triggerJob(key);
+                    LOG.info("Job with key = {} triggered", key);
+                    answers.put(jobkey, JsonAnswer.OK);
+                } catch (Exception ex) {
+                    answers.put(jobkey, JsonAnswer.FAIL);
+                }
+            }
+            ctx.render(Jackson.json(answers));
+        });
+    }
+}

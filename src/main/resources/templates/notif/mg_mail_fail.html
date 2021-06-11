@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<style>
+    code {
+        font-family: Menlo, "Courier New", monospace;
+        font-size: 9pt;
+    }
+</style>
+<body>
+<p style="color: darkred">Tasks не смог отправить файл из-за ограничений почтовых сообщений.</p>
+<p>Вы можете скачать его по прямой <a th:href="${t.url}">ссылке</a>.</p>
+<p>Технические подробности</p>
+<pre><code th:text="${tech}"></code></pre>
+<p>
+<p>
+</body>
+</html>

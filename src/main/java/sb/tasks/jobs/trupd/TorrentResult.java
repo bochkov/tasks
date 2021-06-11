@@ -1,34 +1,27 @@
 package sb.tasks.jobs.trupd;
 
-import com.mongodb.client.model.Updates;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bson.conversions.Bson;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
-import org.jtwig.JtwigModel;
-import org.jtwig.JtwigTemplate;
-import sb.tasks.jobs.trupd.metafile.Mt;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
+import java.util.Map;
 
+import com.mongodb.client.model.Updates;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.bson.conversions.Bson;
+import sb.tasks.models.metafile.Mt;
+import sb.tasks.system.ThymeTemplate;
+
+@ToString(of = {"title", "url", "downloadUrl"})
+@Getter
+@RequiredArgsConstructor
 public final class TorrentResult implements TrNotif {
 
     private final Mt metafile;
     private final String title;
     private final String downloadUrl;
-    private final File file;
+    private final File outFile;
     private final String url;
-
-    public TorrentResult(Mt metafile, String title, String downloadUrl, File file, String url) {
-        this.metafile = metafile;
-        this.title = title;
-        this.downloadUrl = downloadUrl;
-        this.file = file;
-        this.url = url;
-    }
 
     @Override
     public boolean afterThan(Date date) {
@@ -48,39 +41,33 @@ public final class TorrentResult implements TrNotif {
 
     @Override
     public File file() {
-        return file;
+        return outFile;
     }
 
     @Override
     public String mailText() {
-        return JtwigTemplate
-                .classpathTemplate("templates/notif/tr_mail.twig")
-                .render(
-                        JtwigModel.newModel(
-                                new MapOf<>(
-                                        new MapEntry<>("t", this)
-                                )
-                        )
-                );
+        return ThymeTemplate.INSTANCE.process(
+                "notif/tr_mail",
+                Map.of("t", this)
+        );
     }
 
     @Override
-    public String mailFailText(Throwable th) {
-        return JtwigTemplate
-                .classpathTemplate("templates/notif/tr_mail_fail.twig")
-                .render(
-                        JtwigModel.newModel(
-                                new MapOf<>(
-                                        new MapEntry<>("t", this),
-                                        new MapEntry<>("tech", ExceptionUtils.getStackTrace(th))
-                                )
-                        )
-                );
+    public String mailText(Throwable th) {
+        var trace = new StringWriter();
+        th.printStackTrace(new PrintWriter(trace));
+        return ThymeTemplate.INSTANCE.process(
+                "notif/tr_mail_fail",
+                Map.ofEntries(
+                        Map.entry("t", this),
+                        Map.entry("tech", trace.toString())
+                )
+        );
     }
 
     @Override
-    public void writeTo(String directory) throws IOException {
-        try (FileOutputStream out = new FileOutputStream(new File(directory, file.getName()))) {
+    public void saveTo(String directory) throws IOException {
+        try (var out = new FileOutputStream(new File(directory, outFile.getName()))) {
             out.write(metafile.body());
         }
     }
@@ -89,21 +76,19 @@ public final class TorrentResult implements TrNotif {
         return title;
     }
 
-    @Override
-    public String toString() {
-        return String.format("TorrentResult {title='%s', url='%s', downloadUrl='%s'}", title, url, downloadUrl);
+    public String url() {
+        if (url != null && !url.isEmpty())
+            return url;
+        else if (downloadUrl != null && !downloadUrl.isEmpty())
+            return downloadUrl;
+        return "";
     }
 
     @Override
     public String telegramText() {
-        return JtwigTemplate
-                .classpathTemplate("templates/notif/tr_tgram.twig")
-                .render(
-                        JtwigModel.newModel(
-                                new MapOf<>(
-                                        new MapEntry<>("t", this)
-                                )
-                        )
-                );
+        return ThymeTemplate.INSTANCE.process(
+                "notif/tr_tgram",
+                Map.of("t", this)
+        );
     }
 }

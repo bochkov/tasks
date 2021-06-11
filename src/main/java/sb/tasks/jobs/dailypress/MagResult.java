@@ -1,28 +1,27 @@
 package sb.tasks.jobs.dailypress;
 
-import com.mongodb.client.model.Updates;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bson.conversions.Bson;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
-import org.jtwig.JtwigModel;
-import org.jtwig.JtwigTemplate;
-import sb.tasks.notif.NotifObj;
-
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
+import java.util.Map;
 
+import com.mongodb.client.model.Updates;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.bson.conversions.Bson;
+import sb.tasks.jobs.NotifObj;
+import sb.tasks.system.ThymeTemplate;
+
+@ToString
+@Getter
+@RequiredArgsConstructor
 public final class MagResult implements NotifObj {
 
     private final File file;
     private final String url;
     private final String text;
-
-    public MagResult(File file, String url, String text) {
-        this.file = file;
-        this.url = url;
-        this.text = text;
-    }
 
     @Override
     public String telegramText() {
@@ -36,29 +35,23 @@ public final class MagResult implements NotifObj {
 
     @Override
     public String mailText() {
-        return JtwigTemplate
-                .classpathTemplate("templates/notif/mg_mail.twig")
-                .render(
-                        JtwigModel.newModel(
-                                new MapOf<>(
-                                        new MapEntry<>("t", this)
-                                )
-                        )
-                );
+        return ThymeTemplate.INSTANCE.process(
+                "notif/mg_mail",
+                Map.of("t", this)
+        );
     }
 
     @Override
-    public String mailFailText(Throwable th) {
-        return JtwigTemplate
-                .classpathTemplate("templates/notif/mg_mail_fail.twig")
-                .render(
-                        JtwigModel.newModel(
-                                new MapOf<>(
-                                        new MapEntry<>("t", this),
-                                        new MapEntry<>("tech", ExceptionUtils.getStackTrace(th))
-                                )
-                        )
-                );
+    public String mailText(Throwable th) {
+        var trace = new StringWriter();
+        th.printStackTrace(new PrintWriter(trace));
+        return ThymeTemplate.INSTANCE.process(
+                "notif/mg_mail_fail",
+                Map.ofEntries(
+                        Map.entry("t", this),
+                        Map.entry("tech", trace.toString())
+                )
+        );
     }
 
     @Override
@@ -73,10 +66,5 @@ public final class MagResult implements NotifObj {
                         updates,
                         Updates.set("vars.download_date", new Date(file.lastModified()))
                 );
-    }
-
-    @Override
-    public String toString() {
-        return String.format("MagResult {file=%s, url='%s', text='%s'}", file, url, text);
     }
 }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TrUpd</title>
+    <link rel="icon" href="/static/favicon.ico"/>
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.0/css/all.css"/>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+<div class="task-block">
+    <h2><i class="far fa-paper-plane space-right"></i> All Tasks</h2>
+</div>
+<div class="task-block" th:each="doc : ${docs}">
+
+    <span class="name" th:text="${doc.vars.name}"></span>
+    &nbsp;&nbsp;
+    <a href="#" th:data-oid="${doc.oid}" th:onclick="run(this.getAttribute('data-oid'))"><i class="fas fa-running"></i> Trigger</a>
+    &nbsp;
+    <a href="#" th:data-oid="${doc.oid}" th:onclick="remove(this.getAttribute('data-oid'))"><i class="far fa-trash-alt"></i> Remove</a>
+
+    <br/>
+
+    <span class="oid" th:text="'OID: ' + ${doc.oid}"></span><br/>
+    Job: <span th:text="(${doc.registered} ? '+ ' : '- ') + ${doc.job}"></span><br/>
+    Schedules:<br/>
+    <span th:each="sched : ${doc.schedule}" class="mono">
+        <span th:text="${sched}"></span><br/>
+    </span>
+
+    <table>
+        <tr>
+            <th th:if="${doc.params.mail_to}">Mail to</th>
+            <th th:if="${doc.params.telegram}">Notification to</th>
+            <th>Vars</th>
+        </tr>
+        <tr>
+            <td th:if="${doc.params.mail_to}">
+                <span th:each="recip : ${doc.params.mail_to}" th:utext="${recip} + '<br/>'"></span>
+            </td>
+            <td th:if="${doc.params.telegram}">
+                <span th:each="recip : ${doc.params.telegram}" th:utext="${recip} + '<br/>'"></span>
+            </td>
+            <td>
+                Sent: <span th:text="${#dates.format(doc.vars.download_date, 'dd.MM.yyyy HH:mm:ss')}"></span><br/>
+                Last check: <span th:text="${#dates.format(doc.vars.checked, 'dd.MM.yyyy HH:mm:ss')}"></span><br/>
+                Download param:
+                <a th:if="${doc.vars.download_url.startsWith('http')}" th:href="${doc.vars.download_url}"
+                   th:text="${doc.vars.download_url}"></a>
+                <span th:unless="${doc.vars.download_url.startsWith('http')}" th:text="${doc.vars.download_url}"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+<script>
+    function run(oid) {
+        if (window.confirm("run this job ?")) {
+            axios.post('/api/run', {id: [oid]})
+                .then(function (response) {
+                    document.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error)
+                });
+        }
+    }
+
+    function remove(oid) {
+        if (window.confirm("DELETE this job ?")) {
+            axios.post('/api/delete', {id: [oid]})
+                .then(function (response) {
+                    document.location.reload();
+                })
+                .catch(function (error) {
+                    console.log(error)
+                });
+        }
+    }
+</script>
+</html>
