@@ -42,8 +42,10 @@ public final class AnRutor extends AnTorrentFromPage {
     protected String torrentUrl(Document root) throws IOException {
         Matcher matcher;
         if (root.getElementById("download") != null) {
+            LOG.debug("download element found");
             for (Element element : root.getElementById("download").children()) {
                 for (Pattern linkPattern : LINK_PATTERNS) {
+                    LOG.info("pattern = {}, href={}", linkPattern, element.attr("href"));
                     matcher = linkPattern.matcher(element.attr("href"));
                     if (matcher.find()) {
                         String link = matcher.group();
@@ -65,9 +67,8 @@ public final class AnRutor extends AnTorrentFromPage {
 
     @Override
     public List<TorrentResult> perform() throws IOException {
-        Document root = Jsoup.parse(
-                new CurlCommon(props).fetch(document.getString("url"))
-        );
+        String page = new CurlCommon(props).fetch(document.getString("url"));
+        Document root = Jsoup.parse(page);
         return Collections.singletonList(
                 fromCurlReq(root, props, document.getString("url"))
         );
