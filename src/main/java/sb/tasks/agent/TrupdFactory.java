@@ -22,9 +22,9 @@ public final class TrupdFactory implements AgentFactory<TorrentResult> {
     public Agent<TorrentResult> choose() {
         Agent<TorrentResult> agent;
         String num = document.get("num", "");
-        if (match("https?://rutor\\.(info|is)/.*")) {
+        if (match("https?://rutor\\.(info|is)/.*", "rutor")) {
             agent = new AnRutor(document, props);
-        } else if (!num.isEmpty() || match("https?://rutracker\\.org/.*")) {
+        } else if (!num.isEmpty() || match("https?://rutracker\\.org/.*", "rutracker")) {
             agent = new AnRutracker(
                     document,
                     props,
@@ -45,9 +45,14 @@ public final class TrupdFactory implements AgentFactory<TorrentResult> {
         return agent;
     }
 
-    private boolean match(String regexp) {
-        return document.containsKey("url_match_regex") ?
-                document.get("url", "").matches(document.getString("url_match_regex")) :
-                document.get("url", "").matches(regexp);
+    private boolean match(String regexp, String agentKey) {
+        Document match = db.getCollection("settings")
+                .find(Filters.eq("_id", agentKey + ".url_match_regexp"))
+                .first();
+        if (match != null && match.containsKey("value")
+                && document.get("url", "").matches(match.getString("value"))) {
+            return true;
+        }
+        return document.get("url", "").matches(regexp);
     }
 }

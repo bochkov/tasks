@@ -29,6 +29,9 @@
     <span th:each="sched : ${doc.schedule}" class="mono">
         <span th:text="${sched}"></span><br/>
     </span>
+    Base param:
+    <a th:if="${doc.params.url.startsWith('http')}" th:href="${doc.params.url}" th:text="${doc.params.url}"></a>
+    <span th:unless="${doc.params.url.startsWith('http')}" th:text="${doc.params.url}"></span>
 
     <table>
         <tr>
