@@ -46,10 +46,11 @@
             <td>
                 Sent: <span th:text="${#dates.format(doc.vars.download_date, 'dd.MM.yyyy HH:mm:ss')}"></span><br/>
                 Last check: <span th:text="${#dates.format(doc.vars.checked, 'dd.MM.yyyy HH:mm:ss')}"></span><br/>
-                Download param:
-                <a th:if="${doc.vars.download_url.startsWith('http')}" th:href="${doc.vars.download_url}"
-                   th:text="${doc.vars.download_url}"></a>
-                <span th:unless="${doc.vars.download_url.startsWith('http')}" th:text="${doc.vars.download_url}"></span>
+                <span th:if="${doc.vars.download_url}">
+                    Download param:
+                    <a th:if="${doc.vars.download_url.startsWith('http')}" th:href="${doc.vars.download_url}" th:text="${doc.vars.download_url}"></a>
+                    <span th:unless="${doc.vars.download_url.startsWith('http')}" th:text="${doc.vars.download_url}"></span>
+                </span>
             </td>
         </tr>
     </table>
