@@ -1,6 +1,7 @@
 package sb.tasks.service;
 
-import kong.unirest.Unirest;
+import java.io.IOException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import resnyx.methods.message.SendMessage;
@@ -15,9 +16,10 @@ public final class TgBot {
         var msg = new SendMessage(token, chatId, text);
         msg.setParseMode("html");
         msg.setDisablePreview(true);
-        Unirest.post("https://resnyx.sergeybochkov.com/tg")
-                .header("Content-Type", "application/json")
-                .body(msg)
-                .asEmpty();
+        try {
+            msg.execute();
+        } catch (IOException ex) {
+            LOG.warn(ex.getMessage(), ex);
+        }
     }
 }
