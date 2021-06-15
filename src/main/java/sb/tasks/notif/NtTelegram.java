@@ -1,7 +1,5 @@
 package sb.tasks.notif;
 
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import sb.tasks.jobs.NotifObj;
@@ -14,7 +12,7 @@ public final class NtTelegram<T extends NotifObj> implements Notification<T> {
     private final String botToken;
 
     @Override
-    public void send(List<T> objects) {
+    public void send(Iterable<T> objects) {
         var bot = new TgBot(botToken);
         for (NotifObj obj : objects) {
             if (doc.containsKey("telegram")) {

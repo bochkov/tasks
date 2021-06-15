@@ -21,8 +21,12 @@ repositories {
 dependencies {
     implementation 'org.quartz-scheduler:quartz:2.3.2'
     implementation 'org.mongodb:mongodb-driver:3.12.8'
+    // mail
     implementation 'com.jcabi:jcabi-email:1.10'
-    implementation 'javax.mail:mail:1.4.7'
+    implementation 'javax.activation:activation:1.1.1'
+    implementation 'com.sun.mail:javax.mail:1.6.2'
+    implementation 'javax.mail:mailapi:1.4.3'
+    //
     implementation 'com.konghq:unirest-java:3.11.09'
     implementation 'org.jsoup:jsoup:1.13.1'
     implementation 'org.thymeleaf:thymeleaf:3.0.12.RELEASE'

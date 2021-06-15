@@ -27,7 +27,7 @@ public final class NtMail<T extends NotifObj> implements Notification<T> {
 
     private final Postman postman;
     private final String from;
-    private final List<String> recipients;
+    private final Iterable<String> recipients;
     private final String subject;
 
     public NtMail(ValidProps props, Document params, String subject) {
@@ -35,8 +35,7 @@ public final class NtMail<T extends NotifObj> implements Notification<T> {
                 new Postman.Default(
                         new Smtps(
                                 new Token(props.mailUser(), props.mailPassword())
-                                        .access(new Protocol.Smtps(props.mailHost(), props.mailPort())
-                                        )
+                                        .access(new Protocol.Smtps(props.mailHost(), props.mailPort()))
                         )
                 ),
                 props.mailFrom(),
@@ -46,7 +45,7 @@ public final class NtMail<T extends NotifObj> implements Notification<T> {
     }
 
     @Override
-    public void send(List<T> objects) throws IOException {
+    public void send(Iterable<T> objects) throws IOException {
         for (NotifObj obj : objects) {
             List<Enclosure> encs = List.of(
                     new EnHtml(obj.mailText()),
