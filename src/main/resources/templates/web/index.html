@@ -47,7 +47,12 @@
                 <span th:each="recip : ${doc.params.telegram}" th:utext="${recip} + '<br/>'"></span>
             </td>
             <td>
-                Sent: <span th:text="${#dates.format(doc.vars.download_date, 'dd.MM.yyyy HH:mm:ss')}"></span><br/>
+                <span th:if="${doc.vars.download_date}">
+                    Notified: <span th:text="${#dates.format(doc.vars.download_date, 'dd.MM.yyyy HH:mm:ss')}"></span><br/>
+                </span>
+                <span th:if="${doc.vars.created}">
+                    Last update: <span th:text="${#dates.format(doc.vars.created, 'dd.MM.yyyy HH:mm:ss')}"></span><br/>
+                </span>
                 Last check: <span th:text="${#dates.format(doc.vars.checked, 'dd.MM.yyyy HH:mm:ss')}"></span><br/>
                 <span th:if="${doc.vars.download_url}">
                     Download param:
