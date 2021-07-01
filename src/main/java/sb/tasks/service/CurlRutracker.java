@@ -3,6 +3,7 @@ package sb.tasks.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -52,7 +53,8 @@ public final class CurlRutracker {
         }
 
         private List<String> downloadCmd(String num, File file) {
-            List<String> cmd = Arrays.asList(
+            List<String> cmd = new ArrayList<>();
+            cmd.addAll(Arrays.asList(
                     "/usr/bin/curl",
                     "--cookie", COOKIES,
                     "--referer", String.format("http://rutracker.org/forum/viewtopic.php?t=%s", num),
@@ -60,7 +62,7 @@ public final class CurlRutracker {
                     "--header", String.format("t:%s", num),
                     "--data", String.format("t=%s", num),
                     "--output", file.getName()
-            );
+            ));
             cmd.addAll(Arrays.asList(props.curlExtra().split("\\s+")));
             cmd.add(String.format("http://rutracker.org/forum/dl.php?t=%s", num));
             return cmd;
@@ -93,7 +95,8 @@ public final class CurlRutracker {
         }
 
         private List<String> cookieCmd() {
-            List<String> cmd = Arrays.asList(
+            List<String> cmd = new ArrayList<>();
+            cmd.addAll(Arrays.asList(
                     "curl",
                     "--retry", "5",
                     "--data", "login_username=" + login + "&login_password=" + password + "&login=%%C2%%F5%%EE%%E4",
@@ -103,7 +106,7 @@ public final class CurlRutracker {
                     "--ipv4",
                     "--user-agent", userAgent,
                     "--cookie-jar", COOKIES
-            );
+            ));
             cmd.addAll(Arrays.asList(props.curlExtra().split("\\s+")));
             cmd.add("http://rutracker.org/forum/login.php");
             return cmd;

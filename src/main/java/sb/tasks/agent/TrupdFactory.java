@@ -41,7 +41,7 @@ public final class TrupdFactory implements AgentFactory<TorrentResult> {
         } else {
             agent = new Agent.EMPTY<>();
         }
-        LOG.info("Choosed agent '{}' for url={}", agent, document.getString("url"));
+        LOG.info("Choosed agent '{}' for url={}, num={}", agent, document.getString("url"), document.getString("num"));
         return agent;
     }
 
