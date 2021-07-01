@@ -86,9 +86,9 @@ public final class TorrentResult implements TrNotif {
 
     @Override
     public String telegramText() {
-        return ThymeTemplate.INSTANCE.process(
-                "notif/tr_tgram",
-                Map.of("t", this)
-        );
+        var str = new StringBuilder("Обновлена раздача <i>" + title + "</i>");
+        if (!url().isEmpty())
+            str.append("\n\n").append(url());
+        return str.toString();
     }
 }
