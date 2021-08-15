@@ -1,6 +1,7 @@
 plugins {
-    id 'io.ratpack.ratpack-java' version '1.8.2'
+    id 'io.ratpack.ratpack-java' version '1.9.0'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id "com.github.ben-manes.versions" version "0.39.0"
     id 'java'
 }
 
@@ -20,27 +21,33 @@ repositories {
 
 dependencies {
     implementation 'org.quartz-scheduler:quartz:2.3.2'
-    implementation 'org.mongodb:mongodb-driver:3.12.8'
+    implementation 'org.mongodb:mongodb-driver:3.12.10'
     // mail
-    implementation 'com.jcabi:jcabi-email:1.10'
+    implementation 'com.jcabi:jcabi-email:1.12'
     implementation 'javax.activation:activation:1.1.1'
     implementation 'com.sun.mail:javax.mail:1.6.2'
     implementation 'javax.mail:mailapi:1.4.3'
     //
-    implementation 'com.konghq:unirest-java:3.11.09'
-    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'com.konghq:unirest-java:3.11.12'
+    implementation 'org.jsoup:jsoup:1.14.2'
     implementation 'org.thymeleaf:thymeleaf:3.0.12.RELEASE'
     implementation 'resnyx:resnyx:4.6.3'
-    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-classic:1.3.0-alpha9'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+}
 
+clean {
+    doLast {
+        file("${projectDir}/out").deleteDir()
+        file("${projectDir}/logs").deleteDir()
+    }
 }
 
 mainClassName = 'sb.tasks.Application'
