@@ -6,8 +6,7 @@ sudo: required
 
 language: java
 
-jdk:
-  - openjdk16
+jdk: openjdk17
 
 services:
   - docker

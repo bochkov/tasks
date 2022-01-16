@@ -1,4 +1,4 @@
-FROM openjdk:16-alpine
+FROM eclipse-temurin:17-jre-alpine
 ENV TZ Asia/Yekaterinburg
 ENV LANG ru_RU.UTF-8
 ENV LANGUAGE ru_RU:en

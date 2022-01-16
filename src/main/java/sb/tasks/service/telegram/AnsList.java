@@ -2,7 +2,6 @@ package sb.tasks.service.telegram;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -26,12 +25,12 @@ public final class AnsList implements Answer {
     @Override
     public void handle(Long chatId, String[] args) {
         var schInfo = new SchedulerInfo(scheduler);
-        List<Document> notregistered = db.getCollection("tasks")
+        List<Document> notRegistered = db.getCollection("tasks")
                 .find()
                 .into(new ArrayList<>())
                 .stream()
                 .filter(doc -> !schInfo.contains(doc.getObjectId("_id").toString()))
-                .collect(Collectors.toList());
+                .toList();
 
         /// REGISTERED TASKS
         var str1 = new StringBuilder("Registered tasks:");
@@ -59,10 +58,10 @@ public final class AnsList implements Answer {
 
         /// NOT REGISTERED TASKS
         var str2 = new StringBuilder("Not registered tasks:");
-        if (notregistered.isEmpty())
+        if (notRegistered.isEmpty())
             str2.append("\n").append("Empty)");
         else {
-            for (Document doc : notregistered) {
+            for (Document doc : notRegistered) {
                 str2.append("\n")
                         .append(String.format("ID=%s", doc.getObjectId("_id")))
                         .append("\n")

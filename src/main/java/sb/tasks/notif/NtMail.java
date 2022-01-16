@@ -47,7 +47,7 @@ public final class NtMail<T extends NotifObj> implements Notification<T> {
     @Override
     public void send(Iterable<T> objects) throws IOException {
         for (NotifObj obj : objects) {
-            List<Enclosure> encs = List.of(
+            List<Enclosure> enclosures = List.of(
                     new EnHtml(obj.mailText()),
                     new EnBinary(obj.file(), obj.file().getName(), "application/octet-stream")
             );
@@ -60,7 +60,7 @@ public final class NtMail<T extends NotifObj> implements Notification<T> {
                                             new StRecipient(to),
                                             new StSubject(subject)
                                     ),
-                                    encs
+                                    enclosures
                             )
                     );
                 } catch (Exception ex) {

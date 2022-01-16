@@ -18,7 +18,7 @@ public final class ValidProps implements App<Properties> {
 
     @Override
     public Properties init() {
-        LOG.info("Readed props: {}", properties);
+        LOG.info("Read props: {}", properties);
         return properties;
     }
 

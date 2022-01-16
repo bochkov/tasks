@@ -27,13 +27,13 @@ public final class AutoChangesDetail implements Job {
             List<String> sh = schedules.getOrDefault(id, Collections.emptyList());
             List<String> dd = doc.getList("schedule", String.class);
             if (!Objects.equals(sh, dd)) {
-                rereg(context.getScheduler(), doc);
+                register(context.getScheduler(), doc);
                 schedules.put(id, dd);
             }
         }
     }
 
-    private void rereg(Scheduler scheduler, Document doc) {
+    private void register(Scheduler scheduler, Document doc) {
         LOG.info("Update schedule for id={}", doc.getObjectId("_id").toString());
         var info = new SchedulerInfo(scheduler);
         for (JobKey key : info.all()) {

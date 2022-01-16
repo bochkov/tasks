@@ -31,18 +31,18 @@ public final class HdDeleteJob implements Handler {
         Promise<Ids> promise = ctx.parse(Jackson.fromJson(Ids.class));
         promise.then(f -> {
             var schInfo = new SchedulerInfo(scheduler);
-            List<String> jobkeys = f.getAll();
+            List<String> jobKeys = f.getAll();
             Map<String, JsonAnswer> answer = new HashMap<>();
-            for (String jobkey : jobkeys) {
-                JobKey key = schInfo.get(jobkey);
+            for (String jobKey : jobKeys) {
+                JobKey key = schInfo.get(jobKey);
                 if (scheduler.checkExists(key)) {
                     scheduler.deleteJob(key);
-                    db.getCollection("tasks").findOneAndDelete(Filters.eq("_id", new ObjectId(jobkey)));
-                    LOG.info("Successfully delete job with id = {}", new ObjectId(jobkey));
-                    answer.put(jobkey, JsonAnswer.OK);
+                    db.getCollection("tasks").findOneAndDelete(Filters.eq("_id", new ObjectId(jobKey)));
+                    LOG.info("Successfully delete job with id = {}", new ObjectId(jobKey));
+                    answer.put(jobKey, JsonAnswer.OK);
                 } else {
-                    LOG.warn("Cannot find job with jobkey = {}", jobkey);
-                    answer.put(jobkey, JsonAnswer.FAIL);
+                    LOG.warn("Cannot find job with jobKey = {}", jobKey);
+                    answer.put(jobKey, JsonAnswer.FAIL);
                 }
             }
             ctx.render(Jackson.json(answer));

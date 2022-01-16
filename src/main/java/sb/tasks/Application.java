@@ -41,7 +41,7 @@ public final class Application {
         db.getCollection("tasks")
                 .find()
                 .forEach((Consumer<Document>) document -> {
-                    LOG.info("Readed task: {}", document.toJson());
+                    LOG.info("Read task: {}", document.toJson());
                     try {
                         new RegisteredJob(db, scheduler, properties).register(document);
                         LOG.info("Successfully registered task {}", document.toJson());

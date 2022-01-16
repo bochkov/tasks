@@ -26,17 +26,17 @@ public final class HdPerformJob implements Handler {
     public void handle(Context ctx) {
         Promise<Ids> promise = ctx.parse(Ids.class);
         promise.then(f -> {
-            List<String> jobkeys = f.getAll();
+            List<String> jobKeys = f.getAll();
             var schInfo = new SchedulerInfo(scheduler);
             Map<String, JsonAnswer> answers = new HashMap<>();
-            for (String jobkey : jobkeys) {
+            for (String jobKey : jobKeys) {
                 try {
-                    JobKey key = schInfo.get(jobkey);
+                    JobKey key = schInfo.get(jobKey);
                     scheduler.triggerJob(key);
                     LOG.info("Job with key = {} triggered", key);
-                    answers.put(jobkey, JsonAnswer.OK);
+                    answers.put(jobKey, JsonAnswer.OK);
                 } catch (Exception ex) {
-                    answers.put(jobkey, JsonAnswer.FAIL);
+                    answers.put(jobKey, JsonAnswer.FAIL);
                 }
             }
             ctx.render(Jackson.json(answers));
