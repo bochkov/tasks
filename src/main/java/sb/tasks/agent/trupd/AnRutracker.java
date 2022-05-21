@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import sb.tasks.ValidProps;
 import sb.tasks.agent.Agent;
@@ -15,6 +16,7 @@ import sb.tasks.models.metafile.Metafile;
 import sb.tasks.models.metafile.Mt;
 import sb.tasks.service.CurlRutracker;
 
+@Slf4j
 @RequiredArgsConstructor
 public final class AnRutracker implements Agent<TorrentResult> {
 
@@ -42,7 +44,8 @@ public final class AnRutracker implements Agent<TorrentResult> {
         var curl = new CurlRutracker(login, password, properties, userAgent);
         try {
             var file = curl.save(document.getString("num"));
-            Mt mt = new Metafile(Files.readAllBytes(file.toPath()));
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            Mt mt = new Metafile(bytes);
             return Collections.singletonList(
                     new TorrentResult(
                             mt,

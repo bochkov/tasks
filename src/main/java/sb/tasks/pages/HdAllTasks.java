@@ -9,9 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.quartz.Scheduler;
-import ratpack.handling.Context;
-import ratpack.handling.Handler;
-import ratpack.jackson.Jackson;
+import ratpack.core.handling.Context;
+import ratpack.core.handling.Handler;
+import ratpack.core.jackson.Jackson;
 import sb.tasks.system.SchedulerInfo;
 import sb.tasks.system.ThymeTemplate;
 

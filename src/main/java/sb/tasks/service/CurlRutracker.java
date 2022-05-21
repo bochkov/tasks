@@ -57,14 +57,14 @@ public final class CurlRutracker {
             cmd.addAll(Arrays.asList(
                     "/usr/bin/curl",
                     "--cookie", COOKIES,
-                    "--referer", String.format("http://rutracker.org/forum/viewtopic.php?t=%s", num),
+                    "--referer", String.format("https://rutracker.org/forum/viewtopic.php?t=%s", num),
                     "--header", "Content-Type:application/x-www-form-urlencoded",
                     "--header", String.format("t:%s", num),
                     "--data", String.format("t=%s", num),
                     "--output", file.getName()
             ));
             cmd.addAll(Arrays.asList(props.curlExtra().split("\\s+")));
-            cmd.add(String.format("http://rutracker.org/forum/dl.php?t=%s", num));
+            cmd.add(String.format("https://rutracker.org/forum/dl.php?t=%s", num));
             return cmd;
         }
     }
@@ -77,6 +77,7 @@ public final class CurlRutracker {
 
         public Integer value() throws IOException, InterruptedException {
             var cook = new File(workDir, COOKIES);
+            LOG.info("cookie file {}", cook.getAbsolutePath());
             if (Boolean.TRUE.equals(valid.apply(cook))) {
                 return 0;
             } else {
@@ -108,7 +109,7 @@ public final class CurlRutracker {
                     "--cookie-jar", COOKIES
             ));
             cmd.addAll(Arrays.asList(props.curlExtra().split("\\s+")));
-            cmd.add("http://rutracker.org/forum/login.php");
+            cmd.add("https://rutracker.org/forum/login.php");
             return cmd;
         }
     }
