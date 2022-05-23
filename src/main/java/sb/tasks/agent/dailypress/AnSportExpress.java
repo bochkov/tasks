@@ -40,7 +40,8 @@ public final class AnSportExpress implements Agent<MagResult> {
 
     @Override
     public List<MagResult> perform() throws IOException {
-        String dt = Jsoup.connect("https://www.sport-express.ru/newspaper/").get()
+        String dt = Jsoup.connect("https://www.sport-express.ru/newspaper/")
+                .header("Accept-Encoding", "identity").get()
                 .getElementsByClass("se19-new-newspaper__number").first()
                 .text();
         var matcher = DATE_PATTERN.matcher(dt);
