@@ -1,31 +1,21 @@
 package sb.tasks.models.metafile;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import sb.tasks.jobs.trupd.TorrentResultTest;
+import java.io.IOException;
 
-public class MetafileTest {
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-    private Metafile mt;
+class MetafileTest {
 
-    @Before
-    public void setUp() throws Exception {
+    @Test
+    void testMetafileParse() throws IOException {
         byte[] bytes;
-        try (var is = TorrentResultTest.class.getResourceAsStream("/tor.torrent")) {
-            Assert.assertNotNull(is);
+        try (var is = this.getClass().getResourceAsStream("/tor.torrent")) {
+            Assertions.assertThat(is).isNotNull();
             bytes = is.readAllBytes();
         }
-        mt = new Metafile(bytes);
-    }
-
-    @Test
-    public void testName() {
-        Assert.assertEquals("Михайлов В.С. и др. - Растительно-молочно-яичные блюда - 1982.pdf", mt.name());
-    }
-
-    @Test
-    public void testCreationDate() {
-        Assert.assertNotNull(mt.creationDate());
+        Metafile mt = new Metafile(bytes);
+        Assertions.assertThat(mt.name()).isEqualTo("Михайлов В.С. и др. - Растительно-молочно-яичные блюда - 1982.pdf");
+        Assertions.assertThat(mt.creationDate()).isNotNull();
     }
 }

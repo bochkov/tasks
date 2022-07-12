@@ -2,6 +2,7 @@ plugins {
     id 'io.ratpack.ratpack-java' version '2.0.0-rc-1'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
+    id 'idea'
 }
 
 apply plugin: 'java'
@@ -19,21 +20,24 @@ repositories {
 dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.0-alpha7'
     implementation 'ch.qos.logback:logback-classic:1.3.0-alpha16'
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.36'
 
-    implementation('org.quartz-scheduler:quartz:2.3.2')
+    implementation 'org.quartz-scheduler:quartz:2.3.2'
     implementation 'org.mongodb:mongodb-driver:3.12.11'
     // mail
-    implementation ('com.jcabi:jcabi-email:1.12')
+    implementation 'com.jcabi:jcabi-email:1.12'
     implementation 'javax.activation:activation:1.1.1'
     implementation 'com.sun.mail:javax.mail:1.6.2'
     implementation 'javax.mail:mailapi:1.4.3'
     //
-    implementation 'com.konghq:unirest-java:3.13.8'
+    implementation 'com.konghq:unirest-java:3.13.10'
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'org.thymeleaf:thymeleaf:3.0.15.RELEASE'
     implementation 'resnyx:resnyx:4.6.6'
 
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation platform('org.junit:junit-bom:5.8.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.23.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
@@ -47,6 +51,10 @@ clean {
         file("${projectDir}/out").deleteDir()
         file("${projectDir}/logs").deleteDir()
     }
+}
+
+test {
+    useJUnitPlatform()
 }
 
 mainClassName = 'sb.tasks.Application'
