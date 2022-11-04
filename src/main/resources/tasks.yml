@@ -1,0 +1,19 @@
+spring:
+  data:
+    mongodb:
+      host: ${mongo.host}
+      port: ${mongo.port:27017}
+      database: ${mongo.db}
+  mail:
+    host: ${mail.host}
+    port: ${mail.port}
+    username: ${mail.user}
+    password: ${mail.pass}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.enable: true
+  quartz:
+    scheduler-name: TaskScheduler
+server:
+  port: ${http.port}

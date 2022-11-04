@@ -1,0 +1,15 @@
+package sb.tasks.web.model;
+
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
+@Data
+public final class Ids {
+
+    @JsonProperty("id")
+    private List<String> ids;
+
+
+}

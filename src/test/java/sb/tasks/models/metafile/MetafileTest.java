@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import sb.tasks.model.Metafile;
 
 class MetafileTest {
 

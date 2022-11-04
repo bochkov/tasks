@@ -58,7 +58,7 @@ curl.extra-opts = --socks5 user:pass@server:port
 #### Sample record to daily-press
 ```json
 {
-    "job" : "sb.tasks.jobs.dailypress.DailyPress", 
+    "job" : "sb.tasks.jobs.DailyPress", 
     "params" : {
         "mail_to" : ["recipient1", "recipient2"], 
         "subject" : "< Mail subject >", 

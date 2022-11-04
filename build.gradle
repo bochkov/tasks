@@ -1,14 +1,18 @@
 plugins {
-    id 'io.ratpack.ratpack-java' version '2.0.0-rc-1'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'java'
     id 'idea'
 }
 
-apply plugin: 'java'
-
 sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 
 repositories {
     mavenCentral()
@@ -18,43 +22,25 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.slf4j:slf4j-api:2.0.0-alpha7'
-    implementation 'ch.qos.logback:logback-classic:1.3.0-alpha16'
-    runtimeOnly 'org.slf4j:slf4j-simple:1.7.36'
-
-    implementation 'org.quartz-scheduler:quartz:2.3.2'
-    implementation 'org.mongodb:mongodb-driver:3.12.11'
-    // mail
-    implementation 'com.jcabi:jcabi-email:1.12'
-    implementation 'javax.activation:activation:1.1.1'
-    implementation 'com.sun.mail:javax.mail:1.6.2'
-    implementation 'javax.mail:mailapi:1.4.3'
     //
-    implementation 'com.konghq:unirest-java:3.13.10'
-    implementation 'org.jsoup:jsoup:1.14.3'
-    implementation 'org.thymeleaf:thymeleaf:3.0.15.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    //
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
+    implementation 'com.konghq:unirest-java:3.13.12'
+    implementation 'org.jsoup:jsoup:1.15.3'
     implementation 'resnyx:resnyx:4.6.6'
-
-    testImplementation platform('org.junit:junit-bom:5.8.2')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.assertj:assertj-core:3.23.1'
-
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
-
-    testCompileOnly 'org.projectlombok:lombok:1.18.24'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation 'org.jetbrains:annotations:23.0.0'
+    //
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-clean {
-    doLast {
-        file("${projectDir}/out").deleteDir()
-        file("${projectDir}/logs").deleteDir()
-    }
-}
-
-test {
+tasks.named('test') {
     useJUnitPlatform()
 }
-
-mainClassName = 'sb.tasks.Application'

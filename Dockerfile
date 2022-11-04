@@ -10,6 +10,6 @@ WORKDIR /opt
 RUN mkdir media && \
     mkdir torrents && \
     mkdir logs
-ADD build/libs/tasks-all.jar /opt/tasks.jar
+ADD build/libs/tasks.jar /opt/tasks.jar
 EXPOSE 8088
-ENTRYPOINT ["/bin/sh", "-c", "java $JAVA_OPTS -Dfile.encoding=UTF-8 -jar tasks.jar"]
+ENTRYPOINT ["/bin/sh", "-c", "java $JAVA_OPTS -Dfile.encoding=UTF-8 -jar tasks.jar --spring.config.name=tasks"]
