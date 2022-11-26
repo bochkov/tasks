@@ -1,9 +1,9 @@
 package sb.tasks.cfg;
 
 import java.io.File;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;

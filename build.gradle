@@ -1,10 +1,12 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.6'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.0.0'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
     id 'idea'
 }
 
+group = 'sb'
+version = '3.0'
 sourceCompatibility = JavaVersion.VERSION_17
 
 configurations {
@@ -46,4 +48,8 @@ tasks.named('test') {
 
 tasks.named('bootRun') {
     args += ['--spring.config.name=tasks']
+}
+
+tasks.named('bootJar') {
+    archiveFileName = 'tasks.jar'
 }
