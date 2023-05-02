@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.0.4'
+    id 'org.springframework.boot' version '3.0.6'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
     id 'idea'
@@ -32,7 +32,7 @@ dependencies {
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
     implementation 'com.konghq:unirest-java:3.14.2'
-    implementation 'org.jsoup:jsoup:1.15.4'
+    implementation 'org.jsoup:jsoup:1.16.1'
     implementation 'resnyx:resnyx:4.6.6'
     implementation 'org.jetbrains:annotations:24.0.1'
     //
