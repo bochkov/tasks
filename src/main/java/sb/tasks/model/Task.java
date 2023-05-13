@@ -58,8 +58,6 @@ public final class Task {
         @Field(name = "mail_to")
         private String[] mailTo;
         @Field
-        private String num;
-        @Field
         private String subject;
         @Field
         private String telegram;
@@ -76,21 +74,15 @@ public final class Task {
     private boolean registered;
 
     public static Task defaultTask(String url, String dir, Long chatId) {
-        boolean isNum = url.matches("\\d+");
         Task task = new Task();
         task.job = Trupd.class.getCanonicalName();
         task.params = new Params();
-        if (isNum)
-            task.params.num = url;
-        else
-            task.params.url = url;
+        task.params.url = url;
         task.params.downloadDir = dir;
         task.params.telegram = String.valueOf(chatId);
         task.vars = new Vars();
         task.vars.name = "NOT EVALUATED";
-        task.schedules = isNum ?
-                new String[]{"0 0 0/4 * * ?"} :
-                new String[]{"0 0 * * * ?"};
+        task.schedules = new String[]{"0 0 * * * ?"};
         LOG.info("Added task {}, {{}, dir={}, telegram={}", task.job, url, dir, chatId);
         return task;
     }

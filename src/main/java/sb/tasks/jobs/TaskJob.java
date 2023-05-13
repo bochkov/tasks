@@ -2,7 +2,6 @@ package sb.tasks.jobs;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.Supplier;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -39,7 +38,7 @@ public abstract class TaskJob implements Job {
         try {
             log().info("Execution plan = {}", services());
             Agent agent = agentResolver().resolve(task);
-            log().info("Choosed agent '{}' for url={}, num={}", agent, task.getParams().getUrl(), task.getParams().getNum());
+            log().info("Choosed agent '{}' for url={}", agent, task.getParams().getUrl());
             Iterable<TaskResult> result = agent.perform(task);
             for (JobService<TaskResult> service : services()) {
                 service.process(task, result);
