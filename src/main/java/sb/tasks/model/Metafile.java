@@ -26,7 +26,7 @@ public final class Metafile extends Bencode {
     }
 
     public LocalDateTime creationDate() {
-        long dt = (Long) rootElement.get(key("creation date")) * 1000;
+        long dt = (Long) rootElement.get(key("creation date"));
         return LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(dt),
                 ZoneId.systemDefault()
