@@ -9,7 +9,7 @@ import sb.tasks.repo.TaskRepo;
 
 @Slf4j
 @Service
-@Order(1)
+@Order(2)
 @RequiredArgsConstructor
 public final class JobUpdateSet<T extends TaskResult> implements JobService<T> {
 

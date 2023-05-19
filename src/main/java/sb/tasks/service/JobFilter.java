@@ -10,7 +10,7 @@ import sb.tasks.model.Task;
 
 @Slf4j
 @Service
-@Order(2)
+@Order(1)
 public final class JobFilter implements JobService<TaskResult> {
 
     @Override
