@@ -1,6 +1,5 @@
 package sb.tasks.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import jakarta.annotation.PostConstruct;
@@ -29,7 +28,7 @@ public final class JobNotify<T extends TaskResult> implements JobService<T> {
         for (Notification<T> notif : notifications) {
             try {
                 notif.send(task, result);
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 LOG.warn(ex.getMessage(), ex);
             }
         }

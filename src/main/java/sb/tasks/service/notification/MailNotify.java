@@ -23,6 +23,8 @@ public final class MailNotify<T extends TaskResult> implements Notification<T> {
 
     @Override
     public void send(Task task, Iterable<T> objects) throws IOException {
+        if (task.getParams().getMailTo() == null || task.getParams().getMailTo().length == 0)
+            return;
         String subject = task.getParams().getSubject();
         for (TaskResult obj : objects) {
             for (String to : task.getParams().getMailTo()) {
