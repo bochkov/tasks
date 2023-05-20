@@ -38,6 +38,7 @@ public final class RuTracker implements Agent {
         String num = getNum(task);
         try {
             var file = curl.save(num);
+            LOG.info("file saved as '{}'", file.getAbsolutePath());
             byte[] bytes = Files.readAllBytes(file.toPath());
             Metafile mt = new Metafile(bytes);
             return toIterable(

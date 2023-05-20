@@ -1,6 +1,8 @@
 package sb.tasks.service.trupd;
 
-import java.io.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -10,11 +12,12 @@ import lombok.ToString;
 import org.springframework.data.util.Pair;
 import sb.tasks.model.Metafile;
 import sb.tasks.model.Task;
+import sb.tasks.service.TaskResult;
 
 @ToString(of = {"title", "url", "downloadUrl"})
 @Getter
 @RequiredArgsConstructor
-public final class TrResult implements TrTaskResult {
+public final class TrResult implements TaskResult {
 
     private final Metafile metafile;
     private final String title;
@@ -36,7 +39,7 @@ public final class TrResult implements TrTaskResult {
 
     @Override
     public boolean isUpdated(Task task) {
-        LocalDateTime dt = task.getVars().getCreated();
+        LocalDateTime dt = task.getVars().getChecked();
         return dt == null || this.metafile.creationDate().isAfter(dt);
     }
 
@@ -64,13 +67,6 @@ public final class TrResult implements TrTaskResult {
                         Map.entry("tech", trace.toString())
                 )
         );
-    }
-
-    @Override
-    public void saveTo(String directory) throws IOException {
-        try (var out = new FileOutputStream(new File(directory, outFile.getName()))) {
-            out.write(metafile.body());
-        }
     }
 
     public String name() {

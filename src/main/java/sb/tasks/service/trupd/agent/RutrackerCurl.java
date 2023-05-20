@@ -20,7 +20,7 @@ import sb.tasks.repo.PropertyRepo;
 @RequiredArgsConstructor
 public final class RutrackerCurl {
 
-    private static final String NAME = "[rutracker.org].t%s.torrent";
+    private static final String NAME = "rutracker.org.t%s.torrent";
     private static final String COOKIES = "cookies.txt";
 
     @Value("${curl.extra-opts}")

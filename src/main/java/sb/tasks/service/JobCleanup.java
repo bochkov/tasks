@@ -18,7 +18,7 @@ public final class JobCleanup<T extends TaskResult> implements JobService<T> {
         for (TaskResult res : result) {
             try {
                 Files.delete(res.file().toPath());
-                LOG.info("cleaned {}", res);
+                LOG.info("cleaned '{}'", res.file().toPath());
             } catch (IOException ex) {
                 LOG.warn(ex.getMessage(), ex);
             }
