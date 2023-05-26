@@ -25,9 +25,14 @@ public final class TrResult implements TaskResult {
     private final File outFile;
     private final String url;
 
+    private LocalDateTime oldCreated;
+
     @Override
     public void updateSets(Task task) {
         Task.Vars vars = task.getVars();
+
+        oldCreated = vars.getCreated();
+
         vars.setDownloadUrl(downloadUrl);
         vars.setName(title);
         vars.setCreated(metafile.creationDate());
@@ -39,8 +44,7 @@ public final class TrResult implements TaskResult {
 
     @Override
     public boolean isUpdated(Task task) {
-        LocalDateTime dt = task.getVars().getChecked();
-        return dt == null || this.metafile.creationDate().isAfter(dt);
+        return oldCreated == null || this.metafile.creationDate().isAfter(oldCreated);
     }
 
     @Override
