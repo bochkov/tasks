@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.1.0'
+    id 'org.springframework.boot' version '3.1.1'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
     id 'idea'
@@ -7,12 +7,15 @@ plugins {
 
 group = 'sb'
 version = '3.0'
-sourceCompatibility = JavaVersion.VERSION_17
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -31,7 +34,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
-    implementation 'com.konghq:unirest-java:3.14.2'
+    implementation platform('com.konghq:unirest-java-bom:4.0.3')
+    implementation 'com.konghq:unirest-java-core'
     implementation 'org.jsoup:jsoup:1.16.1'
     implementation 'resnyx:resnyx:4.6.6'
     implementation 'org.jetbrains:annotations:24.0.1'
