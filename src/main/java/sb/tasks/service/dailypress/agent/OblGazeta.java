@@ -22,11 +22,11 @@ import sb.tasks.service.dailypress.DpResult;
 public final class OblGazeta implements Agent {
 
     @Language("RegExp")
-    public static final String RULE = "^https?://www.oblgazeta.ru/$";
+    public static final String RULE = "^https?://old.oblgazeta.ru/$";
 
     @Override
     public Iterable<TaskResult> perform(Task task) {
-        String source = Unirest.get("https://oblgazeta.ru/")
+        String source = Unirest.get("https://old.oblgazeta.ru/")
                 .header("Accept-Encoding", "deflate")
                 .asString()
                 .getBody();
@@ -34,14 +34,14 @@ public final class OblGazeta implements Agent {
                 .getElementsByAttributeValue("title", "Свежий номер")
                 .get(0).attr("href");
 
-        String paperSource = Unirest.get(String.format("https://oblgazeta.ru%s", newPaper))
+        String paperSource = Unirest.get(String.format("https://old.oblgazeta.ru%s", newPaper))
                 .header("Accept-Encoding", "deflate")
                 .asString()
                 .getBody();
         String pdfUrl = Jsoup.parse(paperSource)
                 .getElementsByClass("download_btn-doc").get(0)
                 .attr("href");
-        var url = String.format("https://www.oblgazeta.ru%s", pdfUrl);
+        var url = String.format("https://old.oblgazeta.ru%s", pdfUrl);
         LOG.info("Checking link: {}", url);
         var out = new File(
                 Property.TMP_DIR,
