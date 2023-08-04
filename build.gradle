@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.2'
     id 'java'
     id 'idea'
+    id 'com.github.ben-manes.versions' version '0.47.0'
 }
 
 group = 'sb'
@@ -16,6 +17,7 @@ configurations {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -34,7 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
-    implementation platform('com.konghq:unirest-java-bom:4.0.3')
+    implementation platform('com.konghq:unirest-java-bom:4.0.4')
     implementation 'com.konghq:unirest-java-core'
     implementation 'org.jsoup:jsoup:1.16.1'
     implementation 'resnyx:resnyx:4.6.6'

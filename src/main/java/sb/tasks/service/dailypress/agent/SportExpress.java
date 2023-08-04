@@ -29,21 +29,22 @@ public final class SportExpress implements Agent {
     @Language("RegExp")
     public static final String RULE = "^https?://www.sport-express.ru/$";
 
-    private static final Pattern DATE_PATTERN = Pattern.compile(".*\\(№\\s+(\\d+)\\)");
+    private static final Pattern DATE_PATTERN = Pattern.compile("№\\s*\\d+\\s*\\((?<number>\\d+)\\)");
 
     private final PropertyRepo props;
 
     @Override
     public Iterable<TaskResult> perform(Task task) throws IOException {
+        // Газета Спорт-Экспресс № 143 (8983) от 4 августа 2023 года
         String dt = Jsoup.connect("https://www.sport-express.ru/newspaper/")
                 .header("Accept-Encoding", "identity").get()
-                .getElementsByClass("se19-new-newspaper__number").get(0)
+                .getElementsByClass("se19-newspaper-header__textblock").get(0)
                 .text();
         var matcher = DATE_PATTERN.matcher(dt);
         if (!matcher.find()) {
             throw new IOException("date not parsed: " + dt);
         }
-        String no = matcher.group(1);
+        String no = matcher.group("number");
         LOG.info("Checking date: {}, # {}", dt, no);
         var out = new File(
                 Property.TMP_DIR,
