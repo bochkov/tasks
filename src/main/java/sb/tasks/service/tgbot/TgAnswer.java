@@ -8,8 +8,9 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import resnyx.model.MessageEntity;
-import resnyx.model.Update;
+import resnyx.messenger.general.MessageEntity;
+import resnyx.messenger.general.MessageEntityType;
+import resnyx.updates.Update;
 import sb.tasks.model.Property;
 import sb.tasks.repo.PropertyRepo;
 import sb.tasks.service.tgbot.answer.BotCmd;
@@ -28,7 +29,7 @@ public final class TgAnswer {
     public void process(String token, Update upd) {
         var tgBot = new TgBot(token);
         for (MessageEntity entity : upd.getMessage().getEntities()) {
-            if ("bot_command".equals(entity.getType())) {
+            if (MessageEntityType.BOT_COMMAND.equals(entity.getType())) {
                 Long chatId = upd.getMessage().getChat().getId();
                 String[] cmd = upd.getMessage().getText().split(" ");
                 String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);

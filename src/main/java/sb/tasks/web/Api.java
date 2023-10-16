@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import resnyx.model.Update;
+import resnyx.updates.Update;
 import sb.tasks.model.Property;
 import sb.tasks.model.Task;
 import sb.tasks.repo.PropertyRepo;
