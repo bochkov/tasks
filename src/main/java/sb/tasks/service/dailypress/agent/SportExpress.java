@@ -38,7 +38,7 @@ public final class SportExpress implements Agent {
         // Газета Спорт-Экспресс № 143 (8983) от 4 августа 2023 года
         String dt = Jsoup.connect("https://www.sport-express.ru/newspaper/")
                 .header("Accept-Encoding", "identity").get()
-                .getElementsByClass("se19-newspaper-header__textblock").get(0)
+                .getElementsByClass("se19-title").get(0)
                 .text();
         var matcher = DATE_PATTERN.matcher(dt);
         if (!matcher.find()) {
