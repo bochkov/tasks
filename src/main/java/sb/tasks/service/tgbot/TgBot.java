@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import resnyx.TgMethod;
 import resnyx.common.ParseMode;
+import resnyx.messenger.general.LinkPreviewOptions;
 import resnyx.messenger.general.SendMessage;
 import resnyx.util.TgObjectMapperConfig;
 
@@ -45,7 +46,9 @@ public final class TgBot {
     public void send(Long chatId, String text) {
         SendMessage msg = new SendMessage(String.valueOf(chatId), text);
         msg.setParseMode(ParseMode.HTML);
-        msg.setDisableWebPagePreview(true);
+        LinkPreviewOptions opts = new LinkPreviewOptions();
+        opts.setIsDisabled(Boolean.TRUE);
+        msg.setLinkPreviewOptions(opts);
         try {
             send(msg);
         } catch (Exception ex) {
