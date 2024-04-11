@@ -1,12 +1,14 @@
-package sb.tasks.service;
-
-import java.io.IOException;
-import java.util.Iterator;
+package sb.tasks.service.jobs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import sb.tasks.model.Task;
+import sb.tasks.service.TaskResult;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 
 @Slf4j
 @Service
@@ -14,7 +16,9 @@ import sb.tasks.model.Task;
 public final class JobFilter implements JobService<TaskResult> {
 
     @Override
-    public void process(Task task, Iterable<TaskResult> result) throws IOException {
+    public void process(Task task, Collection<TaskResult> result) throws IOException {
+
+
         Iterator<TaskResult> it = result.iterator();
         while (it.hasNext()) {
             TaskResult obj = it.next();

@@ -1,12 +1,10 @@
 package sb.tasks.service.tgbot;
 
-import java.util.Map;
-
 import kong.unirest.core.ContentType;
 import kong.unirest.core.HttpRequestWithBody;
 import kong.unirest.core.Unirest;
 import kong.unirest.core.UnirestInstance;
-import kong.unirest.jackson.JacksonObjectMapper;
+import kong.unirest.modules.jackson.JacksonObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import resnyx.TgMethod;
@@ -14,6 +12,8 @@ import resnyx.common.ParseMode;
 import resnyx.messenger.general.LinkPreviewOptions;
 import resnyx.messenger.general.SendMessage;
 import resnyx.util.TgObjectMapperConfig;
+
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -1,12 +1,6 @@
 package sb.tasks.web;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +16,10 @@ import sb.tasks.service.tgbot.TgAnswer;
 import sb.tasks.web.model.Ids;
 import sb.tasks.web.model.JsonAnswer;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -31,8 +29,6 @@ public final class Api {
     private TaskRepo tasks;
     @Autowired
     private PropertyRepo properties;
-    @Autowired
-    private Scheduler scheduler;
     @Autowired
     private SchedulerInfo schedulerInfo;
     @Autowired
@@ -58,9 +54,8 @@ public final class Api {
         Map<String, JsonAnswer> answer = new HashMap<>();
         for (String id : ids.getIds()) {
             try {
-                JobKey key = schedulerInfo.get(id);
-                scheduler.triggerJob(key);
-                LOG.info("Job with key = {} triggered", key);
+                schedulerInfo.triggerJob(id);
+                LOG.info("Job with key = {} triggered", id);
                 answer.put(id, JsonAnswer.OK);
             } catch (Exception ex) {
                 answer.put(id, JsonAnswer.FAIL);
@@ -74,9 +69,8 @@ public final class Api {
         Map<String, JsonAnswer> answer = new HashMap<>();
         for (String id : ids.getIds()) {
             try {
-                JobKey key = schedulerInfo.get(id);
-                if (scheduler.checkExists(key)) {
-                    scheduler.deleteJob(key);
+                boolean drop = schedulerInfo.dropJob(id);
+                if (drop) {
                     tasks.deleteById(id);
                     LOG.info("Successfully delete job with id = {}", id);
                     answer.put(id, JsonAnswer.OK);

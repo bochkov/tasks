@@ -1,12 +1,14 @@
-package sb.tasks.service;
-
-import java.io.IOException;
-import java.nio.file.Files;
+package sb.tasks.service.jobs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import sb.tasks.model.Task;
+import sb.tasks.service.TaskResult;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Collection;
 
 @Slf4j
 @Service
@@ -14,7 +16,7 @@ import sb.tasks.model.Task;
 public final class JobCleanup<T extends TaskResult> implements JobService<T> {
 
     @Override
-    public void process(Task task, Iterable<T> result) {
+    public void process(Task task, Collection<T> result) {
         for (TaskResult res : result) {
             try {
                 Files.delete(res.file().toPath());

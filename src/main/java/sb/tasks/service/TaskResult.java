@@ -1,10 +1,10 @@
 package sb.tasks.service;
 
-import java.io.File;
-import java.util.Map;
-
 import org.springframework.data.util.Pair;
 import sb.tasks.model.Task;
+
+import java.io.File;
+import java.util.Map;
 
 public interface TaskResult {
 

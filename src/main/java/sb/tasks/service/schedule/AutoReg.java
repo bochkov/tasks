@@ -1,8 +1,8 @@
 package sb.tasks.service.schedule;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,18 +14,16 @@ import sb.tasks.service.TaskRegistry;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public final class AutoReg implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
-    private TaskRepo tasks;
-    @Autowired
-    private SchedulerInfo schedulerInfo;
-    @Autowired
-    private TaskRegistry taskRegistry;
+    private final TaskRepo tasks;
+    private final TaskRegistry taskRegistry;
+    private final SchedulerInfo schedulerInfo;
 
     @Override
     public void onApplicationEvent(@NotNull ApplicationReadyEvent event) {
-        LOG.info("Service started");
+        LOG.info("AutoReg service started");
     }
 
     @Scheduled(cron = "0 */10 * * * ?")

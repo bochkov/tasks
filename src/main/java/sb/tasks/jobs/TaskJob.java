@@ -1,8 +1,5 @@
 package sb.tasks.jobs;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -12,13 +9,18 @@ import sb.tasks.model.Task;
 import sb.tasks.repo.TaskRepo;
 import sb.tasks.service.Agent;
 import sb.tasks.service.AgentResolver;
-import sb.tasks.service.JobService;
+import sb.tasks.service.jobs.JobService;
 import sb.tasks.service.TaskResult;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public abstract class TaskJob implements Job {
 
     @Autowired
-    private TaskRepo taskRepo;
+    private TaskRepo tasks;
 
     protected abstract Logger log();
 
@@ -28,8 +30,8 @@ public abstract class TaskJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        Task taskInJob = (Task) context.getMergedJobDataMap().get("task");
-        Task task = taskRepo.findById(taskInJob.getId()).orElseThrow();
+        String key = context.getJobDetail().getKey().getName();
+        Task task = tasks.findById(key).orElseThrow();
         log().info("Start {}", task);
         if (task.getParams() == null)
             throw new NoSuchElementException("params in task not defined");
@@ -38,8 +40,8 @@ public abstract class TaskJob implements Job {
         try {
             log().info("Execution plan = {}", services());
             Agent agent = agentResolver().resolve(task);
-            log().info("Choosed agent '{}' for url={}", agent, task.getParams().getUrl());
-            Iterable<TaskResult> result = agent.perform(task);
+            log().info("Choose agent '{}' for url={}", agent, task.getParams().getUrl());
+            Collection<TaskResult> result = agent.perform(task);
             for (JobService<TaskResult> service : services()) {
                 service.process(task, result);
             }

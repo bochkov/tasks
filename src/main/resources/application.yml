@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: file:tasks.properties
   data:
     mongodb:
       host: ${mongo.host}

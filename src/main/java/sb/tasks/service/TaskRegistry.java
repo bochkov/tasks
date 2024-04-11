@@ -1,11 +1,9 @@
 package sb.tasks.service;
 
-import java.util.Map;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.quartz.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
@@ -13,16 +11,16 @@ import sb.tasks.model.Property;
 import sb.tasks.model.Task;
 import sb.tasks.repo.TaskRepo;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public final class TaskRegistry implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
-    private TaskRepo tasks;
-    @Autowired
-    private Scheduler scheduler;
-    @Autowired
-    private SchedulerInfo schedInfo;
+    private final TaskRepo tasks;
+    private final SchedulerInfo scheduler;
 
     @Override
     public void onApplicationEvent(@NotNull ApplicationReadyEvent event) {
@@ -36,32 +34,39 @@ public final class TaskRegistry implements ApplicationListener<ApplicationReadyE
                 LOG.warn(ex.getMessage(), ex);
             }
         }
-        LOG.info("{}", schedInfo.all());
     }
 
-    public JobKey register(Task task) throws ClassNotFoundException, SchedulerException {
-        var jobKey = new JobKey(task.getId(), Property.JOBKEY_GROUP);
+    public void register(Task task) throws ClassNotFoundException, SchedulerException {
+        JobKey jobKey = new JobKey(task.getId(), Property.JOBKEY_GROUP);
         Class<? extends Job> jobClass = Class.forName(task.getJob()).asSubclass(Job.class);
-        JobDataMap data = new JobDataMap(Map.of("task", task));
         JobDetail job = JobBuilder.newJob(jobClass)
                 .withIdentity(jobKey)
-                .setJobData(data)
                 .storeDurably()
                 .build();
-        var priority = 1;
+        int priority = 1;
+        Set<Trigger> triggers = new HashSet<>();
         for (String schedule : task.getSchedules()) {
-            Trigger trigger = TriggerBuilder.newTrigger()
-                    .startNow()
-                    .withIdentity(String.format("trigger%d", priority), task.getId())
-                    .withPriority(priority++)
-                    .withSchedule(CronScheduleBuilder.cronSchedule(schedule))
-                    .forJob(job)
-                    .build();
-            if (scheduler.checkExists(jobKey))
-                scheduler.scheduleJob(trigger);
-            else
-                scheduler.scheduleJob(job, trigger);
+            triggers.add(
+                    TriggerBuilder.newTrigger()
+                            .startNow()
+                            .withIdentity(String.format("trigger%d", priority), task.getId())
+                            .withPriority(priority++)
+                            .withSchedule(CronScheduleBuilder.cronSchedule(schedule))
+                            .forJob(job)
+                            .build()
+            );
         }
-        return jobKey;
+        scheduler.schedule(job, triggers);
+    }
+
+    public void update(Task task) {
+        LOG.info("Update schedule for id={}", task.getId());
+        try {
+            scheduler.dropJob(task.getId());
+            register(task);
+            LOG.info("Successfully register job for task = {}", task);
+        } catch (Exception ex) {
+            LOG.warn("Cannot register job", ex);
+        }
     }
 }

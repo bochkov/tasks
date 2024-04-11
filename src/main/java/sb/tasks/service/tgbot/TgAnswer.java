@@ -1,10 +1,5 @@
 package sb.tasks.service.tgbot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +13,11 @@ import sb.tasks.service.tgbot.answer.Cmd;
 import sb.tasks.service.tgbot.answer.NoEmptyArgs;
 import sb.tasks.service.tgbot.answer.RequireAdmin;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public final class TgAnswer {
     private final List<BotCmd> botCmds;
 
     public void process(String token, Update upd) {
-        var tgBot = new TgBot(token);
+        TgBot tgBot = new TgBot(token);
         for (MessageEntity entity : upd.getMessage().getEntities()) {
             if (MessageEntityType.BOT_COMMAND.equals(entity.getType())) {
                 Long chatId = upd.getMessage().getChat().getId();

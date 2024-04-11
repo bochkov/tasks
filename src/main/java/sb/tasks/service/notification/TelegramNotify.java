@@ -1,7 +1,5 @@
 package sb.tasks.service.notification;
 
-import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,6 +9,9 @@ import sb.tasks.repo.PropertyRepo;
 import sb.tasks.service.TaskResult;
 import sb.tasks.service.tgbot.TgBot;
 
+import java.util.Collection;
+import java.util.Optional;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -19,10 +20,10 @@ public final class TelegramNotify<T extends TaskResult> implements Notification<
     private final PropertyRepo props;
 
     @Override
-    public void send(Task task, Iterable<T> objects) {
+    public void send(Task task, Collection<T> objects) {
         Optional<Property> token = props.findById(Property.TELEGRAM_TOKEN_KEY);
         if (token.isPresent()) {
-            var bot = new TgBot(token.get().getValue());
+            TgBot bot = new TgBot(token.get().getValue());
             String chatId = task.getParams().getTelegram();
             String adminChatId = task.getParams().getAdminTelegram();
             for (TaskResult obj : objects) {

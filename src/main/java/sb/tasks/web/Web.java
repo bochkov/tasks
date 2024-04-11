@@ -1,8 +1,6 @@
 package sb.tasks.web;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +8,14 @@ import sb.tasks.model.Task;
 import sb.tasks.repo.TaskRepo;
 import sb.tasks.service.SchedulerInfo;
 
+import java.util.List;
+
 @Controller
+@RequiredArgsConstructor
 public final class Web {
 
-    @Autowired
-    private TaskRepo tasks;
-    @Autowired
-    private SchedulerInfo schedulerInfo;
+    private final TaskRepo tasks;
+    private final SchedulerInfo schedulerInfo;
 
     @GetMapping("/")
     public String index(Model model) {

@@ -1,7 +1,5 @@
 package sb.tasks.service.dailypress;
 
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -10,12 +8,14 @@ import sb.tasks.service.Agent;
 import sb.tasks.service.AgentResolver;
 import sb.tasks.service.AgentRule;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public final class DpAgentResolver implements AgentResolver {
 
-    private final List<Agent> agents;
+    private final List<DpAgent> agents;
 
     @Override
     public Agent resolve(Task task) {

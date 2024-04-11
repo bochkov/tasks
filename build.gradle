@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.2.3'
+    id 'org.springframework.boot' version '3.2.4'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
     id 'idea'
@@ -36,9 +36,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
-    implementation platform('com.konghq:unirest-java-bom:4.2.9')
+    implementation platform('com.konghq:unirest-java-bom:4.3.1')
     implementation 'com.konghq:unirest-java-core'
-    implementation 'com.konghq:unirest-objectmapper-jackson'
+    implementation 'com.konghq:unirest-modules-jackson'
     implementation 'org.jsoup:jsoup:1.17.2'
     implementation 'resnyx:resnyx:7.1.1'
     implementation 'org.jetbrains:annotations:24.1.0'

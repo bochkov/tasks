@@ -1,7 +1,5 @@
 package sb.tasks.model;
 
-import java.time.LocalDateTime;
-
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +8,8 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import sb.tasks.jobs.Trupd;
+
+import java.time.LocalDateTime;
 
 @Slf4j
 @Data

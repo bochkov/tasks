@@ -1,14 +1,14 @@
-package sb.tasks.service.trupd.agent;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
+package sb.tasks.service.trupd;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -26,8 +26,8 @@ public final class RutorCurl {
         Process pp = new ProcessBuilder(cmd)
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
                 .start();
-        var res = new StringBuilder();
-        try (var reader = new BufferedReader(new InputStreamReader(pp.getInputStream()))) {
+        StringBuilder res = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(pp.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null)
                 res.append(line).append("\n");

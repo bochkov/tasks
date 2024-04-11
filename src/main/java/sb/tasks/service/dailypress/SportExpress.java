@@ -1,10 +1,4 @@
-package sb.tasks.service.dailypress.agent;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.regex.Pattern;
+package sb.tasks.service.dailypress;
 
 import kong.unirest.core.Unirest;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +9,23 @@ import org.springframework.stereotype.Component;
 import sb.tasks.model.Property;
 import sb.tasks.model.Task;
 import sb.tasks.repo.PropertyRepo;
-import sb.tasks.service.Agent;
 import sb.tasks.service.AgentRule;
 import sb.tasks.service.TaskResult;
-import sb.tasks.service.dailypress.DpResult;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Component
 @AgentRule(SportExpress.RULE)
 @RequiredArgsConstructor
-public final class SportExpress implements Agent {
+public final class SportExpress implements DpAgent {
 
     @Language("RegExp")
     public static final String RULE = "^https?://www.sport-express.ru/$";
@@ -34,19 +35,19 @@ public final class SportExpress implements Agent {
     private final PropertyRepo props;
 
     @Override
-    public Iterable<TaskResult> perform(Task task) throws IOException {
+    public Collection<TaskResult> perform(Task task) throws IOException {
         // Газета Спорт-Экспресс № 143 (8983) от 4 августа 2023 года
         String dt = Jsoup.connect("https://www.sport-express.ru/newspaper/")
                 .header("Accept-Encoding", "identity").get()
                 .getElementsByClass("se19-title").get(0)
                 .text();
-        var matcher = DATE_PATTERN.matcher(dt);
+        Matcher matcher = DATE_PATTERN.matcher(dt);
         if (!matcher.find()) {
             throw new IOException("date not parsed: " + dt);
         }
         String no = matcher.group("number");
         LOG.info("Checking date: {}, # {}", dt, no);
-        var out = new File(
+        File out = new File(
                 Property.TMP_DIR,
                 String.format("se%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
@@ -64,9 +65,10 @@ public final class SportExpress implements Agent {
                     .header("User-Agent", userAgent)
                     .asFile(out.getPath())
                     .getBody();
-        } else
+        } else {
             LOG.info("File in {} already downloaded. Cancelling", no);
-        return toIterable(
+        }
+        return Collections.singletonList(
                 new DpResult(out, no, task.getParams().getText())
         );
     }

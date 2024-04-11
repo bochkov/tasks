@@ -1,11 +1,5 @@
 package sb.tasks.service.trupd;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.time.LocalDateTime;
-import java.util.Map;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -13,6 +7,12 @@ import org.springframework.data.util.Pair;
 import sb.tasks.model.Metafile;
 import sb.tasks.model.Task;
 import sb.tasks.service.TaskResult;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 @ToString(of = {"title", "url", "downloadUrl"})
 @Getter
@@ -55,17 +55,17 @@ public final class TrResult implements TaskResult {
     @Override
     public Pair<String, Map<String, Object>> mailText() {
         return Pair.of(
-                "notif/tr_mail",
+                "notification/tr_mail",
                 Map.of("t", this)
         );
     }
 
     @Override
     public Pair<String, Map<String, Object>> mailText(Throwable th) {
-        var trace = new StringWriter();
+        StringWriter trace = new StringWriter();
         th.printStackTrace(new PrintWriter(trace));
         return Pair.of(
-                "notif/tr_mail_fail",
+                "notification/tr_mail_fail",
                 Map.ofEntries(
                         Map.entry("t", this),
                         Map.entry("tech", trace.toString())
@@ -87,7 +87,7 @@ public final class TrResult implements TaskResult {
 
     @Override
     public String telegramText() {
-        var str = new StringBuilder("Обновлена раздача <i>" + title + "</i>");
+        StringBuilder str = new StringBuilder("Обновлена раздача <i>" + title + "</i>");
         if (!url().isEmpty())
             str.append("\n\n").append(url());
         return str.toString();

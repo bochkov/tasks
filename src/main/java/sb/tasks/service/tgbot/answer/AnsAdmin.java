@@ -1,14 +1,14 @@
 package sb.tasks.service.tgbot.answer;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import sb.tasks.model.Property;
 import sb.tasks.repo.PropertyRepo;
 import sb.tasks.service.tgbot.TgBot;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Cmd("/admin")
 @RequireAdmin

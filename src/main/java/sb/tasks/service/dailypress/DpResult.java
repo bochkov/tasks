@@ -1,5 +1,12 @@
 package sb.tasks.service.dailypress;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.springframework.data.util.Pair;
+import sb.tasks.model.Task;
+import sb.tasks.service.TaskResult;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -7,13 +14,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import org.springframework.data.util.Pair;
-import sb.tasks.model.Task;
-import sb.tasks.service.TaskResult;
 
 @ToString
 @Getter
@@ -42,17 +42,17 @@ public final class DpResult implements TaskResult {
     @Override
     public Pair<String, Map<String, Object>> mailText() {
         return Pair.of(
-                "notif/mg_mail",
+                "notifications/mg_mail",
                 Map.of("t", this)
         );
     }
 
     @Override
     public Pair<String, Map<String, Object>> mailText(Throwable th) {
-        var trace = new StringWriter();
+        StringWriter trace = new StringWriter();
         th.printStackTrace(new PrintWriter(trace));
         return Pair.of(
-                "notif/mg_mail_fail",
+                "notifications/mg_mail_fail",
                 Map.ofEntries(
                         Map.entry("t", this),
                         Map.entry("tech", trace.toString())

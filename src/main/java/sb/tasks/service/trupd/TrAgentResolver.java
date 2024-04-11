@@ -1,8 +1,5 @@
 package sb.tasks.service.trupd;
 
-import java.util.List;
-import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,13 +10,16 @@ import sb.tasks.service.Agent;
 import sb.tasks.service.AgentResolver;
 import sb.tasks.service.AgentRule;
 
+import java.util.List;
+import java.util.Optional;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public final class TrAgentResolver implements AgentResolver {
 
     private final PropertyRepo props;
-    private final List<Agent> agents;
+    private final List<TrAgent> agents;
 
     public Agent resolve(Task task) {
         Task.Params params = task.getParams();

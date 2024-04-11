@@ -1,7 +1,5 @@
 package sb.tasks.jobs;
 
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -9,8 +7,10 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import sb.tasks.service.AgentResolver;
-import sb.tasks.service.JobService;
+import sb.tasks.service.jobs.JobService;
 import sb.tasks.service.TaskResult;
+
+import java.util.List;
 
 @Slf4j
 @Component

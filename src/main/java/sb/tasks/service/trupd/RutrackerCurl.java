@@ -1,4 +1,11 @@
-package sb.tasks.service.trupd.agent;
+package sb.tasks.service.trupd;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import sb.tasks.model.Property;
+import sb.tasks.repo.PropertyRepo;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,13 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import sb.tasks.model.Property;
-import sb.tasks.repo.PropertyRepo;
 
 @Slf4j
 @Component
@@ -29,7 +29,7 @@ public final class RutrackerCurl {
     private final PropertyRepo props;
 
     public File save(String num) throws IOException, InterruptedException {
-        var workDir = new File(Property.TMP_DIR);
+        File workDir = new File(Property.TMP_DIR);
         return new FetchFile(
                 workDir,
                 num,
@@ -46,7 +46,7 @@ public final class RutrackerCurl {
 
         public File value() throws IOException, InterruptedException {
             this.fetchCookies.value();
-            var file = new File(workDir, String.format(NAME, num));
+            File file = new File(workDir, String.format(NAME, num));
             new ProcessBuilder(downloadCmd(num, file))
                     .directory(workDir)
                     .start()
@@ -80,7 +80,7 @@ public final class RutrackerCurl {
         private final Function<File, Boolean> valid;
 
         public void value() throws IOException, InterruptedException {
-            var cook = new File(workDir, COOKIES);
+            File cook = new File(workDir, COOKIES);
             LOG.info("cookie file {}", cook.getAbsolutePath());
             if (Boolean.TRUE.equals(valid.apply(cook))) {
                 return;
@@ -90,7 +90,7 @@ public final class RutrackerCurl {
                         .start()
                         .waitFor();
                 LOG.info("Cookies fetch code {}", res);
-                var lp = new File(workDir, "login.php");
+                File lp = new File(workDir, "login.php");
                 if (lp.exists())
                     Files.delete(lp.toPath());
                 if (cook.exists() && cook.length() > 0)

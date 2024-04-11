@@ -1,13 +1,14 @@
 package sb.tasks.util;
 
-import java.io.File;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import sb.tasks.model.Property;
+
+import java.io.File;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,16 +20,16 @@ public final class Filename {
     private final Map<String, String> headers;
 
     public File toFile() {
-        var filename = String.format("%d", COUNT.incrementAndGet());
+        String filename = String.format("%d", COUNT.incrementAndGet());
         if (torrentUrl.endsWith(".torrent"))
             filename = torrentUrl.substring(torrentUrl.lastIndexOf('/'));
         else {
             String contentDisposition = headers.getOrDefault("Content-Disposition", "");
-            var pattern = Pattern.compile("^attachment;\\s*filename=\"(.*)\"$");
-            var matcher = pattern.matcher(contentDisposition);
+            Pattern pattern = Pattern.compile("^attachment;\\s*filename=\"(.*)\"$");
+            Matcher matcher = pattern.matcher(contentDisposition);
             if (matcher.find()) {
                 filename = matcher.group(1);
-                LOG.info("Finded filename = {}", filename);
+                LOG.info("Found filename = {}", filename);
             }
         }
         return new File(Property.TMP_DIR, String.format("%s.torrent", filename));

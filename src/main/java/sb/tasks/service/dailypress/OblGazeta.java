@@ -1,8 +1,4 @@
-package sb.tasks.service.dailypress.agent;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+package sb.tasks.service.dailypress;
 
 import kong.unirest.core.Unirest;
 import lombok.extern.slf4j.Slf4j;
@@ -11,21 +7,25 @@ import org.jsoup.Jsoup;
 import org.springframework.stereotype.Component;
 import sb.tasks.model.Property;
 import sb.tasks.model.Task;
-import sb.tasks.service.Agent;
 import sb.tasks.service.AgentRule;
 import sb.tasks.service.TaskResult;
-import sb.tasks.service.dailypress.DpResult;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 
 @Slf4j
 @Component
 @AgentRule(OblGazeta.RULE)
-public final class OblGazeta implements Agent {
+public final class OblGazeta implements DpAgent {
 
     @Language("RegExp")
     public static final String RULE = "^https?://old.oblgazeta.ru/$";
 
     @Override
-    public Iterable<TaskResult> perform(Task task) {
+    public Collection<TaskResult> perform(Task task) {
         String source = Unirest.get("https://old.oblgazeta.ru/")
                 .header("Accept-Encoding", "deflate")
                 .asString()
@@ -41,9 +41,9 @@ public final class OblGazeta implements Agent {
         String pdfUrl = Jsoup.parse(paperSource)
                 .getElementsByClass("download_btn-doc").get(0)
                 .attr("href");
-        var url = String.format("https://old.oblgazeta.ru%s", pdfUrl);
+        String url = String.format("https://old.oblgazeta.ru%s", pdfUrl);
         LOG.info("Checking link: {}", url);
-        var out = new File(
+        File out = new File(
                 Property.TMP_DIR,
                 String.format("og%s.pdf", new SimpleDateFormat("yyyyMMdd").format(new Date()))
         );
@@ -52,9 +52,10 @@ public final class OblGazeta implements Agent {
                     .header("Accept", "application/pdf")
                     .asFile(out.getPath())
                     .getBody();
-        } else
+        } else {
             LOG.info("File in {} already downloaded. Cancelling", url);
-        return toIterable(
+        }
+        return Collections.singletonList(
                 new DpResult(out, url, task.getParams().getText())
         );
     }

@@ -1,17 +1,18 @@
 package sb.tasks.service.notification;
 
-import java.io.IOException;
-import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import sb.tasks.cfg.Mail;
+import sb.tasks.configuration.Mail;
 import sb.tasks.model.Task;
 import sb.tasks.service.TaskResult;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -22,7 +23,7 @@ public final class MailNotify<T extends TaskResult> implements Notification<T> {
     private final TemplateEngine mailTemplateEngine;
 
     @Override
-    public void send(Task task, Iterable<T> objects) throws IOException {
+    public void send(Task task, Collection<T> objects) throws IOException {
         if (task.getParams().getMailTo() == null || task.getParams().getMailTo().length == 0)
             return;
         String subject = task.getParams().getSubject();

@@ -1,32 +1,41 @@
 package sb.tasks.model;
 
+import sb.tasks.util.Bencode;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.SortedMap;
+import java.util.HashMap;
+import java.util.Map;
 
-import sb.tasks.util.Bencode;
-
-public final class Metafile extends Bencode {
+public final class Metafile {
 
     private final byte[] body;
+    private final Map<String, Object> parsed = new HashMap<>();
 
-    public Metafile(byte[] body) throws IOException {
-        super(new ByteArrayInputStream(body));
+    public Metafile(byte[] body) {
         this.body = body;
+        try {
+            Map<?, ?> map = (Map<?, ?>) new Bencode().parse(new ByteArrayInputStream(body));
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                if (entry.getKey() instanceof String key) {
+                    parsed.put(key, entry.getValue());
+                }
+            }
+        } catch (IOException ex) {
+            //
+        }
     }
 
     public String name() {
-        var map = (SortedMap<?, ?>) rootElement.get(key("info"));
-        var bb = (ByteBuffer) map.get(key("name"));
-        return new String(bb.array());
+        Map<?, ?> map = (Map<?, ?>) parsed.get("info");
+        return (String) map.get("name");
     }
 
     public LocalDateTime creationDate() {
-        long dt = (Long) rootElement.get(key("creation date"));
+        long dt = (Long) parsed.get("creation date");
         return LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(dt),
                 ZoneId.systemDefault()

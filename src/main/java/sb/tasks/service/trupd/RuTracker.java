@@ -1,25 +1,26 @@
-package sb.tasks.service.trupd.agent;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+package sb.tasks.service.trupd;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import sb.tasks.model.Metafile;
 import sb.tasks.model.Task;
-import sb.tasks.service.Agent;
 import sb.tasks.service.AgentRule;
 import sb.tasks.service.TaskResult;
-import sb.tasks.service.trupd.TrResult;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Component
 @AgentRule(value = "https?://rutracker\\.org/.*", tag = "rutracker")
 @RequiredArgsConstructor
-public final class RuTracker implements Agent {
+public final class RuTracker implements TrAgent {
 
     private static final Pattern URL_PATTERN = Pattern.compile("https://rutracker.org/forum/viewtopic.php\\?t=(?<num>\\d+)");
 
@@ -34,18 +35,18 @@ public final class RuTracker implements Agent {
     }
 
     @Override
-    public Iterable<TaskResult> perform(Task task) throws IOException {
+    public Collection<TaskResult> perform(Task task) throws IOException {
         String num = getNum(task);
         try {
-            var file = curl.save(num);
+            File file = curl.save(num);
             LOG.info("file saved as '{}'", file.getAbsolutePath());
             byte[] bytes = Files.readAllBytes(file.toPath());
             Metafile mt = new Metafile(bytes);
-            return toIterable(
+            return Collections.singletonList(
                     new TrResult(
                             mt,
                             mt.name(),
-                            String.format("http://dl.rutracker.org/forum/dl.php?t=%s", num),
+                            String.format("https://dl.rutracker.org/forum/dl.php?t=%s", num),
                             file,
                             String.format("https://rutracker.org/forum/viewtopic.php?t=%s", num)
                     )
