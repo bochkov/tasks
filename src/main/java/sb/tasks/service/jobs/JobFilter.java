@@ -17,8 +17,6 @@ public final class JobFilter implements JobService<TaskResult> {
 
     @Override
     public void process(Task task, Collection<TaskResult> result) throws IOException {
-
-
         Iterator<TaskResult> it = result.iterator();
         while (it.hasNext()) {
             TaskResult obj = it.next();

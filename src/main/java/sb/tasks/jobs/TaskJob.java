@@ -41,7 +41,7 @@ public abstract class TaskJob implements Job {
             log().info("Execution plan = {}", services());
             Agent agent = agentResolver().resolve(task);
             log().info("Choose agent '{}' for url={}", agent, task.getParams().getUrl());
-            Collection<TaskResult> result = agent.perform(task);
+            Collection<TaskResult> result = new ArrayList<>(agent.perform(task));
             for (JobService<TaskResult> service : services()) {
                 service.process(task, result);
             }
