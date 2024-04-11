@@ -12,7 +12,9 @@ import sb.tasks.service.AgentRule;
 import sb.tasks.service.TaskResult;
 import sb.tasks.util.Filename;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -66,12 +68,16 @@ public final class Rutor implements TrAgent {
         String torrentUrl = torrentUrl(root);
         LOG.info("Found download link {}", torrentUrl);
 
+        File file = curl.save(torrentUrl);
+        LOG.info("file saved as '{}'", file.getAbsolutePath());
+        byte[] bytes = Files.readAllBytes(file.toPath());
+        Metafile mt = new Metafile(bytes);
         return Collections.singletonList(
                 new TrResult(
-                        new Metafile(curl.binary(torrentUrl)),
+                        mt,
                         name(root),
                         torrentUrl,
-                        new Filename(torrentUrl, curl.headers(torrentUrl)).toFile(),
+                        file,
                         task.getParams().getUrl()
                 )
         );

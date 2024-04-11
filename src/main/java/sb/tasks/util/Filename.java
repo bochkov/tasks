@@ -20,7 +20,7 @@ public final class Filename {
     private final Map<String, String> headers;
 
     public File toFile() {
-        String filename = String.format("%d", COUNT.incrementAndGet());
+        String filename = String.format("%d.torrent", COUNT.incrementAndGet());
         if (torrentUrl.endsWith(".torrent"))
             filename = torrentUrl.substring(torrentUrl.lastIndexOf('/'));
         else {
@@ -32,6 +32,6 @@ public final class Filename {
                 LOG.info("Found filename = {}", filename);
             }
         }
-        return new File(Property.TMP_DIR, String.format("%s.torrent", filename));
+        return new File(Property.TMP_DIR, filename);
     }
 }

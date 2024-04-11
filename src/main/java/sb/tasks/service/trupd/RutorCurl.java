@@ -4,10 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
+import sb.tasks.util.Filename;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.*;
 
 @Slf4j
@@ -35,13 +38,17 @@ public final class RutorCurl {
         return res.toString();
     }
 
-    public byte[] binary(String url) throws IOException {
+    public File save(String url) throws IOException {
         List<String> cmd = downloadCmd(url);
         LOG.info("Downloading from url {}, cmd={}", url, cmd);
         Process pp = new ProcessBuilder(cmd)
                 .redirectInput(ProcessBuilder.Redirect.PIPE)
                 .start();
-        return StreamUtils.copyToByteArray(pp.getInputStream());
+        byte[] bytes = StreamUtils.copyToByteArray(pp.getInputStream());
+
+        File outFile = new Filename(url, headers(url)).toFile();
+        Files.write(outFile.toPath(), bytes);
+        return outFile;
     }
 
     public Map<String, String> headers(String url) throws IOException {
