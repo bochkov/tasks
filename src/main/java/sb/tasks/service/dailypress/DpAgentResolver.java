@@ -23,6 +23,7 @@ public final class DpAgentResolver implements AgentResolver {
         for (Agent ag : agents) {
             if (ag.getClass().isAnnotationPresent(AgentRule.class) &&
                     url.matches(ag.getClass().getAnnotation(AgentRule.class).value())) {
+                LOG.info("Choose agent '{}' for url={}", ag, task.getParams().getUrl());
                 return ag;
             }
         }

@@ -15,7 +15,7 @@ body {
 .task-block {
     padding: 10px;
     margin: 10px;
-    border-bottom: darkred 1px solid;
+    border-bottom: gray 1px solid;
 }
 
 .oid {

@@ -1,13 +1,13 @@
 plugins {
-    id 'org.springframework.boot' version '3.2.4'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
     id 'java'
     id 'idea'
     id 'com.github.ben-manes.versions' version '0.51.0'
 }
 
 group = 'sb'
-version = '3.2'
+version = '3.3'
 
 configurations {
     compileOnly {
@@ -36,12 +36,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
-    implementation platform('com.konghq:unirest-java-bom:4.3.1')
+    implementation platform('com.konghq:unirest-java-bom:4.4.4')
     implementation 'com.konghq:unirest-java-core'
     implementation 'com.konghq:unirest-modules-jackson'
-    implementation 'org.jsoup:jsoup:1.17.2'
-    implementation 'resnyx:resnyx:7.1.1'
-    implementation 'org.jetbrains:annotations:24.1.0'
+    implementation 'org.jsoup:jsoup:1.18.1'
+    implementation 'resnyx:resnyx:7.10'
+    implementation 'org.jetbrains:annotations:26.0.0'
     //
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

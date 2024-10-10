@@ -1,36 +1,45 @@
 # Tasks
+
 Tasks is a java app which do some jobs. These jobs started by schedule. Also jobs more complicated than bash scripts.
 
 In this time we support these things:
 
 #### Daily Press
+
 Download and send by email e-version of popular (nope) russian magazines and papers.
 At this time we support:
+
 - [Спорт-Экспресс](https://www.sport-express.ru)
 - [Областная газета](https://www.oblgazeta.ru)
+- [Уральский рабочий](https://уральский-рабочий.рф)
 
 #### Torrent update
+
 Periodic check torrents on popular (nope) trackers and download it if they changed.
 At this time we support trackers:
+
 - RuTor
 - [Rutracker](https://rutracker.org)
 
 ## Requirements
-1. Java 8
+
+1. Java 21
 2. MongoDB
 3. SMTP server (optional)
 4. Telegram bot (optional)
 
 ## How to run
+
 1. Clone this repo on your machine
 2. In the project dir run ```./gradlew build``` or ```gradlew.bat build``` prefers to your OS.
 3. Find in ```build/libs``` dir  ```tasks-all.jar``` and copy it to desired location.
-4. Place with jar properties file (see below) 
+4. Place with jar properties file (see below)
 5. Run ```java -jar tasks-all.jar```
-6. At this time we not support add task from admin web page. Honestly we doesnt have admin page. 
-So you must create your tasks manully. To do this you must create record in mongodb.
+6. At this time we not support add task from admin web page. Honestly we doesnt have admin page.
+   So you must create your tasks manully. To do this you must create record in mongodb.
 
 #### Sample property file
+
 ```
 # port of http server
 http.port = 8080
@@ -56,57 +65,71 @@ curl.extra-opts = --socks5 user:pass@server:port
 ```
 
 #### Sample record to daily-press
+
 ```json
 {
-    "job" : "sb.tasks.jobs.DailyPress", 
-    "params" : {
-        "mail_to" : ["recipient1", "recipient2"], 
-        "subject" : "< Mail subject >", 
-        "text" : "< Mail text >", 
-        "url" : "http://www.sport-express.ru/"
-    }, 
-    "schedule" : [
-        "0 0 0/2 * * ?", 
-        "0 10/10 4,6 * * ?"
-    ]
+  "job": "sb.tasks.jobs.DailyPress",
+  "params": {
+    "mail_to": [
+      "recipient1",
+      "recipient2"
+    ],
+    "subject": "< Mail subject >",
+    "text": "< Mail text >",
+    "url": "http://www.sport-express.ru/"
+  },
+  "vars": {
+    "name": "Спорт-Экспресс"
+  },
+  "schedule": [
+    "0 0 0/2 * * ?",
+    "0 10/10 4,6 * * ?"
+  ]
 }
 ```
 
 #### Sample record to torrent update
+
 for rutracker.org params section must contains num field
+
 ```json
 {
-    "job" : "sb.tasks.jobs.trupd.Trupd", 
-    "params" : {
-        "num" : "< torrent num on rutracker.org >", 
-        "mail_to" : ["recipient1", "recipient2"], 
-        "admin_telegram" : "< chatId for notification >"
-    },
-    "schedule" : [
-        "0 0 * * * ?"
-    ]
+  "job": "sb.tasks.jobs.trupd.Trupd",
+  "params": {
+    "num": "< torrent num on rutracker.org >",
+    "mail_to": [
+      "recipient1",
+      "recipient2"
+    ],
+    "admin_telegram": "< chatId for notification >"
+  },
+  "schedule": [
+    "0 0 * * * ?"
+  ]
 }
 ```
 
 for others - url field
+
 ```json
 {
-    "job" : "sb.tasks.jobs.trupd.Trupd", 
-    "params" : {
-        "url" : "https://www.lostfilm.tv/series/Riverdale/", 
-        "download_dir" : "/opt/torrents", 
-        "mail_to" : "< notification mail address >", 
-        "telegram" : "< notification telegram chatId >"
-    },
-    "schedule" : [
-        "0 0 * * * ?"
-    ]
+  "job": "sb.tasks.jobs.trupd.Trupd",
+  "params": {
+    "url": "https://www.lostfilm.tv/series/Riverdale/",
+    "download_dir": "/opt/torrents",
+    "mail_to": "< notification mail address >",
+    "telegram": "< notification telegram chatId >"
+  },
+  "schedule": [
+    "0 0 * * * ?"
+  ]
 }
 
 ```
 
 ## Telegram
-Tasks doesnt provide a telegram bot. 
+
+Tasks doesnt provide a telegram bot.
 To start using telegram notification you must create own telegram bot and set webhook for it in you host.
 More on [Telegram Bot API](https://core.telegram.org/bots/api)
 
@@ -143,6 +166,3 @@ Supported telegram commands:
     <td>Delete task</td>
 </tr>
 </table>
-
-## How to contribute?
-Just fork the repo and send me a pull request.

@@ -26,6 +26,7 @@ public final class TrAgentResolver implements AgentResolver {
         for (Agent ag : agents) {
             AgentRule rule = ag.getClass().getAnnotation(AgentRule.class);
             if (rule != null && match(params, rule.tag(), rule.value())) {
+                LOG.info("Choose agent '{}' for url={}", ag, task.getParams().getUrl());
                 return ag;
             }
         }

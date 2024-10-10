@@ -1,5 +1,6 @@
 package sb.tasks.jobs;
 
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -17,32 +18,31 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 public abstract class TaskJob implements Job {
 
     @Autowired
     private TaskRepo tasks;
 
-    protected abstract Logger log();
+    @Autowired
+    private List<JobService<TaskResult>> services;
 
     protected abstract AgentResolver agentResolver();
-
-    protected abstract List<JobService<TaskResult>> services();
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         String key = context.getJobDetail().getKey().getName();
         Task task = tasks.findById(key).orElseThrow();
-        log().info("Start {}", task);
+        LOG.info("Start {}", task);
         if (task.getParams() == null)
             throw new NoSuchElementException("params in task not defined");
         if (task.getVars() == null)
             task.setVars(new Task.Vars());
         try {
-            log().info("Execution plan = {}", services());
+            LOG.info("Execution plan = {}", services);
             Agent agent = agentResolver().resolve(task);
-            log().info("Choose agent '{}' for url={}", agent, task.getParams().getUrl());
             Collection<TaskResult> result = new ArrayList<>(agent.perform(task));
-            for (JobService<TaskResult> service : services()) {
+            for (JobService<TaskResult> service : services) {
                 service.process(task, result);
             }
         } catch (Exception ex) {
