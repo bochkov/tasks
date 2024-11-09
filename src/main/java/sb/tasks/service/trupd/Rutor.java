@@ -10,7 +10,6 @@ import sb.tasks.model.Metafile;
 import sb.tasks.model.Task;
 import sb.tasks.service.AgentRule;
 import sb.tasks.service.TaskResult;
-import sb.tasks.util.Filename;
 
 import java.io.File;
 import java.io.IOException;

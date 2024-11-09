@@ -4,14 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import sb.tasks.model.Task;
 import sb.tasks.repo.TaskRepo;
 import sb.tasks.service.Agent;
 import sb.tasks.service.AgentResolver;
-import sb.tasks.service.jobs.JobService;
 import sb.tasks.service.TaskResult;
+import sb.tasks.service.jobs.JobService;
 
 import java.util.ArrayList;
 import java.util.Collection;

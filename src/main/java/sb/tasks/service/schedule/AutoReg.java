@@ -2,9 +2,9 @@ package sb.tasks.service.schedule;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import sb.tasks.model.Task;
@@ -22,7 +22,7 @@ public final class AutoReg implements ApplicationListener<ApplicationReadyEvent>
     private final SchedulerInfo schedulerInfo;
 
     @Override
-    public void onApplicationEvent(@NotNull ApplicationReadyEvent event) {
+    public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
         LOG.info("AutoReg service started");
     }
 

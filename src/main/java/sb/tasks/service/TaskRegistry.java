@@ -2,10 +2,10 @@ package sb.tasks.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.quartz.*;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import sb.tasks.model.Property;
 import sb.tasks.model.Task;
@@ -23,7 +23,7 @@ public final class TaskRegistry implements ApplicationListener<ApplicationReadyE
     private final SchedulerInfo scheduler;
 
     @Override
-    public void onApplicationEvent(@NotNull ApplicationReadyEvent event) {
+    public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
         for (Task task : tasks.findAll()) {
             LOG.info("Read task: {}", task);
             try {

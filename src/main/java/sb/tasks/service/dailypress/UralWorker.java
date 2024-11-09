@@ -15,8 +15,6 @@ import sb.tasks.service.TaskResult;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -70,9 +68,5 @@ public final class UralWorker implements DpAgent {
         return Collections.singletonList(
                 new DpResult(out, url, task.getParams().getText())
         );
-    }
-
-    public static void main(String[] args) {
-        LOG.info(URLEncoder.encode("https://уральский-рабочий.рф", StandardCharsets.UTF_8));
     }
 }
