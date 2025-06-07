@@ -52,10 +52,10 @@ public final class SportExpress implements DpAgent {
     @Override
     public Collection<TaskResult> perform(Task task) throws IOException {
         String login = props.findById(Property.SE_USER_KEY)
-                .orElseThrow(() -> new IOException("no se username"))
+                .orElseThrow(() -> new IOException("No SE username"))
                 .getValue();
         String password = props.findById(Property.SE_PASSWORD_KEY)
-                .orElseThrow(() -> new IOException("no se password"))
+                .orElseThrow(() -> new IOException("No SE password"))
                 .getValue();
         WebDriver driver = selenium.createWebDriver();
         try {
@@ -76,7 +76,7 @@ public final class SportExpress implements DpAgent {
         String dt = driver.findElement(By.className("se19-title")).getText();
         Matcher matcher = DATE_PATTERN.matcher(dt);
         if (!matcher.find()) {
-            throw new IOException("date not parsed: " + dt);
+            throw new IOException("Date not parsed: " + dt);
         }
         String no = matcher.group("number");
         LOG.info("Checking date: {}, # {}", dt, no);
@@ -96,18 +96,17 @@ public final class SportExpress implements DpAgent {
     }
 
     private void login(WebDriver driver, WebDriverWait wait, String login, String password) {
-        LOG.debug("start login");
+        LOG.debug("Start login");
         driver.navigate().to("https://www.sport-express.ru/profile/");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.name("email")));
         driver.findElement(By.name("email")).sendKeys(login);
         driver.findElement(By.name("password")).sendKeys(password);
         driver.findElement(By.tagName("button")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.className("se19-form__label")));
-        LOG.debug("login done");
     }
 
     private void download(WebDriver driver, WebDriverWait wait, File out) {
-        LOG.debug("start download");
+        LOG.debug("Start download");
         final AtomicReference<String> contentDisposition = new AtomicReference<>();
         final AtomicReference<Integer> contentLength = new AtomicReference<>();
         Filter headersFilter = new HeaderRetrieve(Map.of(
@@ -118,7 +117,7 @@ public final class SportExpress implements DpAgent {
             driver.get("https://www.sport-express.ru/newspaper/download/");
             wait.until(new FileDownloadTo(out, contentDisposition, contentLength));
         }
-        LOG.debug("end download");
+        LOG.debug("Download complete");
     }
 
     @RequiredArgsConstructor
@@ -154,11 +153,14 @@ public final class SportExpress implements DpAgent {
                 Matcher m = Pattern.compile("attachment; filename=\"(.*)\"").matcher(disposition.get());
                 if (m.find()) {
                     String fn = m.group(1);
-                    LOG.info("found filename = {}", fn);
                     File file = new File(Property.TMP_DIR, fn);
-                    return file.exists()
+                    boolean ok = file.exists()
                             && file.length() == length.get()
                             && file.renameTo(out);
+                    if (ok) {
+                        LOG.debug("Found filename = {}", fn);
+                    }
+                    return ok;
                 }
             }
             return false;
