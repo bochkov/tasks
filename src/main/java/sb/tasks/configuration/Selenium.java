@@ -14,18 +14,21 @@ import java.util.Map;
 @Component
 public class Selenium {
 
+    private static final String CHROME_FILENAME = "/usr/bin/google-chrome";
     private static final String DRIVER_FILENAME = "/usr/bin/chromedriver";
 
     public WebDriver createWebDriver() {
-        LOG.debug("init chromium driver");
+        LOG.debug("Init chromium driver");
         System.setProperty("webdriver.chrome.driver", DRIVER_FILENAME);
         ChromeOptions options = new ChromeOptions();
         options.addArguments(List.of(
                 "--headless",
                 "--disable-gpu",
                 "--window-size=1920,1200",
-                "--ignore-certificate-errors"
+                "--ignore-certificate-errors",
+                "--no-sandbox"
         ));
+        options.setBinary(CHROME_FILENAME);
         options.setExperimentalOption("prefs", Map.of(
                 "plugins.plugins_disabled", new String[]{"Chrome PDF Viewer"},
                 "plugins.always_open_pdf_externally", true,
