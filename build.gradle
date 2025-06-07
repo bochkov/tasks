@@ -1,9 +1,9 @@
 plugins {
-    id 'org.springframework.boot' version '3.3.5'
-    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.springframework.boot' version '3.5.0'
+    id 'io.spring.dependency-management' version '1.1.7'
     id 'java'
     id 'idea'
-    id 'com.github.ben-manes.versions' version '0.51.0'
+    id 'com.github.ben-manes.versions' version '0.52.0'
 }
 
 group = 'sb'
@@ -23,7 +23,7 @@ java {
 repositories {
     mavenCentral()
     maven {
-        url 'https://maven.sergeybochkov.com/releases'
+        url = 'https://maven.sergeybochkov.com/releases'
     }
 }
 
@@ -35,13 +35,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
-    implementation platform('com.konghq:unirest-java-bom:4.4.5')
+    implementation platform('com.konghq:unirest-java-bom:4.4.7')
     implementation 'com.konghq:unirest-java-core'
     implementation 'com.konghq:unirest-modules-jackson'
-    implementation 'org.jsoup:jsoup:1.18.1'
-    implementation 'resnyx:resnyx:7.11'
+
+    implementation 'org.seleniumhq.selenium:selenium-java:4.33.0'
+//    implementation group: 'org.htmlunit', name: 'htmlunit', version: '4.13.0'
+    implementation 'org.jsoup:jsoup:1.20.1'
+    implementation 'resnyx:resnyx:9.0'
     //
-    compileOnly 'org.jetbrains:annotations:26.0.1'
+    compileOnly 'org.jetbrains:annotations:26.0.2'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'

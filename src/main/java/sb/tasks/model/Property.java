@@ -21,8 +21,8 @@ public final class Property {
     public static final String TELEGRAM_TOKEN_KEY = "telegram.bot.token";
     public static final String RUTRACKER_LOGIN_KEY = "rutracker.login";
     public static final String RUTRACKER_PASSWORD_KEY = "rutracker.password";
-    public static final String SPORT_EXPRESS_UID_KEY = "se.seuid";
-
+    public static final String SE_USER_KEY = "se.username";
+    public static final String SE_PASSWORD_KEY = "se.password";
 
     public Property(String id, String value) {
         this.id = id;
