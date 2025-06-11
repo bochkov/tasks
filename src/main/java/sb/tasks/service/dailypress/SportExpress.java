@@ -10,6 +10,10 @@ import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.Header;
 import org.openqa.selenium.bidi.network.InterceptPhase;
 import org.openqa.selenium.bidi.network.ResponseDetails;
+import org.openqa.selenium.firefox.FirefoxDriverService;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +28,8 @@ import sb.tasks.service.TaskResult;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -41,8 +47,8 @@ public final class SportExpress implements DpAgent {
     private static final Pattern DATE_PATTERN = Pattern.compile("№\\s*\\d+\\s*\\((?<number>\\d+)\\)");
 
     private final PropertyRepo props;
-    private final WebDriver driver;
-    private final WebDriverWait wait;
+    private final FirefoxDriverService driverService;
+    private final FirefoxOptions firefoxOptions;
 
     // Газета Спорт-Экспресс № 103 (9431) от 6 июня 2025 года, # 9431
     @Override
@@ -54,6 +60,18 @@ public final class SportExpress implements DpAgent {
                 .orElseThrow(() -> new IOException("No SE password"))
                 .getValue();
 
+        WebDriver driver = new Augmenter().augment(
+                new RemoteWebDriver(driverService.getUrl(), firefoxOptions)
+        );
+        try {
+            return perform0(task, driver, login, password);
+        } finally {
+            driver.quit();
+        }
+    }
+
+    private Collection<TaskResult> perform0(Task task, WebDriver driver, String login, String password) throws IOException {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.of(10L, ChronoUnit.SECONDS));
         LOG.debug("Start navigate");
         long start = System.currentTimeMillis();
         driver.get("https://www.sport-express.ru/newspaper/");
