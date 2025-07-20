@@ -30,7 +30,7 @@ public final class AutoUpdateTaskSchedule implements ApplicationListener<Applica
                     List.of(task.getSchedules())
             );
         }
-        LOG.info("AutoChanges service started");
+        LOG.info("{} service started", getClass().getSimpleName());
     }
 
     @Scheduled(cron = "0 5/10 * * * ?")

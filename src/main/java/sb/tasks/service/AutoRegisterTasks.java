@@ -20,7 +20,7 @@ public final class AutoRegisterTasks implements ApplicationListener<ApplicationR
 
     @Override
     public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
-        LOG.info("AutoReg service started");
+        LOG.info("{} service started", getClass().getSimpleName());
     }
 
     @Scheduled(cron = "0 */10 * * * ?")
