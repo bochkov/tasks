@@ -68,7 +68,7 @@ curl.extra-opts = --socks5 user:pass@server:port
 
 ```json
 {
-  "job": "sb.tasks.jobs.DailyPress",
+  "job": "sb.tasks.job.dailypress.DailyPress",
   "params": {
     "mail_to": [
       "recipient1",
@@ -94,7 +94,7 @@ for rutracker.org params section must contains num field
 
 ```json
 {
-  "job": "sb.tasks.jobs.trupd.Trupd",
+  "job": "sb.tasks.job.torrents.Torrents",
   "params": {
     "num": "< torrent num on rutracker.org >",
     "mail_to": [
@@ -113,7 +113,7 @@ for others - url field
 
 ```json
 {
-  "job": "sb.tasks.jobs.trupd.Trupd",
+  "job": "sb.tasks.jobs.torrents.Torrents",
   "params": {
     "url": "https://www.lostfilm.tv/series/Riverdale/",
     "download_dir": "/opt/torrents",

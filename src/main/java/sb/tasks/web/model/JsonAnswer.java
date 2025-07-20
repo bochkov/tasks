@@ -7,9 +7,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class JsonAnswer {
 
-    public static final JsonAnswer OK = new JsonAnswer(Boolean.TRUE);
-    public static final JsonAnswer FAIL = new JsonAnswer(Boolean.FALSE);
-
     private final Boolean success;
+    private final String msg;
+
+    public static JsonAnswer ok() {
+        return new JsonAnswer(Boolean.TRUE, null);
+    }
+
+    public static JsonAnswer fail(String cause) {
+        return new JsonAnswer(Boolean.FALSE, cause);
+    }
 
 }

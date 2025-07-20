@@ -8,7 +8,7 @@ import org.openqa.selenium.firefox.GeckoDriverService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import sb.tasks.model.Property;
+import sb.tasks.entity.Property;
 
 import java.io.File;
 import java.io.IOException;

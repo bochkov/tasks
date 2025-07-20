@@ -5,23 +5,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import sb.tasks.model.Task;
-import sb.tasks.service.TaskResult;
-import sb.tasks.service.notification.Notification;
+import sb.tasks.entity.Task;
+import sb.tasks.job.TaskResult;
+import sb.tasks.service.jobs.notification.Notification;
 
 import java.util.Collection;
 import java.util.List;
 
 @Slf4j
 @Service
-@Order(4)
+@Order(2)
 @RequiredArgsConstructor
 public final class JobNotify<T extends TaskResult> implements JobService<T> {
 
     private final List<Notification<T>> notifications;
 
     @PostConstruct
-    public void info() {
+    public void init() {
         LOG.info("Available notifications: {}", notifications);
     }
 

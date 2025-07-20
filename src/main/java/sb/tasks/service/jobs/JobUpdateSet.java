@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import sb.tasks.model.Task;
-import sb.tasks.repo.TaskRepo;
-import sb.tasks.service.TaskResult;
+import sb.tasks.entity.Task;
+import sb.tasks.entity.TaskRepo;
+import sb.tasks.job.TaskResult;
 
 import java.util.Collection;
 

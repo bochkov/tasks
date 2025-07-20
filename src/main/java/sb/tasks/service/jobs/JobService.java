@@ -1,7 +1,7 @@
 package sb.tasks.service.jobs;
 
-import sb.tasks.model.Task;
-import sb.tasks.service.TaskResult;
+import sb.tasks.entity.Task;
+import sb.tasks.job.TaskResult;
 
 import java.io.IOException;
 import java.util.Collection;

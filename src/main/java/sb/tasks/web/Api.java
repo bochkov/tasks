@@ -1,18 +1,18 @@
 package sb.tasks.web;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import resnyx.updates.Update;
-import sb.tasks.model.Property;
-import sb.tasks.model.Task;
-import sb.tasks.repo.PropertyRepo;
-import sb.tasks.repo.TaskRepo;
-import sb.tasks.service.SchedulerInfo;
-import sb.tasks.service.tgbot.TgAnswer;
+import sb.tasks.entity.Property;
+import sb.tasks.entity.PropertyRepo;
+import sb.tasks.entity.Task;
+import sb.tasks.entity.TaskRepo;
+import sb.tasks.service.TaskRegistry;
+import sb.tasks.service.tg.TgAnswer;
 import sb.tasks.web.model.Ids;
 import sb.tasks.web.model.JsonAnswer;
 
@@ -23,23 +23,21 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public final class Api {
 
-    @Autowired
-    private TaskRepo tasks;
-    @Autowired
-    private PropertyRepo properties;
-    @Autowired
-    private SchedulerInfo schedulerInfo;
-    @Autowired
-    private TgAnswer tgAnswer;
+    private final TaskRepo tasks;
+    private final PropertyRepo properties;
+    private final TaskRegistry registry;
+    private final TgAnswer tgAnswer;
 
     @GetMapping("/tasks")
     public List<Task> allTasks() {
         List<Task> all = tasks.findAll();
         for (Task task : all) {
-            if (schedulerInfo.contains(task.getId()))
+            if (registry.contains(task.getId())) {
                 task.setRegistered(true);
+            }
         }
         return all;
     }
@@ -54,11 +52,11 @@ public final class Api {
         Map<String, JsonAnswer> answer = new HashMap<>();
         for (String id : ids.getIds()) {
             try {
-                schedulerInfo.triggerJob(id);
+                registry.triggerJob(id);
                 LOG.info("Job with key = {} triggered", id);
-                answer.put(id, JsonAnswer.OK);
+                answer.put(id, JsonAnswer.ok());
             } catch (Exception ex) {
-                answer.put(id, JsonAnswer.FAIL);
+                answer.put(id, JsonAnswer.fail(ex.getMessage()));
             }
         }
         return new ResponseEntity<>(answer, HttpStatus.OK);
@@ -69,18 +67,17 @@ public final class Api {
         Map<String, JsonAnswer> answer = new HashMap<>();
         for (String id : ids.getIds()) {
             try {
-                boolean drop = schedulerInfo.dropJob(id);
-                if (drop) {
+                if (registry.dropJob(id)) {
                     tasks.deleteById(id);
                     LOG.info("Successfully delete job with id = {}", id);
-                    answer.put(id, JsonAnswer.OK);
+                    answer.put(id, JsonAnswer.ok());
                 } else {
                     LOG.warn("Cannot find job with jobKey = {}", id);
-                    answer.put(id, JsonAnswer.FAIL);
+                    answer.put(id, JsonAnswer.fail("Cannot find job with key = " + id));
                 }
             } catch (SchedulerException ex) {
                 LOG.warn(ex.getMessage(), ex);
-                answer.put(id, JsonAnswer.FAIL);
+                answer.put(id, JsonAnswer.fail(ex.getMessage()));
             }
         }
         return new ResponseEntity<>(answer, HttpStatus.OK);

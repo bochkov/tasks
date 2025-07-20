@@ -1,11 +1,11 @@
 package sb.tasks.models.metafile;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import sb.tasks.model.Metafile;
+import sb.tasks.job.torrents.util.Metafile;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
 
 class MetafileTest {
 
@@ -17,6 +17,7 @@ class MetafileTest {
             bytes = is.readAllBytes();
         }
         Metafile mt = new Metafile(bytes);
+        mt.parse();
         Assertions.assertThat(mt.name()).isEqualTo("Михайлов В.С. и др. - Растительно-молочно-яичные блюда - 1982.pdf");
         Assertions.assertThat(mt.creationDate()).isEqualTo(LocalDateTime.of(2021, 6, 10, 15, 59, 24));
     }

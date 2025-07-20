@@ -39,11 +39,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
-    implementation platform('com.konghq:unirest-java-bom:4.4.7')
+    implementation platform('com.konghq:unirest-java-bom:4.5.0')
     implementation 'com.konghq:unirest-java-core'
     implementation 'com.konghq:unirest-modules-jackson'
 
-    implementation 'org.seleniumhq.selenium:selenium-java:4.33.0'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.34.0'
     implementation 'org.jsoup:jsoup:1.21.1'
     implementation 'resnyx:resnyx:9.0'
     //
