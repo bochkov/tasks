@@ -3,6 +3,7 @@ package sb.tasks.service.tg;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import resnyx.messenger.general.Message;
 import resnyx.messenger.general.MessageEntity;
 import resnyx.messenger.general.MessageEntityType;
 import resnyx.updates.Update;
@@ -24,10 +25,14 @@ public final class TgAnswer {
 
     public void process(String token, Update upd) {
         TgBot tgBot = new TgBot(token);
-        for (MessageEntity entity : upd.getMessage().getEntities()) {
+        Message tgMsg = upd.getMessage();
+        if (tgMsg == null) {
+            return;
+        }
+        for (MessageEntity entity : tgMsg.getEntities()) {
             if (MessageEntityType.BOT_COMMAND.equals(entity.getType())) {
-                Long chatId = upd.getMessage().getChat().getId();
-                String[] cmd = upd.getMessage().getText().split(" ");
+                Long chatId = tgMsg.getChat().getId();
+                String[] cmd = tgMsg.getText().split(" ");
                 String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
                 for (BotCmd ans : botCmds) {
                     if (canAnswer(ans, cmd[0])) {
