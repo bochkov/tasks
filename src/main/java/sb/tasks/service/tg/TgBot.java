@@ -8,6 +8,7 @@ import kong.unirest.modules.jackson.JacksonObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import resnyx.TgMethod;
+import resnyx.common.ParseMode;
 import resnyx.messenger.general.LinkPreviewOptions;
 import resnyx.messenger.general.SendMessage;
 import resnyx.util.TgObjectMapperConfig;
@@ -46,6 +47,7 @@ public final class TgBot {
         SendMessage msg = new SendMessage(String.valueOf(chatId), text);
         LinkPreviewOptions opts = new LinkPreviewOptions();
         opts.setIsDisabled(Boolean.TRUE);
+        msg.setParseMode(ParseMode.HTML);
         msg.setLinkPreviewOptions(opts);
         try {
             send(msg);
