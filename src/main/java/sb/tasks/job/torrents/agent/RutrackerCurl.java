@@ -115,9 +115,7 @@ public final class RutrackerCurl {
                     "--retry", "5",
                     "--data", "login_username=" + login + "&login_password=" + password + "&login=%%C2%%F5%%EE%%E4",
                     "--output", "login.php",
-                    "--insecure",
                     "--silent",
-                    "--ipv4",
                     "--user-agent", userAgent,
                     "--cookie-jar", COOKIES
             ));
