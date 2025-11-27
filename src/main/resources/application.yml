@@ -1,11 +1,6 @@
 spring:
   config:
     import: file:tasks.properties
-  data:
-    mongodb:
-      host: ${mongo.host}
-      port: ${mongo.port:27017}
-      database: ${mongo.db}
   mail:
     host: ${mail.host}
     port: ${mail.port}
@@ -17,6 +12,10 @@ spring:
       mail.smtp.ssl.enable: true
   quartz:
     scheduler-name: TaskScheduler
+  mongodb:
+    host: ${mongo.host}
+    port: ${mongo.port:27017}
+    database: ${mongo.db}
 server:
   port: ${http.port}
 management:

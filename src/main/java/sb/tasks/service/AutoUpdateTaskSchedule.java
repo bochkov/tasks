@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import sb.tasks.entity.Task;
@@ -23,7 +22,7 @@ public final class AutoUpdateTaskSchedule implements ApplicationListener<Applica
     private final TaskRegistry registry;
 
     @Override
-    public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
+    public void onApplicationEvent(ApplicationReadyEvent event) {
         for (Task task : tasks.findAll()) {
             SCHEDULES.put(
                     task.getId(),

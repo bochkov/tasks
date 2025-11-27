@@ -15,4 +15,4 @@ out/
 tasks.properties
 cookies.txt
 .DS_Store
-*.exe
+geckodriver*

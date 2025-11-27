@@ -6,7 +6,6 @@ import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import sb.tasks.entity.Property;
 import sb.tasks.entity.Task;
@@ -26,7 +25,7 @@ public final class TaskRegistry implements ApplicationListener<ApplicationReadyE
     private final Scheduler scheduler;
 
     @Override
-    public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
+    public void onApplicationEvent(ApplicationReadyEvent event) {
         for (Task task : tasks.findAll()) {
             LOG.info("Read task: {}", task);
             try {

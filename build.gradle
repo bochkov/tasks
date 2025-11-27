@@ -1,13 +1,13 @@
 plugins {
-    id 'org.springframework.boot' version '3.5.6'
+    id 'org.springframework.boot' version '4.0.0'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'java'
     id 'idea'
-    id 'com.github.ben-manes.versions' version '0.52.0'
+    id 'com.github.ben-manes.versions' version '0.53.0'
 }
 
 group = 'sb'
-version = '3.3'
+version = '3.4.0'
 
 configurations {
     compileOnly {
@@ -29,21 +29,20 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'com.github.loki4j:loki-logback-appender:2.0.0'
-
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
-    implementation platform('com.konghq:unirest-java-bom:4.5.1')
+    implementation platform('com.konghq:unirest-java-bom:4.6.0')
     implementation 'com.konghq:unirest-java-core'
     implementation 'com.konghq:unirest-modules-jackson'
-
-    implementation 'org.seleniumhq.selenium:selenium-java:4.35.0'
+//    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'com.github.loki4j:loki-logback-appender:2.0.1'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.38.0'
     implementation 'org.jsoup:jsoup:1.21.2'
     implementation 'resnyx:resnyx:9.2'
     //
@@ -57,10 +56,6 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
-}
-
-tasks.named('bootRun') {
-    args += ['--spring.config.name=tasks']
 }
 
 tasks.named('bootJar') {
