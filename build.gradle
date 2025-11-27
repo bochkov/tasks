@@ -16,8 +16,8 @@ configurations {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 repositories {
@@ -35,16 +35,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
+    implementation 'org.springframework.boot:spring-boot-starter-micrometer-metrics'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
     implementation platform('com.konghq:unirest-java-bom:4.6.0')
     implementation 'com.konghq:unirest-java-core'
     implementation 'com.konghq:unirest-modules-jackson'
-//    implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'com.github.loki4j:loki-logback-appender:2.0.1'
     implementation 'org.seleniumhq.selenium:selenium-java:4.38.0'
     implementation 'org.jsoup:jsoup:1.21.2'
     implementation 'resnyx:resnyx:9.2'
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.22.0-alpha'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
     //
     compileOnly 'org.jetbrains:annotations:26.0.2'
     compileOnly 'org.projectlombok:lombok'

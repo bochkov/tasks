@@ -24,7 +24,7 @@ public final class AnsList implements BotCmd {
 
     @Override
     public void answer(TgBot tgBot, Long chatId, String[] args) {
-        /// REGISTERED TASKS
+        // REGISTERED TASKS
         List<Task> registered = tasks.findAll().stream()
                 .filter(t -> registry.contains(t.getId()))
                 .toList();
@@ -44,7 +44,7 @@ public final class AnsList implements BotCmd {
         }
         tgBot.send(chatId, str1.toString());
 
-        /// NOT REGISTERED TASKS
+        // NOT REGISTERED TASKS
         List<Task> notRegistered = tasks.findAll().stream()
                 .filter(t -> !registry.contains(t.getId()))
                 .toList();

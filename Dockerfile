@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 ENV TZ=Asia/Yekaterinburg
 ENV LANG=ru_RU.UTF-8
 ENV LANGUAGE=ru_RU:en

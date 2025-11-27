@@ -56,7 +56,7 @@ public final class RutorCurl {
         byte[] bytes = StreamUtils.copyToByteArray(pp.getInputStream());
         for (String line : new String(bytes).split("\n")) {
             if (line.contains(":")) {
-                String[] ln = line.split(":\s+");
+                String[] ln = line.split(":\\s+");
                 if (ln.length == 2) {
                     headers.put(ln[0], ln[1]);
                 }

@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: tasks
   config:
     import: file:tasks.properties
   mail:
@@ -19,10 +21,16 @@ spring:
 server:
   port: ${http.port}
 management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: ${traces.url}
+    logging:
+      export:
+        otlp:
+          endpoint: ${logs.url}
+  otlp:
+    metrics:
+      export:
+        url: ${metrics.url}

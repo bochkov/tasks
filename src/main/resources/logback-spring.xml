@@ -3,18 +3,11 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
-    <springProperty scope="context" name="LOKI_URL" source="loki.url" />
-    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
-        <message>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-        </message>
-        <http>
-            <url>${LOKI_URL}</url>
-        </http>
-    </appender>
+    <appender name="OpenTelemetry"
+              class="io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender" />
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="LOKI"/>
+        <appender-ref ref="OpenTelemetry"/>
     </root>
 </configuration>
