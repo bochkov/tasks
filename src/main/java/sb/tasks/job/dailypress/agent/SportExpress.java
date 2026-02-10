@@ -121,6 +121,12 @@ public final class SportExpress implements DailyPressAgent {
         ctx.driver.findElement(By.name("password")).sendKeys(ctx.password);
         ctx.driver.findElement(By.tagName("button")).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(By.className("se19-form__label")));
+        LOG.debug("login success");
+
+        LOG.debug("Navigate to newspaper page");
+        ctx.driver.navigate().to("https://www.sport-express.ru/newspaper");
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("se19-rubricator")));
+        LOG.debug("Navigate done");
     }
 
     private void download(WebDriverWait wait, File out) {
@@ -128,7 +134,9 @@ public final class SportExpress implements DailyPressAgent {
         try (Network network = new Network(ctx.driver)) {
             network.addIntercept(new AddInterceptParameters(InterceptPhase.RESPONSE_STARTED));
             network.onResponseCompleted(new ResponseHandler(wait, out));
-            ctx.driver.findElement(By.xpath("//a[@href='/newspaper/download/']")).click();
+            ctx.driver
+                    .findElement(By.xpath("//a[contains(@href, '/newspaper/download')]"))
+                    .click();
         } catch (Exception ex) {
             LOG.warn(ex.getMessage(), ex);
         }
@@ -151,15 +159,17 @@ public final class SportExpress implements DailyPressAgent {
         @Override
         public void accept(ResponseDetails resp) {
             if (MediaType.APPLICATION_PDF_VALUE.equalsIgnoreCase(resp.getResponseData().getMimeType())) {
+                LOG.info("{}", resp.getResponseData().getUrl());
                 Map<String, String> headers = mapHeaders(resp);
                 long contentLength = Long.parseLong(headers.get(HttpHeaders.CONTENT_LENGTH.toLowerCase()));
                 String fn = new ContentName(headers.get(HttpHeaders.CONTENT_DISPOSITION.toLowerCase())).get();
                 if (fn != null && !fn.isEmpty()) {
                     File file = new File(Property.TMP_DIR, fn);
-                    wait.until(input ->
-                            file.exists() && file.length() == contentLength && file.renameTo(out)
+                    wait.until(wb ->
+                            file.exists() && file.length() == contentLength
                     );
-                    LOG.debug("Download complete");
+                    boolean renamed = file.renameTo(out);
+                    LOG.debug("Download complete {} .. {}", renamed ? "success" : "fail", out.getAbsolutePath());
                 } else {
                     LOG.warn("Content-disposition not found");
                 }

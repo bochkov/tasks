@@ -40,10 +40,12 @@ public abstract class TaskJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         String key = context.getJobDetail().getKey().getName();
         Task task = tasks.findById(key).orElseThrow();
-        if (task.getParams() == null)
+        if (task.getParams() == null) {
             throw new NoSuchElementException("Params not defined");
-        if (task.getVars() == null)
+        }
+        if (task.getVars() == null) {
             task.setVars(new Task.Vars());
+        }
         LOG.info("Start {}, execution plan = {}", task, services);
         Agent agent = agentResolver().resolve(task);
         try {
@@ -51,8 +53,8 @@ public abstract class TaskJob implements Job {
             for (JobService<TaskResult> service : services) {
                 service.process(task, result);
             }
-        } catch (UpdatesNotFound notFound) {
-
+        } catch (UpdatesNotFound _) {
+            //
         } catch (Exception ex) {
             throw new JobExecutionException(ex);
         }
