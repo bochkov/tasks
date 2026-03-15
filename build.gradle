@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '4.0.2'
+    id 'org.springframework.boot' version '4.0.3'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'java'
     id 'idea'
@@ -20,10 +20,20 @@ java {
     targetCompatibility = JavaVersion.VERSION_25
 }
 
+ext {
+    set('springCloudVersion', "2025.1.0")
+}
+
 repositories {
     mavenCentral()
     maven {
         url = 'https://maven.sergeybochkov.com/releases'
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
 
@@ -34,20 +44,18 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
-    implementation 'org.springframework.boot:spring-boot-starter-micrometer-metrics'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
     implementation platform('com.konghq:unirest-java-bom:4.7.4')
     implementation 'com.konghq:unirest-java-core'
     implementation 'com.konghq:unirest-modules-jackson'
-    implementation 'org.seleniumhq.selenium:selenium-java:4.40.0'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.41.0'
     implementation 'org.jsoup:jsoup:1.22.1'
-    implementation 'resnyx:resnyx:9.3'
-    implementation 'io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.24.0-alpha'
-    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+    implementation 'resnyx:resnyx:9.5'
     //
-    compileOnly 'org.jetbrains:annotations:26.0.2-1'
+    compileOnly 'org.jetbrains:annotations:26.1.0'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'

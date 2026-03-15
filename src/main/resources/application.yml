@@ -1,36 +1,10 @@
 spring:
   application:
     name: tasks
+---
+spring:
   config:
-    import: file:tasks.properties
-  mail:
-    host: ${mail.host}
-    port: ${mail.port}
-    username: ${mail.user}
-    password: ${mail.pass}
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.smtp.ssl.enable: true
-  quartz:
-    scheduler-name: TaskScheduler
-  mongodb:
-    host: ${mongo.host}
-    port: ${mongo.port:27017}
-    database: ${mongo.db}
-server:
-  port: ${http.port}
-management:
-  opentelemetry:
-    tracing:
-      export:
-        otlp:
-          endpoint: ${traces.url}
-    logging:
-      export:
-        otlp:
-          endpoint: ${logs.url}
-  otlp:
-    metrics:
-      export:
-        url: ${metrics.url}
+    import: optional:configserver:${CONFIG_SERVER_URL}
+  cloud:
+    config:
+      fail-fast: true
