@@ -24,9 +24,10 @@ public final class TgAnswer {
     private final List<BotCmd> botCmds;
 
     public void process(String token, Update upd) {
+        LOG.info("received tg update {}", upd.getUpdateId());
         TgBot tgBot = new TgBot(token);
         Message tgMsg = upd.getMessage();
-        if (tgMsg == null) {
+        if (tgMsg == null || tgMsg.getEntities() == null) {
             return;
         }
         for (MessageEntity entity : tgMsg.getEntities()) {

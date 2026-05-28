@@ -1,9 +1,9 @@
 plugins {
-    id 'org.springframework.boot' version '4.0.3'
-    id 'io.spring.dependency-management' version '1.1.7'
     id 'java'
     id 'idea'
-    id 'com.github.ben-manes.versions' version '0.53.0'
+    id 'org.springframework.boot' version '4.0.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.ben-manes.versions' version '0.54.0'
 }
 
 group = 'sb'
@@ -21,13 +21,13 @@ java {
 }
 
 ext {
-    set('springCloudVersion', "2025.1.0")
+    set('springCloudVersion', "2025.1.1")
 }
 
 repositories {
     mavenCentral()
     maven {
-        url = 'https://maven.sergeybochkov.com/releases'
+        url = 'https://maven.sergeybochkov.com/maven2/releases'
     }
 }
 
@@ -48,12 +48,12 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     //
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
-    implementation platform('com.konghq:unirest-java-bom:4.7.4')
+    implementation platform('com.konghq:unirest-java-bom:4.10.0')
     implementation 'com.konghq:unirest-java-core'
     implementation 'com.konghq:unirest-modules-jackson'
-    implementation 'org.seleniumhq.selenium:selenium-java:4.41.0'
-    implementation 'org.jsoup:jsoup:1.22.1'
-    implementation 'resnyx:resnyx:9.5'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.44.0'
+    implementation 'org.jsoup:jsoup:1.22.2'
+    implementation 'resnyx:resnyx:10.0'
     //
     compileOnly 'org.jetbrains:annotations:26.1.0'
     compileOnly 'org.projectlombok:lombok'
